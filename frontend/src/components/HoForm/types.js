@@ -11,13 +11,13 @@ export interface FieldBaseGroup extends FieldBase {
     fields: Array<FieldBase>;
 };
 
-export interface DynamicFormNode<Field: FieldBase> {
-    field: Field;
+export interface DynamicFormNode {
+    field: FieldBase;
     state: any;
-    parent : ?DynamicFormNode<FieldBase>;
-    uiState: ?any;
+    parent : DynamicFormNode;
+    uiState: any;
 }
 
-export interface ComponentProps<Field : FieldBase> {
-    context: ComponentContext<Field>
+export interface ComponentProps {
+    context: ComponentContext
 };

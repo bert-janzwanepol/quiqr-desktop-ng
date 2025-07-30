@@ -3,8 +3,8 @@ import React              from 'react';
 const pathJoin = (...parts) => {
   return parts.join('/').replace(/\/+/g, '/').replace(/\/$/, '') || '/';
 };
-import IconBroken         from '@material-ui/icons/BrokenImage';
-import Button             from '@material-ui/core/Button';
+import IconBroken         from '@mui/icons-material/BrokenImage';
+import Button             from '@mui/material/Button';
 import FormItemWrapper    from './shared/FormItemWrapper';
 import Spinner            from '../../Spinner';
 import Tip                from '../../Tip';

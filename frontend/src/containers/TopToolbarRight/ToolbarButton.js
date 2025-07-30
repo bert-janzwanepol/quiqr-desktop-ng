@@ -1,7 +1,7 @@
 import React          from 'react';
-import Box            from '@material-ui/core/Box';
-import Button         from '@material-ui/core/Button';
-import { withStyles } from '@material-ui/core/styles';
+import Box            from '@mui/material/Box';
+import Button         from '@mui/material/Button';
+import withStyles from '@mui/styles/withStyles';
 
 const useStyles = theme => ({
   button: {
@@ -43,14 +43,12 @@ class ToolbarButton extends React.Component {
       <Box p={0.5}>
         <Button
           onClick={action}
-          color="default"
           className={(active ? classes.buttonActive : classes.button) + " toolbar-button"}
-          startIcon={<UseIcon style={{padding:0}} />}
-        >
+          startIcon={<UseIcon style={{padding:0}} />}>
           {title}
         </Button>
       </Box>
-    )
+    );
   }
 }
 

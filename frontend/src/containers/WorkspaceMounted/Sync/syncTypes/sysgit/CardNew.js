@@ -1,9 +1,9 @@
 import * as React          from 'react';
-import { withStyles }      from '@material-ui/core/styles';
-import Box                 from '@material-ui/core/Box';
-import Paper               from '@material-ui/core/Paper';
-import Typography          from '@material-ui/core/Typography';
-import GitHubIcon          from '@material-ui/icons/GitHub';
+import withStyles from '@mui/styles/withStyles';
+import Box                 from '@mui/material/Box';
+import Paper               from '@mui/material/Paper';
+import Typography          from '@mui/material/Typography';
+import GitHubIcon          from '@mui/icons-material/GitHub';
 
 const useStyles = theme => ({
 });

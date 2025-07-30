@@ -1,13 +1,13 @@
 import React from 'react';
-import ListItem                from '@material-ui/core/ListItem';
-import ListItemText            from '@material-ui/core/ListItemText';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import ListItemAvatar          from '@material-ui/core/ListItemAvatar';
-import Avatar from '@material-ui/core/Avatar';
-import { red } from '@material-ui/core/colors';
+import ListItem                from '@mui/material/ListItem';
+import ListItemText            from '@mui/material/ListItemText';
+import ListItemSecondaryAction from '@mui/material/ListItemSecondaryAction';
+import ListItemAvatar          from '@mui/material/ListItemAvatar';
+import Avatar from '@mui/material/Avatar';
+import { red } from '@mui/material/colors';
 import service              from '../../../services/service';
 
-import { withStyles } from '@material-ui/core/styles';
+import withStyles from '@mui/styles/withStyles';
 
 const useStyles = theme => ({
   avatarNoFavicon: {

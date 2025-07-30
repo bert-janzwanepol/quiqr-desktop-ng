@@ -1,9 +1,9 @@
 import React          from 'react';
-import ExpandLessIcon from '@material-ui/icons/ExpandLess';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import FileCopyIcon   from '@material-ui/icons/FileCopy';
-import Tooltip        from '@material-ui/core/Tooltip';
-import IconButton     from '@material-ui/core/IconButton';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import FileCopyIcon   from '@mui/icons-material/FileCopy';
+import Tooltip        from '@mui/material/Tooltip';
+import IconButton     from '@mui/material/IconButton';
 import { snackMessageService }      from './../services/ui-service';
 //import service         from '../services/service';
 

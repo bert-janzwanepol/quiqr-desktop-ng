@@ -1,10 +1,10 @@
 import React                          from 'react';
 import { Route }                      from 'react-router-dom';
 import service                        from './../../../services/service';
-import { withStyles }                 from '@material-ui/core/styles';
+import withStyles from '@mui/styles/withStyles';
 import SyncConfigDialog               from './components/SyncConfigDialog';
 import SyncBusyDialog                 from './components/SyncBusyDialog';
-import Button                         from '@material-ui/core/Button';
+import Button                         from '@mui/material/Button';
 //targets
 import {Dashboard as GitHubDashboard} from './syncTypes/github'
 import {Dashboard as SysGitDashboard} from './syncTypes/sysgit'
