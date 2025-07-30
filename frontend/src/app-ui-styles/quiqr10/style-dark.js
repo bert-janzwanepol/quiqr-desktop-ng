@@ -1,7 +1,7 @@
 const topBarHeight = '52px';
 const sidebarWidth= '280px';
 
-exports.container = {
+const container = {
   position: 'relative',
   display: 'flex',
   height: `calc(100vh - ${topBarHeight})`,
@@ -9,7 +9,7 @@ exports.container = {
   overflowX: 'hidden'
 };
 
-exports.menuContainer = {
+const menuContainer = {
   flex: `0 0 ${sidebarWidth}`,
   overflowY:'auto',
   overflowX:'hidden',
@@ -18,14 +18,14 @@ exports.menuContainer = {
   backgroundColor: '#222'
 };
 
-exports.contentContainer = {
+const contentContainer = {
   flex: 'auto',
   userSelect:'none',
   overflow: 'auto',
   overflowX: 'hidden'
 };
 
-exports.topToolbar = {
+const topToolbar = {
   borderTop: 'solid 1px #c7c5c4',
   borderBottom: 'solid 1px #c7c5c4',
   top: 0,
@@ -33,4 +33,11 @@ exports.topToolbar = {
   display: 'flex',
   width: '100%',
   backgroundColor: '#222'
+};
+
+export default {
+  container,
+  menuContainer,
+  contentContainer,
+  topToolbar
 };

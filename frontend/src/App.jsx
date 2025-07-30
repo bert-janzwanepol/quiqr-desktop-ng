@@ -14,6 +14,8 @@ import SplashDialog                                                       from '
 import { SiteLibrarySidebar, SiteLibraryRouted, SiteLibraryToolbarRight } from './containers/SiteLibrary'
 import {TopToolbarRight, ToolbarButton}                                   from './containers/TopToolbarRight'
 import service                                                            from './services/service';
+import styleLightDefault                                                 from './app-ui-styles/quiqr10/style-light.js';
+import styleDarkDefault                                                  from './app-ui-styles/quiqr10/style-dark.js';
 
 let defaultApplicationRole = "contentEditor";
 
@@ -23,7 +25,7 @@ class App extends React.Component{
     super(props);
 
     //let win = window.require('electron').remote.getCurrentWindow();
-    let style = require('./app-ui-styles/quiqr10/style-light.js');
+    let style = styleLightDefault;
     let theme = createTheme(adaptV4Theme({
       palette: {
         mode: "light",
@@ -71,7 +73,7 @@ class App extends React.Component{
         }));
 
         this.setState({
-          style: require('./app-ui-styles/quiqr10/style-'+themeStyle+'.js'),
+          style: themeStyle === 'light' ? styleLightDefault : styleDarkDefault,
           theme: theme
         });
       }

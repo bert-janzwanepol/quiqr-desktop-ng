@@ -20,7 +20,9 @@ import { SyncSidebar, SyncRouted }         from './Sync';
 import service                             from '../../services/service';
 
 //TODO use global
-let style = require('../../app-ui-styles/quiqr10/style-light.js');
+import styleLightDefault from '../../app-ui-styles/quiqr10/style-light.js';
+import styleDarkDefault from '../../app-ui-styles/quiqr10/style-dark.js';
+let style = styleLightDefault;
 
 class WorkSpace extends React.Component{
 
@@ -73,7 +75,7 @@ class WorkSpace extends React.Component{
         }
 
         this.setState({
-          style: require('../../app-ui-styles/quiqr10/style-'+themeStyle+'.js'),
+          style: themeStyle === 'light' ? styleLightDefault : styleDarkDefault,
         });
       }
     });

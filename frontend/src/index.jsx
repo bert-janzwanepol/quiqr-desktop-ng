@@ -5,16 +5,10 @@ import App               from './App.jsx';
 import service           from './services/service';
 import SnackbarManager   from './components/SnackbarManager.jsx';
 
-service.api.readConfKey('prefs').then((value)=>{
-
-  let appUiStyle = 'quiqr10';
-
-  require('./app-ui-styles/' + appUiStyle + '/css/index.css');
-  require('./app-ui-styles/' + appUiStyle + '/css/bootstrap-grid.css');
-
-  /* STYLES FOR OTHER THEN MUI COMPONENTS */
-  require('./app-ui-styles/components.css');
-});
+// Import CSS files directly - Vite will handle them
+import './app-ui-styles/quiqr10/css/index.css';
+import './app-ui-styles/quiqr10/css/bootstrap-grid.css';
+import './app-ui-styles/components.css';
 
 const container = document.getElementById('root');
 const root = createRoot(container);
