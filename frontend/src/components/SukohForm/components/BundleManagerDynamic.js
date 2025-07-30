@@ -7,7 +7,10 @@ import FolderIcon                           from '@material-ui/icons/Folder';
 import IconButton                           from '@material-ui/core/IconButton';
 import DeleteIcon                           from '@material-ui/icons/Delete';
 import { BaseDynamic }                      from '../../HoForm';
-import path                                 from 'path';
+// Browser-compatible path join utility
+const pathJoin = (...parts) => {
+  return parts.join('/').replace(/\/+/g, '/').replace(/\/$/, '') || '/';
+};
 import service                              from '../../../services/service';
 
 const regExtractExt = /[.]([^.]+)$/
@@ -63,7 +66,7 @@ class BundleManagerDynamic extends BaseDynamic {
 
         if(this.state.absFiles.length === 0){
           let files = _files.map(item => {
-            item.src = path.join(field.path, item.src);
+            item.src = pathJoin(field.path, item.src);
             return item;
           })
           this.setState({absFiles: files});
@@ -75,7 +78,7 @@ class BundleManagerDynamic extends BaseDynamic {
 
         if(this.state.absFiles.length === 0){
           let files = _files.map(item => {
-            item.src = path.join(item.src);
+            item.src = pathJoin(item.src);
             return item;
           })
           this.setState({absFiles: files});

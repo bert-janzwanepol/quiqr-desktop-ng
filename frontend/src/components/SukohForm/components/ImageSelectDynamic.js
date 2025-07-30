@@ -1,5 +1,8 @@
 import React              from 'react';
-import path               from 'path';
+// Browser-compatible path join utility
+const pathJoin = (...parts) => {
+  return parts.join('/').replace(/\/+/g, '/').replace(/\/$/, '') || '/';
+};
 import IconBroken         from '@material-ui/icons/BrokenImage';
 import Button             from '@material-ui/core/Button';
 import FormItemWrapper    from './shared/FormItemWrapper';
@@ -48,7 +51,7 @@ class ImageSelectDynamic extends BaseDynamic {
         if(this.state.absFiles.length === 0 || reload){
           let files = _files.map(item => {
             item.filename = item.src;
-            item.src = path.join(field_path, item.src);
+            item.src = pathJoin(field_path, item.src);
             //service.api.logToConsole(item.src)
 
             return item;
@@ -63,7 +66,7 @@ class ImageSelectDynamic extends BaseDynamic {
         if(this.state.absFiles.length === 0 || reload){
           let files = _files.map(item => {
             item.filename = item.src;
-            item.src = path.join(item.src);
+            item.src = pathJoin(item.src);
             return item;
           })
           this.setState({absFiles: files});
@@ -122,11 +125,11 @@ class ImageSelectDynamic extends BaseDynamic {
           field_path = field.real_fs_path
 
           let imgBaseName = this.props.context.value.split('/').reverse()[0];
-          thumbPath = path.join(field_path, imgBaseName);
+          thumbPath = pathJoin(field_path, imgBaseName);
         }
         else{
           if(field.path && (field.path.charAt(0) === "/" || field.path.charAt(0) === "\\")){
-            thumbPath = path.join(field_path, this.props.context.value);
+            thumbPath = pathJoin(field_path, this.props.context.value);
           }
         }
 
