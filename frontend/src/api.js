@@ -1,5 +1,4 @@
 import mainProcessBridge from './utils/main-process-bridge';
-import type { AbortablePromise } from './utils/main-process-bridge';
 import service from './services/service'
 
 export class API {

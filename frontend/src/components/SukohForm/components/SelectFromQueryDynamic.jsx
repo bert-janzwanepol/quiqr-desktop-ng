@@ -1,5 +1,4 @@
 import React                    from 'react';
-import type {FormStateBuilder } from '../../HoForm';
 import { BaseDynamic }          from '../../HoForm';
 import Typography               from '@mui/material/Typography';
 import FormItemWrapper          from './shared/FormItemWrapper';
@@ -10,21 +9,7 @@ import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import Autocomplete from '@mui/lab/Autocomplete';
 
-type SelectFromQueryDynamicField = {
-  key: string,
-  compositeKey: string,
-  type: string,
-  default: ?string,
-  tip: ?string,
-  title: ?string,
-  query_glob: string,
-  query_string: string,
-}
-
-type SelectFromQueryDynamicState = {
-
-}
-class SelectFromQueryDynamic extends BaseDynamic<SelectFromQueryDynamicField,SelectFromQueryDynamicState> {
+class SelectFromQueryDynamic extends BaseDynamic {
   constructor(props){
 
     super(props);
@@ -36,7 +21,7 @@ class SelectFromQueryDynamic extends BaseDynamic<SelectFromQueryDynamicField,Sel
 
   }
 
-  normalizeState({state, field} : { state: any, field: SelectFromQueryDynamicField, stateBuilder: FormStateBuilder }){
+  normalizeState({state, field, stateBuilder}){
     //TODO: clear if value is not a valid option
     let key = field.key;
     let isArrayType = field.multiple === true;

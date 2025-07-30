@@ -7,21 +7,7 @@ import Typography from '@mui/material/Typography';
 import { BaseDynamic } from '../../HoForm';
 //import service                              from './../../../services/service'
 
-type SliderDynamicField = {
-  key: string,
-  compositeKey: string,
-  type: string,
-  default: string,
-  multiLine: boolean,
-  tip: ?string,
-  title: ?string
-}
-
-type SliderDynamicState = {
-
-}
-
-class SliderDynamic extends BaseDynamic<SliderDynamicField,SliderDynamicState> {
+class SliderDynamic extends BaseDynamic {
 
   /*
   normalizeState({state, field}: {state: any, field: SliderDynamicField}){
@@ -36,7 +22,7 @@ class SliderDynamic extends BaseDynamic<SliderDynamicField,SliderDynamicState> {
     return 'slider';
   }
 
-  handleChange = (e: Event, value: any)=>{
+  handleChange = (e, value)=>{
     let {context} = this.props;
 
     context.setValue(value, 250);
