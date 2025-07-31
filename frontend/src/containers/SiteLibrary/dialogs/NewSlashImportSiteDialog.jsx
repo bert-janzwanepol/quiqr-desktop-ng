@@ -91,7 +91,7 @@ class NewSiteDialog extends React.Component{
     }
   }
 
-  componentWillUpdate(nextProps, nextState) {
+  UNSAFE_componentWillUpdate(nextProps, nextState) {
     if(nextProps.importSiteURL && this.props.importSiteURL !== nextProps.importSiteURL){
       this.setState({
         newType: 'git',

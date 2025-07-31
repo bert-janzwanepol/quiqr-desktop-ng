@@ -28,7 +28,7 @@ class RenameDialog extends React.Component{
       siteconf: {}
     }
   }
-  componentWillUpdate(nextProps, nextState) {
+  UNSAFE_componentWillUpdate(nextProps, nextState) {
     if(this.props.siteconf.key !== nextProps.siteconf.key){
       let siteconf = Object.assign({}, nextProps.siteconf);
       //this.validateSiteName(siteconf.name);

@@ -194,7 +194,7 @@ class FormPartialNewFromScratch extends React.Component{
 
   }
 
-  componentWillUpdate(nextProps, nextState) {
+  UNSAFE_componentWillUpdate(nextProps, nextState) {
     if(this.state.importTypeGitUrl !== nextProps.importSiteURL && nextProps.importSiteURL ){
       this.setState({importTypeGitUrl: nextProps.importSiteURL},
         ()=>{

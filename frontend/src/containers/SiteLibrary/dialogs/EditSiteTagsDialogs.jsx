@@ -28,7 +28,7 @@ class EditTagsDialogs extends React.Component{
       siteconf: {}
     }
   }
-  componentWillUpdate(nextProps, nextState) {
+  UNSAFE_componentWillUpdate(nextProps, nextState) {
     if(this.props.siteconf.key !== nextProps.siteconf.key){
       let siteconf = nextProps.siteconf;
       if(!siteconf.tags) siteconf.tags = [];
