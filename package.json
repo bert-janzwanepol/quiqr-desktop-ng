@@ -61,6 +61,7 @@
     "node-fetch": "^2.6.11",
     "openai": "^4.64.0",
     "prop-types": "^15.8.1",
+    "react-codemod": "^5.4.4",
     "request": "2.87.0",
     "toml": "2.3.3",
     "tomlify-j0.4": "3.0.0",
