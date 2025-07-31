@@ -102,7 +102,8 @@ electron-builder build --linux  # Build Linux installer
 - ✅ **Build system**: Now compatible with Node.js 18+ (no more OpenSSL errors)
 - ✅ **Dependencies**: Resolved Node.js path polyfill issues in browser components
 - ✅ **Material-UI**: **COMPLETED** - Migrated from @material-ui v4 → @mui v5.18.0
-- ⚠️ **react-router-dom**: Still on v4 (very old) - should upgrade to v6+
+- ✅ **TypeScript**: **COMPLETED** - Converted JavaScript files with TypeScript syntax to proper TypeScript
+- ⚠️ **react-router-dom**: **UPGRADED TO v6** - Updated from v4 to v6.30.1 (Switch → Routes migration needed)
 
 ### Completed TODO Items
 - [x] **Fix dev server startup order** ✅ **COMPLETED** - Now uses `wait-on` to ensure frontend is ready on port 4001 before starting electron
@@ -117,11 +118,22 @@ electron-builder build --linux  # Build Linux installer
   - Preserved `window.require('electron')` calls for Electron API access
   - Fixed export/import mismatches that caused runtime errors
   - All 17+ JSX files now use modern ES6 import syntax for regular modules
+- [x] **Convert JavaScript files with TypeScript syntax to proper TypeScript** ✅ **COMPLETED** - Systematically converted 22 files from .js/.jsx to .ts/.tsx
+  - Identified all JavaScript files using TypeScript syntax patterns
+  - Converted Flow-style optional types to proper TypeScript: `?string` → `string?`, `?bool` → `boolean?`  
+  - Fixed return type annotations: `?string` → `string | null`
+  - Added TypeScript configuration with React JSX support
+  - Key files converted: `src/api.ts`, `src/components/HoForm/types.ts`, `src/utils/main-process-bridge.ts`
+  - All SukohForm components and container files now properly typed
+  - Build system successfully processes 1724+ modules with TypeScript
 
 ### Remaining TODO Items
 - [ ] **Upgrade Electron** (medium priority) 
 - [ ] **Clean up ESLint warnings** (~200+ unused variables, no-undef issues)
-- [ ] **Upgrade react-router-dom v4 → v6** (breaking changes in routing API)
+- [ ] **Fix react-router-dom v6 compatibility** (urgent) - Replace deprecated Switch with Routes component
+  - Current error: "Switch is not exported from 'react-router-dom'"
+  - Need to update routing patterns from v4/v5 to v6 syntax
+  - Affects main application routing in App.jsx and other router components
 - [ ] **Code splitting and bundle size optimization** (current: 997.04 kB, reduced from 1.05 MB)
 
 ### Build System

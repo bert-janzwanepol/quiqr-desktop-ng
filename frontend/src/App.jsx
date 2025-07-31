@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 import AppsIcon from "@mui/icons-material/Apps";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import SettingsApplicationsIcon from "@mui/icons-material/SettingsApplications";
@@ -170,17 +170,17 @@ class App extends React.Component {
 
   renderTopToolbarLeftSwitch() {
     return (
-      <Routes>
-        <Route path='/' element={<TopToolbarLeft title='Site Library' />} />
+      <Switch>
+        <Route path='/' exact render={() => <TopToolbarLeft title='Site Library' />} />
 
-        <Route path='/sites/*' element={<TopToolbarLeft title='Site Library' />} />
-      </Routes>
+        <Route path='/sites' render={() => <TopToolbarLeft title='Site Library' />} />
+      </Switch>
     );
   }
 
   renderTopToolbarRightSwitch() {
     return (
-      <Routes>
+      <Switch>
         <Route
           path='/prefs'
           exact={false}
@@ -256,13 +256,13 @@ class App extends React.Component {
             );
           }}
         />
-      </Routes>
+      </Switch>
     );
   }
 
   renderMenuSwitch() {
     return (
-      <Routes>
+      <Switch>
         <Route
           path='/sites'
           exact={true}
@@ -321,7 +321,7 @@ class App extends React.Component {
             return <SiteLibrarySidebar />;
           }}
         />
-      </Routes>
+      </Switch>
     );
   }
 
@@ -359,7 +359,7 @@ class App extends React.Component {
 
   renderContentSwitch() {
     return (
-      <Routes>
+      <Switch>
         <Route
           path='/'
           exact
@@ -414,7 +414,7 @@ class App extends React.Component {
             return <PrefsRouted />;
           }}
         />
-      </Routes>
+      </Switch>
     );
   }
 
@@ -510,7 +510,7 @@ class App extends React.Component {
     }
 
     return (
-      <Routes>
+      <Switch>
         <Route
           path='/console'
           exact={false}
@@ -668,7 +668,7 @@ class App extends React.Component {
             return this.renderBodyWithToolbars();
           }}
         />
-      </Routes>
+      </Switch>
     );
   }
 }
