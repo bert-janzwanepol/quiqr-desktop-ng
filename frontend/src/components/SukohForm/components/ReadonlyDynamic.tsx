@@ -10,9 +10,9 @@ type ReadonlyDynamicField = {
   compositeKey: string,
   type: string,
   title: string,
-  tip: ?string,
-  default: ?string,
-  multiLine: ?bool
+  tip?: string,
+  default?: string,
+  multiLine?: boolean
 }
 
 type ReadonlyDynamicState = {

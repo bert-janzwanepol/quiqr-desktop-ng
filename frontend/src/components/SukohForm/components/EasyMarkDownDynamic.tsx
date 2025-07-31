@@ -10,10 +10,10 @@ type EasyMarkdownDynamicField = {
   key: string,
   compositeKey: string,
   type: string,
-  default: ?string,
-  multiLine: ?bool,
-  tip: ?string,
-  title: ?string
+  default?: string,
+  multiLine?: boolean,
+  tip?: string,
+  title?: string
 }
 
 type EasyMarkdownDynamicState = {

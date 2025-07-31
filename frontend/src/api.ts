@@ -3,7 +3,7 @@ import service from './services/service'
 
 export class API {
 
-  getConfigurations(options?: {invalidateCache: bool}): AbortablePromise<Configurations>{
+  getConfigurations(options?: {invalidateCache: boolean}): AbortablePromise<Configurations>{
     return mainProcessBridge.request('getConfigurations', options);
   }
 

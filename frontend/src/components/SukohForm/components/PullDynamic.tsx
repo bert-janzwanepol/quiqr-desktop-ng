@@ -4,7 +4,7 @@ import type { DynamicFormNode, FieldsExtender, FormStateBuilder } from '../../Ho
 type PullDynamicField = {
   type: string,
   key: string,
-  group: ?string,
+  group?: string,
   compositeKey: string,
   fields: Array<any>
 }

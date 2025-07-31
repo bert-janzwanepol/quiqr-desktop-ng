@@ -13,8 +13,8 @@ type UniqDynamicField = {
   type: string,
   title: string,
   tip: string,
-  default: ?string,
-  multiLine: ?bool
+  default?: string,
+  multiLine?: boolean
 }
 
 type UniqDynamicState = {

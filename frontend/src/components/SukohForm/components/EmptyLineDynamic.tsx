@@ -5,7 +5,7 @@ type EmptyLineDynamicField = {
   key: string,
   compositeKey: string,
   type: string,
-  amount: ?number
+  amount?: number
 }
 
 type EmptyLineDynamicState = {

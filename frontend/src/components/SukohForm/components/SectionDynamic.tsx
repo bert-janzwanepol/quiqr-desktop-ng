@@ -9,7 +9,7 @@ type SectionDynamicField = {
   type: string,
   title: string,
   fields: Array<any>,
-  groupdata: ?bool
+  groupdata?: boolean
 }
 
 type SectionDynamicState = {
@@ -40,11 +40,11 @@ class SectionDynamic extends BaseDynamic<SectionDynamicField, SectionDynamicStat
     return 'section';
   }
 
-  buildBreadcumbFragment(currentNode: DynamicFormNode<SectionDynamicField>, items: Array<{label: string, node:?DynamicFormNode<FieldBase>}>): void{
+  buildBreadcumbFragment(currentNode: DynamicFormNode<SectionDynamicField>, items: Array<{label: string, node?: DynamicFormNode<FieldBase>}>): void{
 
   }
 
-  buildPathFragment(node: DynamicFormNode<SectionDynamicField>, nodeLevel: number, nodes: Array<DynamicFormNode<FieldBase>>): ?string {
+  buildPathFragment(node: DynamicFormNode<SectionDynamicField>, nodeLevel: number, nodes: Array<DynamicFormNode<FieldBase>>): string | null {
     return undefined;
   }
 

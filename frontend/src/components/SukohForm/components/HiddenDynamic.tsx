@@ -7,7 +7,7 @@ type HiddenDynamicField = {
   type: string,
   key: string,
   compositeKey: string,
-  default: ?string
+  default?: string
 }
 
 type HiddenDynamicState = {
