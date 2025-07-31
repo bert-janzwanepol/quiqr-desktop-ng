@@ -27,7 +27,7 @@ class LeafArrayDynamic extends BaseDynamic {
     return 'leaf-array';
   }
 
-  deepEqual(array: Array<any>, otherArray: Array<any>) : bool{
+  deepEqual(array: Array<any>, otherArray: Array<any>) : boolean{
     if(array.length !== otherArray.length)
       return false;
 

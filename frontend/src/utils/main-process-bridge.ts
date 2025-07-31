@@ -6,9 +6,14 @@ axios.defaults.timeoutErrorMessage='timeout'
 export type AbortablePromise<T> = Promise<T> & { forceAbort: ()=>void };
 
 class MainProcessBridge{
+  private _messageHandlers: { [key: string]: any[] };
+  private ipcRenderer: any;
+  public pendingCallbacks: any[];
 
   constructor(){
     this._messageHandlers = {};
+    this.ipcRenderer = null;
+    this.pendingCallbacks = [];
   }
   constructor_old(){
 

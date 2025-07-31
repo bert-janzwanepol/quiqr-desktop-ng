@@ -1,7 +1,7 @@
 //@flow
 import type { FieldBase, DynamicFormNode } from './types';
 import Form from './Form';
-export class ComponentContext<Field: FieldBase>{
+export class ComponentContext<Field extends FieldBase> {
 
     node: DynamicFormNode<Field>;
     currentNode: DynamicFormNode<Field>;
@@ -9,12 +9,12 @@ export class ComponentContext<Field: FieldBase>{
     nodePath: string;
     parentPath: string;
     currentPath: string;
-    proplessInstance : any;
+    proplessInstance: any;
 
-    onValueChanged: ?(value: any)=> void;
+    onValueChanged: (value: any) => void;
 
-    form:Form;
-    value:any;
+    form: Form;
+    value: any;
     reloadAfterSave: any;
 
     //remove those?
@@ -23,7 +23,7 @@ export class ComponentContext<Field: FieldBase>{
     setLevelState: any;
 
 
-    constructor(form , node , currentPath , parentPath , nodePath , proplessInstance , onValueChanged, enableAiAssist, pageUrl){
+    constructor(form, node, currentPath, parentPath, nodePath, proplessInstance, onValueChanged, enableAiAssist, pageUrl) {
 
         this.node = node;
 
@@ -54,21 +54,21 @@ export class ComponentContext<Field: FieldBase>{
         this.value = this.proplessInstance.getValue(this);
     }
 
-    getCache(){
+    getCache() {
         let cache = this.form.cache[this.node.field.compositeKey];
-        if(cache==null){
+        if (cache == null) {
             cache = {};
             this.form.cache[this.node.field.compositeKey] = cache;
         }
         return cache;
     }
 
-    getValue(){
+    getValue() {
         return this.value;
     }
 
-    setValue(value : any, debounce?: number = 0){
-        if(this.onValueChanged){ //if this property is defined, it will intercept any change
+    setValue(value: any, debounce?: number = 0) {
+        if (this.onValueChanged) { //if this property is defined, it will intercept any change
             this.onValueChanged(value);
             return;
         }
@@ -78,42 +78,42 @@ export class ComponentContext<Field: FieldBase>{
         this.form.handleChange(this.node, debounce);
     }
 
-    clearValue(){
-        if(this.onValueChanged){
+    clearValue() {
+        if (this.onValueChanged) {
             this.onValueChanged(undefined);
             return;
         }
         this.proplessInstance.clearValue(this);
-        this.form.handleChange(this.node ,0);
+        this.form.handleChange(this.node, 0);
     }
 
-    setPath(node : DynamicFormNode<Field>){
+    setPath(node: DynamicFormNode<Field>) {
         this.form.setPath((node/*: any*/));
     }
 
-    saveFormHandler(){
-      this.form.saveFormHandler();
+    saveFormHandler() {
+        this.form.saveFormHandler();
     }
 
-    backOnePath(){
+    backOnePath() {
         this.form.setPath((this.currentNode.parent/*: any*/));
     }
 
-    findNodeInCurrentNodeTree(node: DynamicFormNode<Field>){
+    findNodeInCurrentNodeTree(node: DynamicFormNode<Field>) {
         let cNode = this.currentNode;
-        while(cNode){
-            if(cNode.field.compositeKey===node.field.compositeKey)
+        while (cNode) {
+            if (cNode.field.compositeKey === node.field.compositeKey)
                 return cNode;
             cNode = cNode.parent;
         }
         return undefined;
     }
 
-    findPreviousNodeInCurrentNodeTree(node: DynamicFormNode<Field>){
+    findPreviousNodeInCurrentNodeTree(node: DynamicFormNode<Field>) {
         let cNode = this.currentNode;
         let pNode = undefined;
-        while(cNode){
-            if(cNode.field.compositeKey===node.field.compositeKey)
+        while (cNode) {
+            if (cNode.field.compositeKey === node.field.compositeKey)
                 return pNode;
             pNode = cNode;
             cNode = cNode.parent;

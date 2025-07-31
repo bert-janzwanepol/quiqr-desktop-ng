@@ -1,6 +1,19 @@
 import mainProcessBridge from './utils/main-process-bridge';
 import service from './services/service'
 
+// Type definitions
+interface AbortablePromise<T> extends Promise<T> {
+  forceAbort?: () => void;
+}
+
+interface Configurations {
+  [key: string]: any;
+}
+
+interface WorkspaceConfig {
+  [key: string]: any;
+}
+
 export class API {
 
   getConfigurations(options?: {invalidateCache: boolean}): AbortablePromise<Configurations>{
@@ -44,14 +57,14 @@ export class API {
   }
 
   importSite(){
-    return mainProcessBridge.request('importSiteAction');
+    return mainProcessBridge.request('importSiteAction', {});
   }
 
   getFilteredHugoVersions(){
-    return mainProcessBridge.request('getFilteredHugoVersions');
+    return mainProcessBridge.request('getFilteredHugoVersions', {});
   }
 
-  importSiteFromPrivateGitRepo(gitOrg: string, gitRepo: string, privKey: string, gitEmail: string, saveSyncTarget: bool, siteName: string){
+  importSiteFromPrivateGitRepo(gitOrg: string, gitRepo: string, privKey: string, gitEmail: string, saveSyncTarget: boolean, siteName: string){
     return mainProcessBridge.request('importSiteFromPrivateGitRepo', {gitOrg, gitRepo, privKey, gitEmail, saveSyncTarget,siteName}, {timeout: 1000000});
   }
 
@@ -63,7 +76,7 @@ export class API {
     return mainProcessBridge.request('newSiteFromPublicHugoThemeUrl', {siteName, url, themeInfo, hugoVersion});
   }
 
-  newSiteFromLocalDirectory(siteName: string, directory: string, generateQuiqrModel: bool, hugoVersion: string){
+  newSiteFromLocalDirectory(siteName: string, directory: string, generateQuiqrModel: boolean, hugoVersion: string){
     return mainProcessBridge.request('newSiteFromLocalDirectory', {siteName, directory, generateQuiqrModel, hugoVersion});
   }
 
@@ -75,11 +88,11 @@ export class API {
   }
 
   getCurrentBaseUrl(){
-    return mainProcessBridge.request('getCurrentBaseUrl');
+    return mainProcessBridge.request('getCurrentBaseUrl', {});
   }
 
   getCurrentSiteKey(){
-    return mainProcessBridge.request('getCurrentSiteKey');
+    return mainProcessBridge.request('getCurrentSiteKey', {});
   }
 
   globSync(pattern, options){
@@ -179,7 +192,7 @@ export class API {
     return mainProcessBridge.request('copyCollectionItemToLang', {siteKey, workspaceKey, collectionKey, collectionItemKey, collectionItemNewKey, destLang});
   }
 
-  openFileInEditor(filepath: string, create: bool, relativeToRoot: bool){
+  openFileInEditor(filepath: string, create: boolean, relativeToRoot: boolean){
     mainProcessBridge.requestVoid('openFileInEditor', {filepath, create, relativeToRoot});
   }
 
@@ -225,7 +238,7 @@ export class API {
             );
           }
         }).catch(err => {
-          service.api.logToConsole(err);
+          service.api.logToConsole(err, 'copyFilesIntoCollectionItemFromDialog error');
         });
 
       })
@@ -308,10 +321,10 @@ export class API {
     return mainProcessBridge.request('openSiteLibrary', {}, {timeout: 100000 });
   }
   showMenuBar(){
-    return mainProcessBridge.request('showMenuBar');
+    return mainProcessBridge.request('showMenuBar', {});
   }
   hideMenuBar(){
-    return mainProcessBridge.request('hideMenuBar');
+    return mainProcessBridge.request('hideMenuBar', {});
   }
 
   mountWorkspace(siteKey: string, workspaceKey: string){
@@ -349,7 +362,7 @@ export class API {
   }
 
   reloadThemeStyle(){
-    return mainProcessBridge.request('reloadThemeStyle');
+    return mainProcessBridge.request('reloadThemeStyle', {});
   }
 
   createKeyPairGithub(){
@@ -358,7 +371,7 @@ export class API {
   }
 
   invalidateCache(){
-    return mainProcessBridge.request('invalidateCache');
+    return mainProcessBridge.request('invalidateCache', {});
   }
 
 }
