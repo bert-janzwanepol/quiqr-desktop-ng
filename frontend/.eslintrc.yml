@@ -1,6 +1,6 @@
 env:
   browser: true
-  commonjs: true
+  commonjs: false
   es6: true
   node: true
 extends: eslint:recommended
@@ -9,4 +9,4 @@ parserOptions:
 rules:
   no-console: 0
   no-async-promise-executor: 0
-
+sourceType: module

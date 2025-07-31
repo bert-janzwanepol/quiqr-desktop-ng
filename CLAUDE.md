@@ -111,6 +111,12 @@ electron-builder build --linux  # Build Linux installer
   - Theme system updated with `adaptV4Theme` and `StyledEngineProvider` 
   - Replaced deprecated `material-ui-color` with native HTML color input
   - Bundle size reduced by 50.56 kB
+- [x] **Migrate from require() to import syntax** ✅ **COMPLETED** - Systematically converted CommonJS to ES6 modules
+  - Converted `App.jsx` and `Workspace.jsx` dynamic style requires to static imports
+  - Updated `style-light.js` and `style-dark.js` from CommonJS exports to ES6 default exports
+  - Preserved `window.require('electron')` calls for Electron API access
+  - Fixed export/import mismatches that caused runtime errors
+  - All 17+ JSX files now use modern ES6 import syntax for regular modules
 
 ### Remaining TODO Items
 - [ ] **Upgrade Electron** (medium priority) 
