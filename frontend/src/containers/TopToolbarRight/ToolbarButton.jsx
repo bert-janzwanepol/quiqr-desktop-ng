@@ -1,56 +1,36 @@
-import React          from 'react';
-import Box            from '@mui/material/Box';
-import Button         from '@mui/material/Button';
-import withStyles from '@mui/styles/withStyles';
+import React from 'react';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import { styled } from '@mui/material/styles';
 
-const useStyles = theme => ({
-  button: {
-    '& .MuiButton-label': {
-      flexDirection: 'column',
-    },
-
-    textTransform: 'none',
-    margin: theme.spacing(0),
-    padding: theme.spacing(0),
-    //color: '#212121',
+const StyledButton = styled(Button)(({ theme, active }) => ({
+  '& .MuiButton-label': {
+    flexDirection: 'column',
   },
-  buttonActive: {
-    '& .MuiButton-label': {
-      flexDirection: 'column',
-    },
-    margin: theme.spacing(0),
-    padding: theme.spacing(0),
+  textTransform: 'none',
+  margin: theme.spacing(0),
+  padding: theme.spacing(0),
+  ...(active && {
     color: '#757575',
-    textTransform: 'none',
-  },
+  }),
+}));
 
-  icon: {
-    //color: '#212121',
-  },
-  iconActive: {
-    color: '#757575',
-  },
-});
+const ToolbarButton = ({ title, action, icon, active }) => {
+  const UseIcon = icon;
 
-class ToolbarButton extends React.Component {
+  return (
+    <Box p={0.5}>
+      <StyledButton
+        onClick={action}
+        active={active}
+        className="toolbar-button"
+        startIcon={<UseIcon style={{ padding: 0 }} />}
+      >
+        {title}
+      </StyledButton>
+    </Box>
+  );
+};
 
-  render(){
-    const { classes, title, action, icon, active } = this.props;
-    let UseIcon = icon;
-
-
-    return (
-      <Box p={0.5}>
-        <Button
-          onClick={action}
-          className={(active ? classes.buttonActive : classes.button) + " toolbar-button"}
-          startIcon={<UseIcon style={{padding:0}} />}>
-          {title}
-        </Button>
-      </Box>
-    );
-  }
-}
-
-export default withStyles(useStyles)(ToolbarButton);
+export default ToolbarButton;
 

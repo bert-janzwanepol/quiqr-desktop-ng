@@ -1,89 +1,93 @@
-import React     from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import TextField from '@mui/material/TextField';
 import Chip      from '@mui/material/Chip';
 
 const Fragment = React.Fragment;
 
-class Chips extends React.Component{
-  constructor(props){
-    super(props);
-    this.state = {
-      value:'',
-      dragFromIndex:undefined,
-      dragToIndex:undefined,
-    };
-  }
+const Chips = ({ field, fullWidth, items, onPushItem, onRequestDelete, onSwap, sortable }) => {
+  const [value, setValue] = useState('');
+  const [dragFromIndex, setDragFromIndex] = useState(undefined);
+  const [dragToIndex, setDragToIndex] = useState(undefined);
+  const documentMouseUpListenerRef = useRef();
 
-  onChangeHandler(e, newVal){
-    this.setState(Object.assign({}, this.state, {value:e.target.value}));
-  }
+  const onChangeHandler = useCallback((e) => {
+    setValue(e.target.value);
+  }, []);
 
-  onKeyPressHandler(e){
-    if(e.key==='Enter'){
+  const onKeyPressHandler = useCallback((e) => {
+    if (e.key === 'Enter') {
       e.preventDefault();
-      if(this.props.onPushItem)
-        this.props.onPushItem(this.state.value);
-      this.setState({value:''});
+      if (onPushItem)
+        onPushItem(value);
+      setValue('');
     }
-  }
+  }, [onPushItem, value]);
 
-  componentWillUnmount(){
-    document.removeEventListener('mouseup', this.documentMouseUpListener);
-  }
-
-  getOnRequestDelete(index){
-    return function(e){
-      e.stopPropagation();
-      if(this.props.onRequestDelete){
-        this.props.onRequestDelete(index);
+  useEffect(() => {
+    return () => {
+      if (documentMouseUpListenerRef.current) {
+        document.removeEventListener('mouseup', documentMouseUpListenerRef.current);
       }
-    }.bind(this);
-  }
+    };
+  }, []);
+
+  const getOnRequestDelete = useCallback((index) => {
+    return function(e) {
+      e.stopPropagation();
+      if (onRequestDelete) {
+        onRequestDelete(index);
+      }
+    };
+  }, [onRequestDelete]);
 
   //DRAG EVENTS
-  getDocumentMouseUpListener(){
-    this.documentMouseUpListener = function(e){
-      if(this.props.onSwap){
-        this.props.onSwap(e, {index:this.state.dragFromIndex, otherIndex:this.state.dragToIndex});
+  const getDocumentMouseUpListener = useCallback(() => {
+    const listener = function(e) {
+      if (onSwap) {
+        onSwap(e, { index: dragFromIndex, otherIndex: dragToIndex });
       }
-      this.setState(Object.assign({}, this.state, { dragFromIndex: undefined, dragToIndex:undefined }));
-      document.removeEventListener('mouseup', this.documentMouseUpListener);
-    }.bind(this)
-    return this.documentMouseUpListener;
-  }
+      setDragFromIndex(undefined);
+      setDragToIndex(undefined);
+      document.removeEventListener('mouseup', listener);
+      documentMouseUpListenerRef.current = null;
+    };
+    documentMouseUpListenerRef.current = listener;
+    return listener;
+  }, [onSwap, dragFromIndex, dragToIndex]);
 
-  getOnItemMouseDown(index){
-    return function(e){
-      if(this.props.sortable){
+  const getOnItemMouseDown = useCallback((index) => {
+    return function(e) {
+      if (sortable) {
         e.stopPropagation();
         e.preventDefault();
-        this.setState(Object.assign({}, this.state, { dragFromIndex: index, dragToIndex: index }));
-        document.addEventListener('mouseup', this.getDocumentMouseUpListener());
+        setDragFromIndex(index);
+        setDragToIndex(index);
+        document.addEventListener('mouseup', getDocumentMouseUpListener());
       }
-    }.bind(this)
-  }
+    };
+  }, [sortable, getDocumentMouseUpListener]);
 
-  getOnItemMouseEnter(index){
-    return function(e){
-      if(this.state.dragFromIndex!==undefined){
-        this.setState(Object.assign({}, this.state, {dragToIndex: index}));
+  const getOnItemMouseEnter = useCallback((index) => {
+    return function(e) {
+      if (dragFromIndex !== undefined) {
+        setDragToIndex(index);
       }
-    }.bind(this)
-  }
+    };
+  }, [dragFromIndex]);
 
-  renderChip(index, label, opacity){
+  const renderChip = useCallback((index, label, opacity) => {
     return (<Chip
       key={'chip-'+index}
       style={{opacity:opacity, margin:'2px'}}
-      onDelete={ this.getOnRequestDelete(index) }
-      onMouseDown={this.getOnItemMouseDown(index)}
-      onMouseEnter={this.getOnItemMouseEnter(index)}
+      onDelete={ getOnRequestDelete(index) }
+      onMouseDown={getOnItemMouseDown(index)}
+      onMouseEnter={getOnItemMouseEnter(index)}
       label={label}
     />
     );
-  }
+  }, [getOnRequestDelete, getOnItemMouseDown, getOnItemMouseEnter]);
 
-  renderDecoyChip(index,label, opacity){
+  const renderDecoyChip = useCallback((index, label, opacity) => {
     return (<Chip
       key={'decoy-chip-'+index}
       style={{opacity:opacity, margin:'2px'}}
@@ -91,49 +95,45 @@ class Chips extends React.Component{
       label={label}
     />
     );
-  }
+  }, []);
 
-  render(){
+  return (
+    <Fragment>
+      <TextField
+        value={value}
+        onChange={onChangeHandler}
+        fullWidth={fullWidth}
+        label={field.title}
+        onKeyPress={onKeyPressHandler}
+        placeholder="enter chip text and confirm with enter key"
+      />
+      <div style={{display: 'flex',flexWrap: 'wrap'}}>
+        {items.map((item, index) => {
 
-    let { dragToIndex, dragFromIndex } = this.state;
+          if(index === dragFromIndex){
+            return renderChip(index, item, dragFromIndex !== dragToIndex ? 0.15 : 1);
+          }
 
-    return (
-      <Fragment>
-        <TextField
-          value={this.state.value}
-          onChange = {this.onChangeHandler.bind(this)}
-          fullWidth={this.props.fullWidth}
-          label={this.props.field.title}
-          onKeyPress={ this.onKeyPressHandler.bind(this) }
-          placeholder="enter chip text and confirm with enter key"
-        />
-        <div style={{display: 'flex',flexWrap: 'wrap'}}>
-          {this.props.items.map((item, index)=>{
-
-            if(index===dragFromIndex){
-              return this.renderChip(index,item, dragFromIndex!==dragToIndex?.15:1);
-            }
-
-            if(index===dragToIndex){
-              let movedChip = this.renderDecoyChip(index, this.props.items[dragFromIndex], 1);
-              let beforeChip, afterChip;
-              if(dragFromIndex < dragToIndex)
-                afterChip = movedChip;
-              else
-                beforeChip = movedChip;
-              return <Fragment key={'chip'+index}>
-                {beforeChip}
-                {this.renderChip(index,item)}
-                {afterChip}
-              </Fragment>
-            }
-            else{
-              return this.renderChip(index, item);
-            }
-          })}
-        </div>
-      </Fragment>);
-  }
-}
+          if(index === dragToIndex){
+            let movedChip = renderDecoyChip(index, items[dragFromIndex], 1);
+            let beforeChip, afterChip;
+            if(dragFromIndex < dragToIndex)
+              afterChip = movedChip;
+            else
+              beforeChip = movedChip;
+            return <Fragment key={'chip'+index}>
+              {beforeChip}
+              {renderChip(index, item)}
+              {afterChip}
+            </Fragment>
+          }
+          else{
+            return renderChip(index, item);
+          }
+        })}
+      </div>
+    </Fragment>
+  );
+};
 
 export default Chips;

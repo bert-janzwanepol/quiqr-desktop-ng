@@ -14,7 +14,7 @@ export interface FieldBaseGroup extends FieldBase {
 export interface DynamicFormNode {
     field: FieldBase;
     state: any;
-    parent : DynamicFormNode;
+    parent: DynamicFormNode;
     uiState: any;
 }
 

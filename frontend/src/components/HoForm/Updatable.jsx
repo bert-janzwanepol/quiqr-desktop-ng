@@ -1,12 +1,9 @@
 import * as React from 'react';
 
-export class Updatable extends React.Component{
+const UpdatableComponent = ({ children, update }) => {
+    return children;
+};
 
-    shouldComponentUpdate(nextProps, nextState){
-        return nextProps.update;
-    }
-
-    render(){
-        return this.props.children;
-    }
-}
+export const Updatable = React.memo(UpdatableComponent, (prevProps, nextProps) => {
+    return !nextProps.update;
+});

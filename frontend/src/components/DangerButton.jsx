@@ -1,57 +1,52 @@
 import * as React from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 
-class DangerButton extends React.Component{
+const DangerButton = ({ onClick, loadedButton, button, loadedProps }) => {
+  const [clicked, setClicked] = useState(false);
+  const timeoutRef = useRef(0);
 
-  constructor(props){
-    super(props);
-    this.state = { clicked:false }
-    this.timeout = 0;
-  }
-
-  clearTimeout(){
-    if(this.timeout)
-      clearTimeout(this.timeout);
-  }
-
-  componentWillUnmount(){
-    this.clearTimeout();
-  }
-
-  onButtonClick(e){
-
-    if(this.props.onClick)
-      this.props.onClick(e, this.state.clicked);
-
-    if(this.state.clicked){
-      this.setState({ clicked:false });
-      this.clearTimeout();
+  const clearTimeoutRef = useCallback(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
     }
-    else{
-      this.setState({ clicked:true });
+  }, []);
 
-      this.timeout = setTimeout(function(){
-        this.setState({ clicked:false });
-      }.bind(this), 3000);
-    }
-  }
+  useEffect(() => {
+    return () => {
+      clearTimeoutRef();
+    };
+  }, [clearTimeoutRef]);
 
-  render(){
-    if(this.props.loadedButton){
-      return React.cloneElement(
-        (this.state.clicked ? this.props.loadedButton : this.props.button),
-        { onClick: this.onButtonClick.bind(this) }
-      );
-    }
-    else{
-      let _props = Object.assign(
-        {},
-        (this.state.clicked ? this.props.loadedProps : undefined ),
-        { onClick: this.onButtonClick.bind(this) }
-      );
-      return React.cloneElement(this.props.button, _props);
+  const onButtonClick = useCallback((e) => {
+    if (onClick) {
+      onClick(e, clicked);
     }
 
+    if (clicked) {
+      setClicked(false);
+      clearTimeoutRef();
+    } else {
+      setClicked(true);
+
+      timeoutRef.current = setTimeout(() => {
+        setClicked(false);
+      }, 3000);
+    }
+  }, [onClick, clicked, clearTimeoutRef]);
+
+  if (loadedButton) {
+    return React.cloneElement(
+      (clicked ? loadedButton : button),
+      { onClick: onButtonClick }
+    );
+  } else {
+    const _props = Object.assign(
+      {},
+      (clicked ? loadedProps : undefined),
+      { onClick: onButtonClick }
+    );
+    return React.cloneElement(button, _props);
   }
-}
+};
 
 export default DangerButton;

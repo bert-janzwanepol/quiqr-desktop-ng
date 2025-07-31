@@ -4,30 +4,25 @@ import DialogContent        from '@mui/material/DialogContent';
 import DialogContentText    from '@mui/material/DialogContentText';
 import DialogTitle          from '@mui/material/DialogTitle';
 
-export default class BlockDialog extends React.Component{
+const BlockDialog = ({ open, children }) => {
+  const title = "Working...";
 
-  render(){
+  return (
+    <Dialog
+      open={open}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+      fullWidth={true}
+      maxWidth={"sm"}
+    >
+      <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
+      <DialogContent>
+        <DialogContentText id="alert-dialog-description">
+          {children}
+        </DialogContentText>
+      </DialogContent>
+    </Dialog>
+  );
+};
 
-    let { open, children } = this.props;
-    let title = "Working..."
-
-    return (
-      <Dialog
-        open={open}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-        fullWidth={true}
-        maxWidth={"sm"}
-      >
-        <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            {children}
-          </DialogContentText>
-        </DialogContent>
-      </Dialog>
-
-    );
-  }
-
-}
+export default BlockDialog;

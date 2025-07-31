@@ -1,12 +1,9 @@
 import React from 'react';
 
-class Border extends React.Component {
-    render(){
-
-        return (<div style={ Object.assign({ border: 'solid 1px #e8e8e8', borderRadius:'7px'}, this.props.style)}>
-            {this.props.children}
-        </div>);
-    }
-}
+const Border = ({ style, children }) => {
+    return (<div style={ Object.assign({ border: 'solid 1px #e8e8e8', borderRadius:'7px'}, style)}>
+        {children}
+    </div>);
+};
 
 export default Border;
