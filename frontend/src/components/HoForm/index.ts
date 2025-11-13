@@ -1,4 +1,3 @@
-//@flow
 import _Form from './Form';
 import _BaseDynamic from './BaseDynamic'
 import { ComponentRegistry as _ComponentRegistry } from './component-registry'
@@ -7,6 +6,7 @@ import { FormStateBuilder as _FormStateBuilder } from './form-state-builder'
 export const Form = _Form;
 export { Updatable } from './Updatable';
 export const BaseDynamic = _BaseDynamic;
+export type { BaseDynamicProps, BaseDynamicState } from './BaseDynamic';
 export const ComponentRegistry = _ComponentRegistry;
 export const FieldsExtender = _FieldsExtender;
 export const FormStateBuilder = _FormStateBuilder;

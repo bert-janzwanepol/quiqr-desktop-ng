@@ -1,6 +1,6 @@
 import React from 'react';
 
-const IconButtonGroup = ({ iconButtons, style, vertical }) => {
+const IconButtonGroup = ({ iconButtons, style, vertical = false }) => {
     if (iconButtons === undefined || iconButtons.length === 0)
         return null;
 

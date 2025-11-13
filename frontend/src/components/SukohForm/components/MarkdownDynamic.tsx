@@ -2,10 +2,11 @@ import React from "react";
 import TextField from "@mui/material/TextField";
 import MarkdownIt from "markdown-it";
 import FormItemWrapper from "./shared/FormItemWrapper";
-import { BaseDynamic } from "../../HoForm";
+import { BaseDynamic, BaseDynamicProps, BaseDynamicState } from "../../HoForm";
 import Tip from "../../Tip";
 import AiAssist from "../../AiAssist";
 import service from "../../../services/service";
+import { hasOpenApiKey } from "../../../utils/type-guards";
 
 const md = new MarkdownIt({ html: true });
 const imgIcon =
@@ -30,7 +31,41 @@ const imgMatcher = /<img.+?>/gi;
 const shortcodeMatcher = /({{<.+?>}}|{{%.+?%}})/gi;
 const linkHrefMatcher = /<a.+?>/gi;
 
-class MarkdownDynamic extends BaseDynamic {
+export interface MarkdownDynamicField {
+  key: string;
+  default?: string;
+  title?: string;
+  tip?: string;
+}
+
+interface MarkdownDynamicProps extends BaseDynamicProps {
+  context: {
+    value: string;
+    setValue: (value: string, delay?: number) => void;
+    node: {
+      field: MarkdownDynamicField;
+      state: any;
+    };
+    currentPath: string;
+    parentPath: string;
+    pageUrl?: string;
+  };
+}
+
+interface MarkdownDynamicState extends BaseDynamicState {
+  value: string;
+  enableAiAssist: boolean;
+  preview: string;
+  maxHeight: number | null;
+  prefs?: {
+    openAiApiKey?: string;
+    [key: string]: any;
+  };
+}
+
+class MarkdownDynamic extends BaseDynamic<MarkdownDynamicProps, MarkdownDynamicState> {
+  updatePreviewStateDebounced: () => void;
+  inputWrapper?: HTMLDivElement | null;
   constructor(props) {
     super(props);
     let val = this.props ? this.props.context.value : "";
@@ -87,7 +122,7 @@ class MarkdownDynamic extends BaseDynamic {
     service.api.readConfKey("prefs").then((value) => {
       this.setState({ prefs: value });
 
-      if (value.openAiApiKey) {
+      if (hasOpenApiKey(value)) {
         this.setState({ enableAiAssist: true }, () => {
           this.forceUpdate();
         });

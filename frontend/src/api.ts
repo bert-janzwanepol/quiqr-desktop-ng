@@ -48,7 +48,7 @@ export class API {
     return mainProcessBridge.request('showLogWindow', {});
   }
 
-  logToConsole( message, label){
+  logToConsole( message, label = ""){
     return mainProcessBridge.request('logToConsole', {message, label}, {timeout: 1000});
   }
 

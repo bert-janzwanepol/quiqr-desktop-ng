@@ -2,10 +2,18 @@ import * as React from 'react';
 import Border from './../Border';
 //import { FieldsExtender } from './fields-extender';
 
-export class BaseDynamic extends React.Component {
+export interface BaseDynamicProps {
+    context: any;
+}
+
+export interface BaseDynamicState {
+    hasError?: boolean;
+}
+
+export class BaseDynamic<P extends BaseDynamicProps = BaseDynamicProps, S extends BaseDynamicState = BaseDynamicState> extends React.Component<P, S> {
 
     // override this to set defaults in the field configuration.
-    extendField(field, extender){
+    extendField(field: any, extender: any){
         if(field.field){
             extender.extendFields([field.field]);
         }
