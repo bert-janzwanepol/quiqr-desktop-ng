@@ -5,6 +5,7 @@ import "easymde/dist/easymde.min.css";
 import Tip from "../../Tip";
 import { BaseDynamic, BaseDynamicProps, BaseDynamicState } from "../../HoForm";
 //import service                              from './../../../services/service'
+import { EditorChange } from "codemirror";
 
 export interface EasyMarkdownDynamicField {
   key: string;
@@ -25,7 +26,7 @@ interface EasyMarkdownDynamicProps extends BaseDynamicProps {
     currentPath: string;
     parentPath: string;
     value: string;
-    setValue: (e: Event, delay: number) => void;
+    setValue: (e: EditorChange, delay: number) => void;
   };
 }
 
@@ -46,7 +47,7 @@ class EasyMarkdownDynamic extends BaseDynamic<EasyMarkdownDynamicProps> {
     return "easymde";
   }
 
-  handleChange = (e: Event, value: any) => {
+  handleChange = (value: string, e: EditorChange) => {
     this.forceUpdate();
     this.props.context.setValue(e, 250);
   };
