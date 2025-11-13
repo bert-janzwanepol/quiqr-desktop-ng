@@ -23,6 +23,7 @@ interface BundleManagerItemProps {
   forceActive?: boolean;
   body: React.ReactNode;
   label: string;
+  path: string;
   onHeadClick: MouseEventHandler<HTMLDivElement>;
   headerRightItems?: React.ReactNode[];
   headerLeftItems?: React.ReactNode[];
@@ -35,74 +36,68 @@ interface BundleManagerItemProps {
 
 interface BundleManagerProps {
   style?: React.CSSProperties;
-  children: React.ReactElement[];
+  children: React.ReactElement<BundleManagerItemProps>[];
   forceActive?: boolean;
   index?: number;
   onChange?: (index: number) => void;
 }
 
-const BundleManagerHeader: React.FC<BundleManagerHeaderProps> = React.memo(({
-  active,
-  headerLeftItems,
-  headerRightItems,
-  label: originalLabel,
-  onClick,
-  style,
-  forceActive
-}) => {
-  let label = originalLabel;
-  if (label.substr(0, 7) === "/static") {
-    label = label.substr(7, label.length - 7);
-  }
-  let filename = label;
-  let fExtention = filename.slice(((filename.lastIndexOf(".") - 1) >>> 0) + 2);
-  let fBase = filename.slice(0, filename.lastIndexOf("."));
+const BundleManagerHeader: React.FC<BundleManagerHeaderProps> = React.memo(
+  ({ active, headerLeftItems, headerRightItems, label: originalLabel, onClick, style, forceActive }) => {
+    let label = originalLabel;
+    if (label.substr(0, 7) === "/static") {
+      label = label.substr(7, label.length - 7);
+    }
+    let filename = label;
+    let fExtention = filename.slice(((filename.lastIndexOf(".") - 1) >>> 0) + 2);
+    let fBase = filename.slice(0, filename.lastIndexOf("."));
 
-  if (fBase.length > 15) {
-    filename = fBase.substr(0, 7) + "..." + fBase.substr(-5) + "." + fExtention;
-  }
+    if (fBase.length > 15) {
+      filename = fBase.substr(0, 7) + "..." + fBase.substr(-5) + "." + fExtention;
+    }
 
-  return (
-    <div style={style} onClick={onClick}>
-      <span style={{ display: "inline-block", margin: "-10px 0px -10px -5px" }}>
-        {headerLeftItems.map((item, index) => {
-          return (
-            <span key={index} style={{ display: "inline-block", margin: "0 5px" }}>
-              {item}
-            </span>
-          );
-        })}
-      </span>
-      <span style={{ position: "absolute", top: "0px", right: "-5px" }}>
-        <IconButton
-          size='small'
-          aria-label='Expand'
-          onClick={() => {
-            const { clipboard } = window.require("electron");
-            clipboard.writeText(encodeURI(originalLabel));
-            snackMessageService.addSnackMessage("File path copied to clipboard");
-          }}>
-          <FileCopyIcon />
-        </IconButton>
-        {headerRightItems.map((item, index) => {
-          return (
-            <span key={index} style={{ display: "inline-block", margin: "0 5px" }}>
-              {item}
-            </span>
-          );
-        })}
-        {forceActive ? undefined : (
-          <IconButton size='small' aria-label='Expand'>
-            {active ? <ExpandLessIcon /> : <ExpandMoreIcon />}{" "}
+    return (
+      <div style={style} onClick={onClick}>
+        <span style={{ display: "inline-block", margin: "-10px 0px -10px -5px" }}>
+          {headerLeftItems.map((item, index) => {
+            return (
+              <span key={index} style={{ display: "inline-block", margin: "0 5px" }}>
+                {item}
+              </span>
+            );
+          })}
+        </span>
+        <span style={{ position: "absolute", top: "0px", right: "-5px" }}>
+          <IconButton
+            size='small'
+            aria-label='Expand'
+            onClick={() => {
+              const { clipboard } = window.require("electron");
+              clipboard.writeText(encodeURI(originalLabel));
+              snackMessageService.addSnackMessage("File path copied to clipboard");
+            }}>
+            <FileCopyIcon />
           </IconButton>
-        )}
-      </span>
-      <Tooltip title={originalLabel}>
-        <span>{filename}</span>
-      </Tooltip>
-    </div>
-  );
-});
+          {headerRightItems.map((item, index) => {
+            return (
+              <span key={index} style={{ display: "inline-block", margin: "0 5px" }}>
+                {item}
+              </span>
+            );
+          })}
+          {forceActive ? undefined : (
+            <IconButton size='small' aria-label='Expand'>
+              {active ? <ExpandLessIcon /> : <ExpandMoreIcon />}{" "}
+            </IconButton>
+          )}
+        </span>
+        <Tooltip title={originalLabel}>
+          <span>{filename}</span>
+        </Tooltip>
+      </div>
+    );
+  }
+);
 
 const BundleManagerItem: React.FC<BundleManagerItemProps> = ({
   active,
@@ -116,11 +111,11 @@ const BundleManagerItem: React.FC<BundleManagerItemProps> = ({
   bodyStyle,
   style,
   wrapperProps,
-  forceActive
+  forceActive,
 }) => {
   const _style: React.CSSProperties = {
     minWidth: "250px",
-    ...style
+    ...style,
   };
 
   const _headStyle: React.CSSProperties = {
@@ -131,7 +126,7 @@ const BundleManagerItem: React.FC<BundleManagerItemProps> = ({
     position: "relative",
     fontSize: 12,
     //color: 'rgba(0, 0, 0, 0.47)'
-    ...headStyle
+    ...headStyle,
   };
 
   const _bodyStyle: React.CSSProperties = {
@@ -140,7 +135,7 @@ const BundleManagerItem: React.FC<BundleManagerItemProps> = ({
     border: "solid 0px #e8e8e8",
     borderTopWidth: 0,
     width: "100%",
-    ...bodyStyle
+    ...bodyStyle,
   };
 
   const _bundleStyle: React.CSSProperties = {
@@ -148,7 +143,7 @@ const BundleManagerItem: React.FC<BundleManagerItemProps> = ({
     padding: "8px",
     border: "solid 0px #e8e8e8",
     boxShadow: "1px 1px 4px RGBA(0,0,0,.2)",
-    ...bundleStyle
+    ...bundleStyle,
   };
 
   return (
@@ -169,29 +164,26 @@ const BundleManagerItem: React.FC<BundleManagerItemProps> = ({
   );
 };
 
-const BundleManager: React.FC<BundleManagerProps> = ({
-  style,
-  children,
-  forceActive,
-  index,
-  onChange
-}) => {
+const BundleManager: React.FC<BundleManagerProps> = ({ style, children, forceActive, index, onChange }) => {
   const [internalIndex, setInternalIndex] = React.useState(-1);
 
   const openedIndex = index !== undefined ? index : internalIndex;
 
-  const getHandleChange = React.useCallback((i: number) => {
-    return () => {
-      if (index !== undefined) {
-        if (onChange) {
-          onChange(i);
+  const getHandleChange = React.useCallback(
+    (i: number) => {
+      return () => {
+        if (index !== undefined) {
+          if (onChange) {
+            onChange(i);
+          }
+        } else {
+          const newIndex = i !== internalIndex ? i : -1;
+          setInternalIndex(newIndex);
         }
-      } else {
-        const newIndex = i !== internalIndex ? i : -1;
-        setInternalIndex(newIndex);
-      }
-    };
-  }, [index, onChange, internalIndex]);
+      };
+    },
+    [index, onChange, internalIndex]
+  );
 
   return (
     <div className='BundleManager row' style={style}>
