@@ -95,9 +95,18 @@ class App extends React.Component {
       if (typeof show == "undefined") {
         show = true;
       }
+
+      /**
+       * Convert to boolean in case it's a string from config
+       * We need this conversion because SplashDialog and Dialog require a boolean, not a string
+       * TODO: Maybe we should handle this when the config is loaded initially
+       *
+       * @see { SplashDialog }
+       */
+      const showBool = show === true || show === "true";
       this.setState({
-        splashDialogOpen: show,
-        showSplashAtStartup: show,
+        splashDialogOpen: showBool,
+        showSplashAtStartup: showBool,
       });
     });
 
