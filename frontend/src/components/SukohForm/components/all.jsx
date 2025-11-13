@@ -11,8 +11,8 @@ import LeafArrayDynamic       from './LeafArrayDynamic'
 import MarkdownDynamic        from './MarkdownDynamic';
 import NestDynamic            from './NestDynamic';
 import PullDynamic            from './PullDynamic';
-import TextFieldDynamic       from './TextFieldNumberDynamic';
-import TextFieldNumberDynamic from './TextFieldDynamic';
+import TextFieldNumberDynamic from './TextFieldNumberDynamic';
+import TextFieldDynamic       from './TextFieldDynamic';
 import ToggleDynamic          from './ToggleDynamic';
 import UniqDynamic            from './UniqDynamic';
 import ReadonlyDynamic        from './ReadonlyDynamic';
