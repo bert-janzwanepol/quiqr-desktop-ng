@@ -14,6 +14,20 @@ interface AccordionHeaderProps {
   forceActive?: boolean;
 }
 
+interface AccordionItemProps {
+  active: boolean;
+  body: React.ReactNode;
+  label: React.ReactNode;
+  onHeadClick: (event: React.MouseEvent<HTMLDivElement>) => void;
+  headerRightItems?: React.ReactNode[];
+  headerLeftItems?: React.ReactNode[];
+  headStyle?: React.CSSProperties;
+  bodyStyle?: React.CSSProperties;
+  style?: React.CSSProperties;
+  wrapperProps?: React.HTMLProps<HTMLDivElement>;
+  forceActive?: boolean;
+}
+
 const AccordionHeader: React.FC<AccordionHeaderProps> = React.memo(({ active, headerLeftItems, headerRightItems, label, onClick, style, forceActive }) => {
   return (
     <Box style={style} onClick={onClick}>
@@ -44,20 +58,6 @@ const AccordionHeader: React.FC<AccordionHeaderProps> = React.memo(({ active, he
     </Box>
   );
 });
-
-interface AccordionItemProps {
-  active: boolean;
-  body: React.ReactNode;
-  label: React.ReactNode;
-  onHeadClick: (event: React.MouseEvent<HTMLDivElement>) => void;
-  headerRightItems?: React.ReactNode[];
-  headerLeftItems?: React.ReactNode[];
-  headStyle?: React.CSSProperties;
-  bodyStyle?: React.CSSProperties;
-  style?: React.CSSProperties;
-  wrapperProps?: React.HTMLProps<HTMLDivElement>;
-  forceActive?: boolean;
-}
 
 const AccordionItem: React.FC<AccordionItemProps> = ({
   active,
@@ -111,7 +111,7 @@ interface AccordionProps {
   onChange?: (index: number) => void;
   style?: React.CSSProperties;
   forceActive?: boolean;
-  children: React.ReactElement[];
+  children: React.ReactElement<AccordionItemProps>[];
 }
 
 const Accordion: React.FC<AccordionProps> = ({ index, onChange, style, forceActive, children }) => {
