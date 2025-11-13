@@ -8,6 +8,7 @@ export interface BaseDynamicProps {
 
 export interface BaseDynamicState {
   hasError?: boolean;
+  error_msg: string | null;
 }
 
 export class BaseDynamic<P extends BaseDynamicProps = BaseDynamicProps, S extends BaseDynamicState = BaseDynamicState> extends React.Component<P, S> {
