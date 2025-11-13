@@ -173,3 +173,5 @@ resources/mac/embgit
 resources/win/embgit.exe
 .temp.html
 .temp.seed
+
+.vscode
