@@ -1,51 +1,58 @@
-import React           from 'react';
-import IconButton      from '@mui/material/IconButton';
-import RemoveIcon      from '@mui/icons-material/Remove';
-import AddIcon         from '@mui/icons-material/Add';
-import Button          from '@mui/material/Button';
-import DefaultWrapper  from './shared/DefaultWrapper';
-import IconButtonGroup from '../../IconButtonGroup';
-import { BaseDynamic } from '../../HoForm';
+import React from "react";
+import IconButton from "@mui/material/IconButton";
+import RemoveIcon from "@mui/icons-material/Remove";
+import AddIcon from "@mui/icons-material/Add";
+import Button from "@mui/material/Button";
+import DefaultWrapper from "./shared/DefaultWrapper";
+import IconButtonGroup from "../../IconButtonGroup";
+import { BaseDynamic } from "../../HoForm";
 
-class TextFieldLabelMock extends React.Component{
-  render(){
-    return <label style={{
-      display:'block', lineHeight: '22px', fontSize:12, pointerEvents: 'none', userSelect: 'none',  }}>{this.props.children}</label>;
+class TextFieldLabelMock extends React.Component {
+  render() {
+    return (
+      <label
+        style={{
+          display: "block",
+          lineHeight: "22px",
+          fontSize: 12,
+          pointerEvents: "none",
+          userSelect: "none",
+        }}>
+        {this.props.children}
+      </label>
+    );
   }
 }
 
 class LeafArrayDynamic extends BaseDynamic {
-
-  normalizeState({state, field}){
+  normalizeState({ state, field }) {
     let key = field.key;
-    if(state[key]===undefined){
+    if (state[key] === undefined) {
       state[key] = field.default || [];
     }
   }
 
-  getType(){
-    return 'leaf-array';
+  getType() {
+    return "leaf-array";
   }
 
-  deepEqual(array: Array<any>, otherArray: Array<any>) : boolean{
-    if(array.length !== otherArray.length)
-      return false;
+  deepEqual(array: Array<any>, otherArray: Array<any>): boolean {
+    if (array.length !== otherArray.length) return false;
 
-    for(let i = 0; i < array.length; i++){
-      if(array[i] !== otherArray[i])
-        return false;
+    for (let i = 0; i < array.length; i++) {
+      if (array[i] !== otherArray[i]) return false;
     }
 
     return true;
   }
 
-  pushEmptyValue(){
+  pushEmptyValue() {
     let context = this.props.context;
     let childField = Object.assign({}, Object.assign({}, this.props.context.node.field.field));
     childField.key = context.value.length;
     let childComponentProplessInstance = context.form.props.componentRegistry.getProplessInstance(childField.type);
     let valueCopy = context.value.slice(0);
-    childComponentProplessInstance.normalizeState({state:valueCopy, field:childField});
+    childComponentProplessInstance.normalizeState({ state: valueCopy, field: childField });
     context.setValue(valueCopy);
   }
 
@@ -53,13 +60,13 @@ class LeafArrayDynamic extends BaseDynamic {
     return () => {
       let context = this.props.context;
       let copy = context.value.slice(0);
-      copy.splice(index,1);
+      copy.splice(index, 1);
       context.setValue(copy);
     };
   }
 
-  getOnItemChange(index){
-    return (value : any) => {
+  getOnItemChange(index) {
+    return (value: any) => {
       let context = this.props.context;
       let copy = context.value.slice(0);
       copy[index] = value;
@@ -67,42 +74,49 @@ class LeafArrayDynamic extends BaseDynamic {
     };
   }
 
-  renderComponent(){
+  renderComponent() {
+    let { context } = this.props;
+    let { node, currentPath } = context;
+    let { field } = node;
 
-    let {context} = this.props;
-    let {node, currentPath} = context;
-    let {field} = node;
-
-    if(currentPath!==context.parentPath){
-      return (null);
+    if (currentPath !== context.parentPath) {
+      return null;
     }
 
     let arrayData = context.value;
     return (
       <DefaultWrapper>
         <TextFieldLabelMock>{field.title}</TextFieldLabelMock>
-        {arrayData.map((item, index)=>{
+        {arrayData.map((item, index) => {
           let childNode = {
             state: context.value,
-            field: Object.assign({}, field.field, { key:index }),
-            parent: context.node.parent
+            field: Object.assign({}, field.field, { key: index }),
+            parent: context.node.parent,
           };
           return (
-            <div key={field.key + '-item-'+index} style={{ display:'flex', width:'100%' }}>
-              { context.renderField(childNode, this.getOnItemChange(index)) }
+            <div key={field.key + "-item-" + index} style={{ display: "flex", width: "100%" }}>
+              {context.renderField(childNode, this.getOnItemChange(index))}
               <IconButtonGroup
-                style={{flex: '0 0 auto', alignSelf: 'flex-end', position:'relative', top:'-20px'}}
+                style={{ flex: "0 0 auto", alignSelf: "flex-end", position: "relative", top: "-20px" }}
                 iconButtons={[
-                  <IconButton
-                    aria-label="clear"
-                    onClick={this.getOnRequestDeleteHandler(index)}
-                    size="large"> <RemoveIcon /> </IconButton>
-                ]
-                } />
+                  <IconButton aria-label='clear' onClick={this.getOnRequestDeleteHandler(index)} size='large'>
+                    {" "}
+                    <RemoveIcon />{" "}
+                  </IconButton>,
+                ]}
+              />
             </div>
           );
         })}
-        <Button style={{marginTop:10}} endIcon={<AddIcon />} variant="contained" onClick={()=>{this.pushEmptyValue()}}>Add</Button>
+        <Button
+          style={{ marginTop: 10 }}
+          endIcon={<AddIcon />}
+          variant='contained'
+          onClick={() => {
+            this.pushEmptyValue();
+          }}>
+          Add
+        </Button>
       </DefaultWrapper>
     );
   }

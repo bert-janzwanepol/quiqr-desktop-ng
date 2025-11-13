@@ -5,213 +5,212 @@ import FileCopyIcon from "@mui/icons-material/FileCopy";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import { snackMessageService } from "../services/ui-service";
-type NewType = unknown;
 
 //import service         from '../services/service';
 
-type AccordionHeaderProps = {
+interface BundleManagerHeaderProps {
   active: boolean;
-  forceActive: boolean;
-  headerLeftItems: string[];
-  headerRightItems: string[];
+  forceActive?: boolean;
+  headerLeftItems: React.ReactNode[];
+  headerRightItems: React.ReactNode[];
   label: string;
   onClick: MouseEventHandler<HTMLDivElement>;
-  style: NewType;
-};
+  style?: React.CSSProperties;
+}
 
-type BundleManagerItemProps = {
+interface BundleManagerItemProps {
   active: boolean;
-  forceActive: boolean;
+  forceActive?: boolean;
   body: React.ReactNode;
   label: string;
   onHeadClick: MouseEventHandler<HTMLDivElement>;
-  headerRightItems?: string[];
-  headerLeftItems?: string[];
+  headerRightItems?: React.ReactNode[];
+  headerLeftItems?: React.ReactNode[];
   headStyle?: React.CSSProperties;
   bundleStyle?: React.CSSProperties;
   bodyStyle?: React.CSSProperties;
   style?: React.CSSProperties;
   wrapperProps?: any;
-};
+}
 
-type BundleManagerProps = {
+interface BundleManagerProps {
   style?: React.CSSProperties;
   children: React.ReactElement[];
   forceActive?: boolean;
   index?: number;
   onChange?: (index: number) => void;
+}
+
+const BundleManagerHeader: React.FC<BundleManagerHeaderProps> = React.memo(({
+  active,
+  headerLeftItems,
+  headerRightItems,
+  label: originalLabel,
+  onClick,
+  style,
+  forceActive
+}) => {
+  let label = originalLabel;
+  if (label.substr(0, 7) === "/static") {
+    label = label.substr(7, label.length - 7);
+  }
+  let filename = label;
+  let fExtention = filename.slice(((filename.lastIndexOf(".") - 1) >>> 0) + 2);
+  let fBase = filename.slice(0, filename.lastIndexOf("."));
+
+  if (fBase.length > 15) {
+    filename = fBase.substr(0, 7) + "..." + fBase.substr(-5) + "." + fExtention;
+  }
+
+  return (
+    <div style={style} onClick={onClick}>
+      <span style={{ display: "inline-block", margin: "-10px 0px -10px -5px" }}>
+        {headerLeftItems.map((item, index) => {
+          return (
+            <span key={index} style={{ display: "inline-block", margin: "0 5px" }}>
+              {item}
+            </span>
+          );
+        })}
+      </span>
+      <span style={{ position: "absolute", top: "0px", right: "-5px" }}>
+        <IconButton
+          size='small'
+          aria-label='Expand'
+          onClick={() => {
+            const { clipboard } = window.require("electron");
+            clipboard.writeText(encodeURI(originalLabel));
+            snackMessageService.addSnackMessage("File path copied to clipboard");
+          }}>
+          <FileCopyIcon />
+        </IconButton>
+        {headerRightItems.map((item, index) => {
+          return (
+            <span key={index} style={{ display: "inline-block", margin: "0 5px" }}>
+              {item}
+            </span>
+          );
+        })}
+        {forceActive ? undefined : (
+          <IconButton size='small' aria-label='Expand'>
+            {active ? <ExpandLessIcon /> : <ExpandMoreIcon />}{" "}
+          </IconButton>
+        )}
+      </span>
+      <Tooltip title={originalLabel}>
+        <span>{filename}</span>
+      </Tooltip>
+    </div>
+  );
+});
+
+const BundleManagerItem: React.FC<BundleManagerItemProps> = ({
+  active,
+  body,
+  label,
+  onHeadClick,
+  headerRightItems = [],
+  headerLeftItems = [],
+  headStyle,
+  bundleStyle,
+  bodyStyle,
+  style,
+  wrapperProps,
+  forceActive
+}) => {
+  const _style: React.CSSProperties = {
+    minWidth: "250px",
+    ...style
+  };
+
+  const _headStyle: React.CSSProperties = {
+    border: "solid 0px #e8e8e8",
+    padding: "12px 0px 12px 8px",
+    display: "block",
+    cursor: "pointer",
+    position: "relative",
+    fontSize: 12,
+    //color: 'rgba(0, 0, 0, 0.47)'
+    ...headStyle
+  };
+
+  const _bodyStyle: React.CSSProperties = {
+    display: active ? "block" : "none",
+    padding: "8px 0",
+    border: "solid 0px #e8e8e8",
+    borderTopWidth: 0,
+    width: "100%",
+    ...bodyStyle
+  };
+
+  const _bundleStyle: React.CSSProperties = {
+    margin: "8px",
+    padding: "8px",
+    border: "solid 0px #e8e8e8",
+    boxShadow: "1px 1px 4px RGBA(0,0,0,.2)",
+    ...bundleStyle
+  };
+
+  return (
+    <div style={_style} className='BundleManager-item col-xl-2 col-lg-4 col-6' {...wrapperProps}>
+      <div style={_bundleStyle}>
+        <BundleManagerHeader
+          style={_headStyle}
+          onClick={onHeadClick}
+          headerLeftItems={headerLeftItems}
+          headerRightItems={headerRightItems}
+          forceActive={forceActive}
+          active={active}
+          label={label}
+        />
+        <div style={_bodyStyle}>{active ? body : null}</div>
+      </div>
+    </div>
+  );
 };
 
-class BundleManagerHeader extends React.PureComponent<AccordionHeaderProps> {
-  render() {
-    let { active, headerLeftItems, headerRightItems, label, onClick, style } = this.props;
+const BundleManager: React.FC<BundleManagerProps> = ({
+  style,
+  children,
+  forceActive,
+  index,
+  onChange
+}) => {
+  const [internalIndex, setInternalIndex] = React.useState(-1);
 
-    if (label.substr(0, 7) === "/static") {
-      label = label.substr(7, label.length - 7);
-    }
-    let filename = label;
-    let fExtention = filename.slice(((filename.lastIndexOf(".") - 1) >>> 0) + 2);
-    let fBase = filename.slice(0, filename.lastIndexOf("."));
+  const openedIndex = index !== undefined ? index : internalIndex;
 
-    if (fBase.length > 15) {
-      filename = fBase.substr(0, 7) + "..." + fBase.substr(-5) + "." + fExtention;
-    }
-
-    return (
-      <div style={style} onClick={onClick}>
-        <span style={{ display: "inline-block", margin: "-10px 0px -10px -5px" }}>
-          {headerLeftItems.map((item, index) => {
-            return (
-              <span key={index} style={{ display: "inline-block", margin: "0 5px" }}>
-                {item}
-              </span>
-            );
-          })}
-        </span>
-        <span style={{ position: "absolute", top: "0px", right: "-5px" }}>
-          <IconButton
-            size='small'
-            aria-label='Expand'
-            onClick={() => {
-              const { clipboard } = window.require("electron");
-              clipboard.writeText(encodeURI(label));
-              snackMessageService.addSnackMessage("File path copied to clipboard");
-            }}>
-            <FileCopyIcon />
-          </IconButton>
-          {headerRightItems.map((item, index) => {
-            return (
-              <span key={index} style={{ display: "inline-block", margin: "0 5px" }}>
-                {item}
-              </span>
-            );
-          })}
-          {this.props.forceActive ? undefined : (
-            <IconButton size='small' aria-label='Expand'>
-              {active ? <ExpandLessIcon /> : <ExpandMoreIcon />}{" "}
-            </IconButton>
-          )}
-        </span>
-        <Tooltip title={label}>
-          <span>{filename}</span>
-        </Tooltip>
-      </div>
-    );
-  }
-}
-
-class BundleManagerItem extends React.Component<BundleManagerItemProps> {
-  render() {
-    let { active, body, label, onHeadClick, headerRightItems = [], headerLeftItems = [], headStyle, bundleStyle, bodyStyle, style, wrapperProps } = this.props;
-
-    let _style = Object.assign(
-      {
-        minWidth: "250px",
-      },
-      style
-    );
-
-    let _headStyle = Object.assign(
-      {
-        border: "solid 0px #e8e8e8",
-        padding: "12px 0px 12px 8px",
-        display: "block",
-        cursor: "pointer",
-        position: "relative",
-        fontSize: 12,
-        //color: 'rgba(0, 0, 0, 0.47)'
-      },
-      headStyle
-    );
-
-    let _bodyStyle = Object.assign(
-      {
-        display: active ? "block" : "none",
-        padding: "8px 0",
-        border: "solid 0px #e8e8e8",
-        borderTopWidth: 0,
-        width: "100%",
-      },
-      bodyStyle
-    );
-
-    let _bundleStyle = Object.assign(
-      {
-        margin: "8px",
-        padding: "8px",
-        border: "solid 0px #e8e8e8",
-        boxShadow: "1px 1px 4px RGBA(0,0,0,.2)",
-      },
-      bundleStyle
-    );
-
-    return (
-      <div style={_style} className='BundleManager-item col-xl-2 col-lg-4 col-6' {...wrapperProps}>
-        <div style={_bundleStyle}>
-          <BundleManagerHeader
-            style={_headStyle}
-            onClick={onHeadClick}
-            headerLeftItems={headerLeftItems}
-            headerRightItems={headerRightItems}
-            forceActive={this.props.forceActive}
-            active={active}
-            label={label}
-          />
-          <div style={_bodyStyle}>{active ? body : null}</div>
-        </div>
-      </div>
-    );
-  }
-}
-
-class BundleManager extends React.Component<BundleManagerProps, { index: number }> {
-  constructor(props: BundleManagerProps) {
-    super(props);
-    this.state = { index: -1 };
-  }
-
-  getOpenedIndex() {
-    if (this.props.index !== undefined) {
-      return this.props.index;
-    } else {
-      return this.state.index;
-    }
-  }
-
-  getHandleChange(i) {
-    return function (e) {
-      if (this.props.index !== undefined) {
-        if (this.props.onChange) {
-          this.props.onChange(i);
+  const getHandleChange = React.useCallback((i: number) => {
+    return () => {
+      if (index !== undefined) {
+        if (onChange) {
+          onChange(i);
         }
       } else {
-        let index = i !== this.state.index ? i : -1;
-        this.setState(Object.assign({}, this.state, { index }));
+        const newIndex = i !== internalIndex ? i : -1;
+        setInternalIndex(newIndex);
       }
-    }.bind(this);
-  }
+    };
+  }, [index, onChange, internalIndex]);
 
-  render() {
-    let openedIndex = this.getOpenedIndex();
-    return (
-      <div className='BundleManager row' style={this.props.style}>
-        {this.props.children.map(
-          function (item, index) {
-            let active = this.props.forceActive || index === openedIndex;
+  return (
+    <div className='BundleManager row' style={style}>
+      {children.map((item, idx) => {
+        const active = forceActive || idx === openedIndex;
 
-            //SPLITPATH ugly hack to prevent displaying files from subdirs TODO REMOVE
-            let splitPath = item.props.path.split("/");
-            if (splitPath.length < 99) {
-              return React.cloneElement(item, {
-                active,
-                onHeadClick: this.getHandleChange(index),
-              });
-            }
-          }.bind(this)
-        )}
-      </div>
-    );
-  }
-}
+        //SPLITPATH ugly hack to prevent displaying files from subdirs TODO REMOVE
+        const splitPath = item.props.path.split("/");
+        if (splitPath.length < 99) {
+          return React.cloneElement(item, {
+            key: idx,
+            active,
+            onHeadClick: getHandleChange(idx),
+          });
+        }
+        return null;
+      })}
+    </div>
+  );
+};
 
 export { BundleManager, BundleManagerItem };

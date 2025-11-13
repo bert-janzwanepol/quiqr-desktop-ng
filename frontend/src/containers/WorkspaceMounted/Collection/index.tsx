@@ -34,436 +34,489 @@ const Fragment = React.Fragment;
 
 const MAX_RECORDS = 200;
 
-class MakePageBundleItemKeyDialog extends React.Component{
-  constructor(props){
-    super(props);
-    this.state = {
-      value:'',
-      valid: null
-    }
-  }
-
-  handleClose(){
-    if(this.props.handleClose && !this.props.busy)
-      this.props.handleClose();
-  }
-
-  handleConfirm(){
-    if(this.props.handleConfirm)
-      this.props.handleConfirm(this.state.value);
-  }
-
-  render(){
-    let { busy, itemLabel } = this.props;
-
-    return (
-      <Dialog modal={true} open={true}>
-
-        <DialogTitle id="simple-dialog-title">Convert as Page Bundle</DialogTitle>
-
-        <DialogContent>
-          <DialogContentText>
-            {this.state.valid? undefined : <p>Do you really want to make a page bundle from the item <b>"{itemLabel}"</b>?</p>}
-            { busy? <Spinner /> : undefined }
-          </DialogContentText>
-        </DialogContent>
-
-        <DialogActions>
-          <Button disabled={busy} onClick={this.handleClose.bind(this)} color="primary">Cancel</Button>
-          <Button disabled={busy} onClick={this.handleConfirm.bind(this)} color="primary">Convert as Page Bundle</Button>
-        </DialogActions>
-
-      </Dialog>
-    );
-  }
+interface MakePageBundleItemKeyDialogProps {
+  busy: boolean;
+  itemLabel: string;
+  handleClose?: () => void;
+  handleConfirm?: (value: string) => void;
 }
 
-class CollectionListItems extends React.PureComponent {
+const MakePageBundleItemKeyDialog: React.FC<MakePageBundleItemKeyDialogProps> = ({
+  busy,
+  itemLabel,
+  handleClose,
+  handleConfirm
+}) => {
+  const [state, setState] = React.useState({
+    value: '',
+    valid: null
+  });
 
-  constructor(props){
-
-    super(props);
-    this.state = {
-      anchorEl: null,
-      item: null,
+  const handleCloseClick = () => {
+    if (handleClose && !busy) {
+      handleClose();
     }
+  };
 
-  }
-  handleClick(event, item)  {
-    this.setState({
-      anchorEl:event.currentTarget,
-      currentItem: item
-    });
-  }
+  const handleConfirmClick = () => {
+    if (handleConfirm) {
+      handleConfirm(state.value);
+    }
+  };
 
-  handleClose() {
-    this.setState({anchorEl:null});
-  }
+  return (
+    <Dialog open={true}>
+      <DialogTitle id="simple-dialog-title">Convert as Page Bundle</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          {!state.valid && <p>Do you really want to make a page bundle from the item <b>"{itemLabel}"</b>?</p>}
+          {busy && <Spinner />}
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button disabled={busy} onClick={handleCloseClick} color="primary">Cancel</Button>
+        <Button disabled={busy} onClick={handleConfirmClick} color="primary">Convert as Page Bundle</Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
 
-  render(){
-    let { collectionExtension, filteredItems, onItemClick, onRenameItemClick, onCopyItemClick, onCopyToLangClick, onDeleteItemClick, onMakePageBundleItemClick, sortDescending } = this.props;
+interface CollectionListItemsProps {
+  collectionExtension: string;
+  filteredItems: any[];
+  onItemClick: (item: any) => void;
+  onRenameItemClick: (item: any) => void;
+  onCopyItemClick: (item: any) => void;
+  onCopyToLangClick: (item: any) => void;
+  onDeleteItemClick: (item: any) => void;
+  onMakePageBundleItemClick: (item: any) => void;
+  sortDescending?: boolean;
+  showSortValue?: boolean;
+  languages: any[];
+}
 
-    filteredItems.sort(function(a, b){
-      let keyA = a.sortval;
-      let keyB = b.sortval;
+const CollectionListItems: React.FC<CollectionListItemsProps> = React.memo(({
+  collectionExtension,
+  filteredItems,
+  onItemClick,
+  onRenameItemClick,
+  onCopyItemClick,
+  onCopyToLangClick,
+  onDeleteItemClick,
+  onMakePageBundleItemClick,
+  sortDescending,
+  showSortValue,
+  languages
+}) => {
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [currentItem, setCurrentItem] = React.useState<any>(null);
 
-      if(sortDescending){
+  const handleClick = (event: React.MouseEvent<HTMLElement>, item: any) => {
+    setAnchorEl(event.currentTarget);
+    setCurrentItem(item);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const sortedItems = React.useMemo(() => {
+    return [...filteredItems].sort((a, b) => {
+      const keyA = a.sortval;
+      const keyB = b.sortval;
+
+      if (sortDescending) {
         if (keyA < keyB) return 1;
         if (keyA > keyB) return -1;
-      }
-      else{
+      } else {
         if (keyA < keyB) return -1;
         if (keyA > keyB) return 1;
       }
       return 0;
     });
+  }, [filteredItems, sortDescending]);
 
+  return (
+    <React.Fragment>
+      <Menu
+        id="simple-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+      >
+        <MenuItem onClick={() => {
+          handleClose();
+          onRenameItemClick(currentItem);
+        }}>Rename</MenuItem>
 
-    return (
-      <React.Fragment>
-        <Menu
-          id="simple-menu"
-          anchorEl={this.state.anchorEl}
-          keepMounted
-          open={Boolean(this.state.anchorEl)}
-          onClose={()=>this.handleClose()}
-        >
-          <MenuItem onClick={()=> {
-            this.handleClose();
-            onRenameItemClick(this.state.currentItem);
-          }}>Rename</MenuItem>
+        {languages.length > 0 && (
+          <MenuItem onClick={() => {
+            handleClose();
+            onCopyToLangClick(currentItem);
+          }}>Copy to other language</MenuItem>
+        )}
 
-          {
-            ( this.props.languages.length > 0 ?
-            <MenuItem onClick={()=> {
-              this.handleClose();
-              onCopyToLangClick(this.state.currentItem);
-            }}>Copy to other language</MenuItem>
+        <MenuItem onClick={() => {
+          handleClose();
+          onCopyItemClick(currentItem);
+        }}>Copy</MenuItem>
 
-            : null)
-          }
+        <MenuItem onClick={() => {
+          handleClose();
+          onDeleteItemClick(currentItem);
+        }}>Delete</MenuItem>
 
-          <MenuItem onClick={()=> {
-            this.handleClose();
-            onCopyItemClick(this.state.currentItem);
-          }}>Copy</MenuItem>
+        {collectionExtension === 'md' && (
+          <MenuItem onClick={() => {
+            handleClose();
+            onMakePageBundleItemClick(currentItem);
+          }}>Make Page Bundle</MenuItem>
+        )}
+      </Menu>
+      
+      {sortedItems.map((item, index) => {
+        let text = item.label || item.key;
+        if (showSortValue) {
+          text = text + " (" + item.sortval + ")";
+        }
 
-          <MenuItem onClick={()=> {
-            this.handleClose();
-            onDeleteItemClick(this.state.currentItem);
-          }}>Delete</MenuItem>
+        return (
+          <Fragment key={item.key}>
+            {index !== 0 && <Divider />}
+            <ListItem role={undefined} button onClick={() => onItemClick(item)}>
+              <ListItemText id={text} primary={`${text}`} />
+              <ListItemSecondaryAction>
+                <IconButton
+                  edge="end"
+                  aria-label="comments"
+                  onClick={(e) => handleClick(e, item)}
+                  size="large">
+                  <MoreVertIcon />
+                </IconButton>
+              </ListItemSecondaryAction>
+            </ListItem>
+          </Fragment>
+        );
+      })}
+    </React.Fragment>
+  );
+});
 
-          { collectionExtension === 'md' ?
-            <MenuItem onClick={()=> {
-              this.handleClose();
-              onMakePageBundleItemClick(this.state.currentItem);
-            }}>Make Page Bundle</MenuItem>
-            : null
-          }
-
-        </Menu>
-        { filteredItems.map((item, index) => {
-          let text = item.label||item.key;
-          if(this.props.showSortValue){
-            text = text + " ("+item.sortval+ ")"
-          }
-
-          return (
-            <Fragment key={item.key}>
-              {index!==0?<Divider />:undefined}
-              <ListItem role={undefined}  button onClick={()=> {onItemClick(item)}}>
-                <ListItemText id={text} primary={`${text}`} />
-
-                <ListItemSecondaryAction>
-                  <IconButton
-                    edge="end"
-                    aria-label="comments"
-                    onClick={(e)=>this.handleClick(e, item)}
-                    size="large">
-                    <MoreVertIcon />
-                  </IconButton>
-                </ListItemSecondaryAction>
-              </ListItem>
-            </Fragment>
-          );
-        }) }
-      </React.Fragment>
-    );
-  }
+interface CollectionProps {
+  siteKey: string;
+  workspaceKey: string;
+  collectionKey: string;
 }
 
-class Collection extends React.Component{
+interface CollectionState {
+  selectedWorkspaceDetails: any;
+  items: any[] | null;
+  languages: any[];
+  filter: string;
+  filteredItems: any[];
+  view: any;
+  trunked: boolean;
+  modalBusy: boolean;
+  dirs: string[];
+  showSpinner?: boolean;
+  sortDescending?: boolean;
+  showSortValue?: boolean;
+}
 
-  filterDebounce = new Debounce(200);
-  history: any;
+const Collection: React.FC<CollectionProps> = ({ siteKey, workspaceKey, collectionKey }) => {
+  const filterDebounce = React.useRef(new Debounce(200));
+  const historyRef = React.useRef<any>(null);
+  
+  const [state, setState] = React.useState<CollectionState>({
+    selectedWorkspaceDetails: null,
+    items: null,
+    languages: [],
+    filter: '',
+    filteredItems: [],
+    view: null,
+    trunked: false,
+    modalBusy: false,
+    dirs: []
+  });
 
-  constructor(props){
-    super(props);
-    this.state = {
-      selectedWorkspaceDetails: null,
-      items: null,
-      languages: [],
-      filter: '',
-      filteredItems: [],
-      view: null,
-      trunked: false,
-      modalBusy: false,
-      dirs: []
-    };
-  }
+  const setCreateItemView = () => {
+    setState(prev => ({ ...prev, view: { key: 'createItem', item: null }, modalBusy: false }));
+  };
 
-  setCreateItemView(){
-    this.setState({view:{key:'createItem', item: null}, modalBusy:false});
-  }
+  const setRenameItemView = (item: any) => {
+    setState(prev => ({ ...prev, view: { key: 'renameItem', item }, modalBusy: false }));
+  };
 
-  setRenameItemView(item: any){
-    this.setState({view:{key:'renameItem', item}, modalBusy:false});
-  }
+  const setCopyToLangView = (item: any) => {
+    setState(prev => ({ ...prev, view: { key: 'copyToLang', item }, modalBusy: false }));
+  };
 
-  setCopyToLangView(item: any){
-    this.setState({view:{key:'copyToLang', item}, modalBusy:false});
-  }
+  const setCopyItemView = (item: any) => {
+    setState(prev => ({ ...prev, view: { key: 'copyItem', item }, modalBusy: false }));
+  };
 
-  setCopyItemView(item: any){
-    this.setState({view:{key:'copyItem', item}, modalBusy:false});
-  }
+  const setMakePageBundleItemView = (item: any) => {
+    setState(prev => ({ ...prev, view: { key: 'makePageBundleItem', item }, modalBusy: false }));
+  };
 
-  setMakePageBundleItemView(item: any){
-    this.setState({view:{key:'makePageBundleItem', item}, modalBusy:false});
-  }
+  const setDeleteItemView = (item: any) => {
+    setState(prev => ({ ...prev, view: { key: 'deleteItem', item }, modalBusy: false }));
+  };
 
-  setDeleteItemView(item: any){
-    this.setState({view:{key:'deleteItem', item }, modalBusy:false});
-  }
+  const setRootView = () => {
+    setState(prev => ({ ...prev, view: undefined, modalBusy: false }));
+  };
 
-  setRootView(){
-    this.setState({view:undefined, modalBusy:false});
-  }
-
-  componentDidMount(){
-
+  React.useEffect(() => {
     /* PORTQUIQR
     window.require('electron').ipcRenderer.on('frontEndBusy', ()=>{
-      this.setState({showSpinner: true});
+      setState(prev => ({ ...prev, showSpinner: true }));
     });
-
     */
-    service.registerListener(this);
-    service.api.getLanguages(this.props.siteKey, this.props.workspaceKey).then((langs)=>{
-      this.setState({languages:langs})
-      //this.forceUpdate();
+    
+    const componentRef = { setState };
+    service.registerListener(componentRef);
+    
+    service.api.getLanguages(siteKey, workspaceKey).then((langs) => {
+      setState(prev => ({ ...prev, languages: langs }));
     });
 
-    this.refreshItems();
-  }
+    refreshItems();
 
-  refreshItems(){
-    var stateUpdate: any  = {};
-    var { siteKey, workspaceKey, collectionKey } = this.props;
-    if(siteKey && workspaceKey && collectionKey){
+    return () => {
+      service.unregisterListener(componentRef);
+    };
+  }, [siteKey, workspaceKey, collectionKey]);
+
+  const refreshItems = React.useCallback(() => {
+    if (siteKey && workspaceKey && collectionKey) {
       Promise.all([
-        service.api.listCollectionItems(siteKey, workspaceKey, collectionKey).then((items)=>{
-          stateUpdate.items = items;
-          stateUpdate = { ...stateUpdate, ...(this.resolveFilteredItems(items)) };
-
+        service.api.listCollectionItems(siteKey, workspaceKey, collectionKey).then((items) => {
+          const filteredData = resolveFilteredItems(items, state.filter);
+          setState(prev => ({ 
+            ...prev, 
+            items, 
+            ...filteredData 
+          }));
         }),
-        service.api.getWorkspaceDetails(siteKey, workspaceKey).then((workspaceDetails)=>{
-
-          stateUpdate.selectedWorkspaceDetails = workspaceDetails;
+        service.api.getWorkspaceDetails(siteKey, workspaceKey).then((workspaceDetails) => {
+          setState(prev => ({ 
+            ...prev, 
+            selectedWorkspaceDetails: workspaceDetails 
+          }));
         })
-      ]).then(()=>{
-        this.setState(stateUpdate);
-      }).catch((e)=>{
-
+      ]).catch((e) => {
+        // Handle error if needed
       });
     }
-  }
+  }, [siteKey, workspaceKey, collectionKey, state.filter]);
 
-  componentWillUnmount(){
-    service.unregisterListener(this);
-  }
+  // componentWillUnmount is handled in useEffect cleanup
 
-  makePageBundleCollectionItem(){
-    let { siteKey, workspaceKey, collectionKey } = this.props;
-    let view = this.state.view;
-    if(view==null) return;
+  const makePageBundleCollectionItem = () => {
+    const view = state.view;
+    if (view == null) return;
     service.api.makePageBundleCollectionItem(siteKey, workspaceKey, collectionKey, view.item.key)
-      .then(()=>{
-        let itemsCopy : Array<any> = (this.state.items||[]).slice(0);
-        let itemIndex = itemsCopy.findIndex(x=>x.key === view.item.key);
-        itemsCopy.splice(itemIndex,1);
-        this.setState({items:itemsCopy, modalBusy:false, view: undefined, ...(this.resolveFilteredItems(itemsCopy)) });
-      },()=>{
-        this.setState({modalBusy:false, view: undefined});
+      .then(() => {
+        setState(prev => {
+          const itemsCopy = (prev.items || []).slice(0);
+          const itemIndex = itemsCopy.findIndex(x => x.key === view.item.key);
+          itemsCopy.splice(itemIndex, 1);
+          const filteredData = resolveFilteredItems(itemsCopy, prev.filter);
+          return {
+            ...prev,
+            items: itemsCopy,
+            modalBusy: false,
+            view: undefined,
+            ...filteredData
+          };
+        });
+      }, () => {
+        setState(prev => ({ ...prev, modalBusy: false, view: undefined }));
       });
-  }
+  };
 
-  deleteCollectionItem(){
-    let { siteKey, workspaceKey, collectionKey } = this.props;
-    let view = this.state.view;
-    if(view==null) return;
+  const deleteCollectionItem = () => {
+    const view = state.view;
+    if (view == null) return;
 
     service.api.deleteCollectionItem(siteKey, workspaceKey, collectionKey, view.item.key)
-      .then(()=>{
-        let itemsCopy : Array<any> = (this.state.items||[]).slice(0);
-        let itemIndex = itemsCopy.findIndex(x=>x.key === view.item.key);
-        itemsCopy.splice(itemIndex,1);
-        this.setState(
-          {items:itemsCopy,
-            modalBusy:false,
+      .then(() => {
+        setState(prev => {
+          const itemsCopy = (prev.items || []).slice(0);
+          const itemIndex = itemsCopy.findIndex(x => x.key === view.item.key);
+          itemsCopy.splice(itemIndex, 1);
+          const filteredData = resolveFilteredItems(itemsCopy, prev.filter);
+          return {
+            ...prev,
+            items: itemsCopy,
+            modalBusy: false,
             view: undefined,
-            ...(this.resolveFilteredItems(itemsCopy))
-          });
-      },()=>{
-        this.setState({modalBusy:false, view: undefined});
+            ...filteredData
+          };
+        });
+      }, () => {
+        setState(prev => ({ ...prev, modalBusy: false, view: undefined }));
       });
+  };
 
-  }
-
-  renameCollectionItem(itemKey : string, itemOldKey: string){
-    let { siteKey, workspaceKey, collectionKey } = this.props;
-    if(this.state.view==null) return;
+  const renameCollectionItem = (itemKey: string, itemOldKey: string) => {
+    if (state.view == null) return;
     service.api.renameCollectionItem(siteKey, workspaceKey, collectionKey, itemOldKey, itemKey)
-      .then((result)=>{
-        if(result.renamed){
-          let itemsCopy : Array<any> = (this.state.items||[]).slice(0);
-          let itemIndex = itemsCopy.findIndex(x=>x.label === itemOldKey);
-          itemsCopy[itemIndex] = result.item;
-          this.setState({items:itemsCopy, modalBusy:false, view: undefined, ...(this.resolveFilteredItems(itemsCopy))});
-        }
-        else{
+      .then((result) => {
+        if (result.renamed) {
+          setState(prev => {
+            const itemsCopy = (prev.items || []).slice(0);
+            const itemIndex = itemsCopy.findIndex(x => x.label === itemOldKey);
+            itemsCopy[itemIndex] = result.item;
+            const filteredData = resolveFilteredItems(itemsCopy, prev.filter);
+            return {
+              ...prev,
+              items: itemsCopy,
+              modalBusy: false,
+              view: undefined,
+              ...filteredData
+            };
+          });
+        } else {
           //TODO: warn someone!
-          this.setState({modalBusy:false, view: undefined});
+          setState(prev => ({ ...prev, modalBusy: false, view: undefined }));
         }
-      },()=>{
+      }, () => {
         //TODO: warn someone!
-        this.setState({modalBusy:false, view: undefined});
+        setState(prev => ({ ...prev, modalBusy: false, view: undefined }));
       });
+  };
 
-  }
-
-  copyCollectionItem(itemKey, itemOldKey){
-    let { siteKey, workspaceKey, collectionKey } = this.props;
-
-    if(this.state.view==null) return;
+  const copyCollectionItem = (itemKey: string, itemOldKey: string) => {
+    if (state.view == null) return;
 
     service.api.copyCollectionItem(siteKey, workspaceKey, collectionKey, itemOldKey, itemKey)
-      .then((result)=>{
-        if(result.copied){
-          let itemsCopy = (this.state.items||[]).slice(0);
-          itemsCopy.push(result.item);
-          this.setState({items:itemsCopy, modalBusy:false, view: undefined, ...(this.resolveFilteredItems(itemsCopy))});
+      .then((result) => {
+        if (result.copied) {
+          setState(prev => {
+            const itemsCopy = (prev.items || []).slice(0);
+            itemsCopy.push(result.item);
+            const filteredData = resolveFilteredItems(itemsCopy, prev.filter);
+            return {
+              ...prev,
+              items: itemsCopy,
+              modalBusy: false,
+              view: undefined,
+              ...filteredData
+            };
+          });
+        } else {
+          setState(prev => ({ ...prev, modalBusy: false, view: undefined }));
         }
-        else{
-          this.setState({modalBusy:false, view: undefined});
-        }
-      },()=>{
-        this.setState({modalBusy:false, view: undefined});
+      }, () => {
+        setState(prev => ({ ...prev, modalBusy: false, view: undefined }));
       });
+  };
 
-  }
-
-  copyCollectionItemToLang(itemKey, itemOldKey, destLang){
-    console.log(destLang)
-    let { siteKey, workspaceKey, collectionKey } = this.props;
-
-    if(this.state.view==null) return;
+  const copyCollectionItemToLang = (itemKey: string, itemOldKey: string, destLang: string) => {
+    console.log(destLang);
+    if (state.view == null) return;
 
     service.api.copyCollectionItemToLang(siteKey, workspaceKey, collectionKey, itemOldKey, itemKey, destLang)
-      .then((result)=>{
-        if(result.copied){
-          this.setState({modalBusy:false, view: undefined });
+      .then((result) => {
+        if (result.copied) {
+          setState(prev => ({ ...prev, modalBusy: false, view: undefined }));
           //service.api.logToConsole("copied to "+ destLang);
-          snackMessageService.addSnackMessage(`Copies ${itemKey} to ${destLang}.`,'success');
+          snackMessageService.addSnackMessage(`Copies ${itemKey} to ${destLang}.`, 'success');
+        } else {
+          setState(prev => ({ ...prev, modalBusy: false, view: undefined }));
         }
-        else{
-          this.setState({modalBusy:false, view: undefined});
-        }
-      },()=>{
-        this.setState({modalBusy:false, view: undefined});
+      }, () => {
+        setState(prev => ({ ...prev, modalBusy: false, view: undefined }));
       });
+  };
 
-  }
-
-  createCollectionItemKey(itemKey : string, itemTitle : string){
-    this.setState({modalBusy:true});
-    let { siteKey, workspaceKey, collectionKey } = this.props;
+  const createCollectionItemKey = (itemKey: string, itemTitle: string) => {
+    setState(prev => ({ ...prev, modalBusy: true }));
     service.api.createCollectionItemKey(siteKey, workspaceKey, collectionKey, itemKey, itemTitle)
-      .then(({unavailableReason, key})=>{
-        if(unavailableReason){
-          this.setState({modalBusy:false});
+      .then(({ unavailableReason, key }) => {
+        if (unavailableReason) {
+          setState(prev => ({ ...prev, modalBusy: false }));
+        } else {
+          refreshItems();
         }
-        else{
-          this.refreshItems();
-        }
-      }, (e)=>{
-        this.setState({modalBusy:false});
-      }).then(()=>{
-
-        let path = `/sites/${encodeURIComponent(siteKey)}/workspaces/${encodeURIComponent(workspaceKey)}/collections/${encodeURIComponent(collectionKey)}/${encodeURIComponent(itemKey)}%2Findex.md`
-        this.history.push(path);
+      }, (e) => {
+        setState(prev => ({ ...prev, modalBusy: false }));
+      }).then(() => {
+        const path = `/sites/${encodeURIComponent(siteKey)}/workspaces/${encodeURIComponent(workspaceKey)}/collections/${encodeURIComponent(collectionKey)}/${encodeURIComponent(itemKey)}%2Findex.md`;
+        historyRef.current?.push(path);
       });
+  };
 
-  }
-
-  resolveFilteredItems = (items) => {
+  const resolveFilteredItems = React.useCallback((items: any[], filter: string) => {
     let trunked = false;
-    let dirs = {'':true};
-    let filteredItems: Array<any> = (items||[]).filter((item)=> {
-
+    let dirs: Record<string, boolean> = { '': true };
+    let filteredItems: any[] = (items || []).filter((item) => {
       let parts = item.label.split('/');
       let c = '';
-      for(let i = 0; i < parts.length-1; i++){ c = c+parts[i] + '/'; dirs[c] = true; }
-
-      return item.key.includes(this.state.filter);
+      for (let i = 0; i < parts.length - 1; i++) {
+        c = c + parts[i] + '/';
+        dirs[c] = true;
+      }
+      return item.key.includes(filter);
     });
-    if(filteredItems.length > MAX_RECORDS){
-      filteredItems = filteredItems.slice(0,MAX_RECORDS);
+    
+    if (filteredItems.length > MAX_RECORDS) {
+      filteredItems = filteredItems.slice(0, MAX_RECORDS);
       trunked = true;
     }
-    let dirsArr: Array<string> = Object.keys(dirs)
+    
+    let dirsArr: string[] = Object.keys(dirs);
     return { filteredItems, trunked, dirs: dirsArr };
-  }
+  }, []);
 
-  handleFilterChange(e){
-    this.setState({filter:e.target.value});
+  const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newFilter = e.target.value;
+    setState(prev => ({ ...prev, filter: newFilter }));
 
-    this.filterDebounce.run(()=>{
-      this.setState(this.resolveFilteredItems(this.state.items||[]));
+    filterDebounce.current.run(() => {
+      const filteredData = resolveFilteredItems(state.items || [], newFilter);
+      setState(prev => ({ ...prev, ...filteredData }));
     });
-  }
+  };
 
-  handleItemClick = (item: any)=>{
-    let { siteKey, workspaceKey, collectionKey } = this.props;
-    let path = `/sites/${encodeURIComponent(siteKey)}/workspaces/${encodeURIComponent(workspaceKey)}/collections/${encodeURIComponent(collectionKey)}/${encodeURIComponent(item.key)}`
-    this.history.push(path);
-  }
+  const handleItemClick = (item: any) => {
+    const path = `/sites/${encodeURIComponent(siteKey)}/workspaces/${encodeURIComponent(workspaceKey)}/collections/${encodeURIComponent(collectionKey)}/${encodeURIComponent(item.key)}`;
+    historyRef.current?.push(path);
+  };
 
-  handleDeleteItemClick = (item: any)=>{
-    this.setDeleteItemView(item)
-  }
+  const handleDeleteItemClick = (item: any) => {
+    setDeleteItemView(item);
+  };
 
-  handleRenameItemClick = (item: any)=>{
-    this.setRenameItemView(item)
-  }
-  handleCopyToLangClick = (item: any)=>{
-    this.setCopyToLangView(item)
-  }
-  handleCopyItemClick = (item: any)=>{
-    this.setCopyItemView(item)
-  }
-  handleMakePageBundleItemClick = (item: any)=>{
-    this.setMakePageBundleItemView(item)
-  }
+  const handleRenameItemClick = (item: any) => {
+    setRenameItemView(item);
+  };
+  
+  const handleCopyToLangClick = (item: any) => {
+    setCopyToLangView(item);
+  };
+  
+  const handleCopyItemClick = (item: any) => {
+    setCopyItemView(item);
+  };
+  
+  const handleMakePageBundleItemClick = (item: any) => {
+    setMakePageBundleItemView(item);
+  };
 
-  handleDirClick = (e: any) => {
-    this.setState({filter:e.currentTarget.dataset.dir});
-    this.filterDebounce.run(()=>{
-      this.setState(this.resolveFilteredItems(this.state.items||[]));
+  const handleDirClick = (e: React.MouseEvent<HTMLElement>) => {
+    const newFilter = (e.currentTarget as HTMLElement).dataset.dir || '';
+    setState(prev => ({ ...prev, filter: newFilter }));
+    filterDebounce.current.run(() => {
+      const filteredData = resolveFilteredItems(state.items || [], newFilter);
+      setState(prev => ({ ...prev, ...filteredData }));
     });
-  }
+  };
 
-  generatePageUrl(collection){
+  const generatePageUrl = (collection) => {
 
     let CollectionPath = collection.folder.split("/")
     CollectionPath.shift();
@@ -474,117 +527,113 @@ class Collection extends React.Component{
     return url;
   }
 
-  render(){
+  const { filteredItems, trunked } = state;
+  let dialog = undefined;
 
-    let { collectionKey } = this.props;
-    let { filteredItems, trunked } = this.state;
-    let dialog = undefined;
+  if (state.showSpinner || state.selectedWorkspaceDetails == null) {
+    return (<Spinner />);
+  }
+  
+  const collection = state.selectedWorkspaceDetails.collections.find((x: any) => x.key === collectionKey);
+  if (collection == null)
+    return null;
 
-    if(this.state.showSpinner ||this.state.selectedWorkspaceDetails==null){
-      return (<Spinner />);
+  if (state.view) {
+    const view = state.view;
+    if (view.key === 'createItem') {
+      dialog = (<EditItemKeyDialog
+        value=""
+        viewKey={view.key}
+        title={"New " + collection.itemtitle}
+        textfieldlabel="Title"
+        busy={state.modalBusy}
+        handleClose={setRootView}
+        handleConfirm={createCollectionItemKey}
+        confirmLabel="Create"
+      />);
     }
-    let collection = this.state.selectedWorkspaceDetails.collections.find(x => x.key === collectionKey);
-    if(collection==null)
-      return null;
-
-
-
-    if(this.state.view){
-      let view = this.state.view;
-      if(view.key==='createItem'){
-        dialog = (<EditItemKeyDialog
-          value=""
-          viewKey={view.key}
-          title= {"New " + collection.itemtitle }
-          textfieldlabel="Title"
-          busy={this.state.modalBusy}
-          handleClose={this.setRootView.bind(this)}
-          handleConfirm={this.createCollectionItemKey.bind(this)}
-          confirmLabel="Create"
-        />);
-      }
-      else if(view.key==='renameItem'){
-        dialog = (<EditItemKeyDialog
-          title="Rename Item key"
-          viewKey={view.key}
-          textfieldlabel="item key"
-          value={this.state.view.item.label}
-          busy={this.state.modalBusy}
-          handleClose={this.setRootView.bind(this)}
-          handleConfirm={this.renameCollectionItem.bind(this)}
-          confirmLabel="Rename"
-        />);
-      }
-      else if(view.key==='copyItem'){
-        dialog = (<CopyItemKeyDialog
-          title="Copy Item"
-          viewKey={view.key}
-          textfieldlabel="item key"
-          value={this.state.view.item.label}
-          busy={this.state.modalBusy}
-          handleClose={this.setRootView.bind(this)}
-          handleConfirm={this.copyCollectionItem.bind(this)}
-          confirmLabel="Copy"
-        />);
-      }
-      else if(view.key==='copyToLang'){
-        dialog = (<CopyItemToLanguageDialog
-          title="Copy To Language"
-          viewKey={view.key}
-          textfieldlabel="item key"
-          languages={this.state.languages}
-          value={this.state.view.item.label}
-          busy={this.state.modalBusy}
-          handleClose={this.setRootView.bind(this)}
-          handleConfirm={this.copyCollectionItemToLang.bind(this)}
-          confirmLabel="Copy"
-        />);
-      }
-      else if(view.key==="deleteItem"){
-        dialog = <DeleteItemKeyDialog
-          busy={this.state.modalBusy}
-          handleClose={this.setRootView.bind(this)}
-          handleConfirm={this.deleteCollectionItem.bind(this)}
-          itemLabel={view.item.label}
-        />
-      }
-      else if(view.key==="makePageBundleItem"){
-        dialog = <MakePageBundleItemKeyDialog
-          busy={this.state.modalBusy}
-          handleClose={this.setRootView.bind(this)}
-          handleConfirm={this.makePageBundleCollectionItem.bind(this)}
-          itemLabel={view.item.label}
-        />
-      }
+    else if (view.key === 'renameItem') {
+      dialog = (<EditItemKeyDialog
+        title="Rename Item key"
+        viewKey={view.key}
+        textfieldlabel="item key"
+        value={state.view.item.label}
+        busy={state.modalBusy}
+        handleClose={setRootView}
+        handleConfirm={renameCollectionItem}
+        confirmLabel="Rename"
+      />);
     }
+    else if (view.key === 'copyItem') {
+      dialog = (<CopyItemKeyDialog
+        title="Copy Item"
+        viewKey={view.key}
+        textfieldlabel="item key"
+        value={state.view.item.label}
+        busy={state.modalBusy}
+        handleClose={setRootView}
+        handleConfirm={copyCollectionItem}
+        confirmLabel="Copy"
+      />);
+    }
+    else if (view.key === 'copyToLang') {
+      dialog = (<CopyItemToLanguageDialog
+        title="Copy To Language"
+        viewKey={view.key}
+        textfieldlabel="item key"
+        languages={state.languages}
+        value={state.view.item.label}
+        busy={state.modalBusy}
+        handleClose={setRootView}
+        handleConfirm={copyCollectionItemToLang}
+        confirmLabel="Copy"
+      />);
+    }
+    else if (view.key === "deleteItem") {
+      dialog = <DeleteItemKeyDialog
+        busy={state.modalBusy}
+        handleClose={setRootView}
+        handleConfirm={deleteCollectionItem}
+        itemLabel={view.item.label}
+      />;
+    }
+    else if (view.key === "makePageBundleItem") {
+      dialog = <MakePageBundleItemKeyDialog
+        busy={state.modalBusy}
+        handleClose={setRootView}
+        handleConfirm={makePageBundleCollectionItem}
+        itemLabel={view.item.label}
+      />;
+    }
+  }
 
-    return(<Route render={ ({history}) => {
-      this.history = history;
-      return (
-        <div style={{padding:'20px'}}>
+  return(<Route render={ ({history}) => {
+    historyRef.current = history;
+    return (
+      <div style={{padding:'20px'}}>
 
-          <Typography variant="button" display="block" gutterBottom> {collection.title} </Typography>
+        <Typography variant="button" display="block" gutterBottom> {collection.title} </Typography>
 
-          <Button variant="contained" onClick={ this.setCreateItemView.bind(this) }>
-            {'New '+ collection.itemtitle }
-          </Button>
+        <Button variant="contained" onClick={setCreateItemView}>
+          {'New '+ collection.itemtitle }
+        </Button>
 
-          <TextField
-            style={{margin:'10px 0'}}
-            label="Filter"
-            onChange={ (e) => this.handleFilterChange(e)}
-            fullWidth={true}
-            value={this.state.filter}
-            helperText="Item name" />
+        <TextField
+          style={{margin:'10px 0'}}
+          label="Filter"
+          onChange={handleFilterChange}
+          fullWidth={true}
+          value={state.filter}
+          helperText="Item name" />
 
-          <div style={{display: 'flex', flexWrap: 'wrap', padding: '10px 0'}}>
-            { this.state.dirs.map((dir)=>{
-              return (<Chip key={dir} style={{marginRight:'5px'}} onClick={this.handleDirClick} data-dir={dir} label={"/"+dir} />);
-            }) }
-          </div>
+        <div style={{display: 'flex', flexWrap: 'wrap', padding: '10px 0'}}>
+          { state.dirs.map((dir: string) => {
+            return (<Chip key={dir} style={{marginRight:'5px'}} onClick={handleDirClick} data-dir={dir} label={"/"+dir} />);
+          }) }
+        </div>
 
           <Paper>
-            <div style={{/*backgroundColor: "#eee",*/ display: 'flex',justifyContent: "flex-end", flexWrap: 'no-wrap', padding: '10px 10px'}}>
+            <div style={{/*backgroundColor: "#eee",*/ display: 'flex',justifyContent: "flex-end", flexWrap: 'nowrap', padding: '10px 10px'}}>
 
 
               <FormControlLabel
@@ -592,15 +641,13 @@ class Collection extends React.Component{
                 control={
 
                   <Switch
-                    checked={this.state.sortDescending}
-                    onChange={function(e,value){
-                      if(this.state.sortDescending){
-                        this.setState({sortDescending: false});
-                      }
-                      else{
-                        this.setState({sortDescending: true});
-                      }
-                    }.bind(this)}
+                    checked={state.sortDescending}
+                    onChange={(e, value) => {
+                      setState(prev => ({
+                        ...prev,
+                        sortDescending: !prev.sortDescending
+                      }));
+                    }}
                      />
                 }
               />
@@ -609,37 +656,37 @@ class Collection extends React.Component{
                 label="Show sorting value"
                 control={
                   <Switch
-                    checked={this.state.showSortValue}
-                    onChange={function(e,value){
-                      if(this.state.showSortValue){
-                        this.setState({showSortValue: false});
-                      }
-                      else{
-                        this.setState({showSortValue: true});
-                      }
-                    }.bind(this)}
+                    checked={state.showSortValue}
+                    onChange={(e, value) => {
+                      setState(prev => ({
+                        ...prev,
+                        showSortValue: !prev.showSortValue
+                      }));
+                    }}
                     />
                 }/>
             </div>
 
             <List>
               <CollectionListItems
-                languages={this.state.languages}
+                languages={state.languages}
                 collectionExtension={collection.extension}
                 filteredItems={filteredItems}
-                onItemClick={this.handleItemClick}
-                onRenameItemClick={this.handleRenameItemClick}
-                onCopyToLangClick={this.handleCopyToLangClick}
-                onCopyItemClick={this.handleCopyItemClick}
-                onDeleteItemClick={this.handleDeleteItemClick}
-                onMakePageBundleItemClick={this.handleMakePageBundleItemClick}
-                sortDescending={this.state.sortDescending}
-                showSortValue={this.state.showSortValue}
+                onItemClick={handleItemClick}
+                onRenameItemClick={handleRenameItemClick}
+                onCopyToLangClick={handleCopyToLangClick}
+                onCopyItemClick={handleCopyItemClick}
+                onDeleteItemClick={handleDeleteItemClick}
+                onMakePageBundleItemClick={handleMakePageBundleItemClick}
+                sortDescending={state.sortDescending}
+                showSortValue={state.showSortValue}
               />
               { trunked ? (
                 <React.Fragment>
                   <Divider />
-                  <ListItem disabled primaryText={`Max records limit reached (${MAX_RECORDS})`} style={{color:'rgba(0,0,0,.3)'}} />
+                  <ListItem disabled style={{color:'rgba(0,0,0,.3)'}}>
+                    <ListItemText primary={`Max records limit reached (${MAX_RECORDS})`} />
+                  </ListItem>
                 </React.Fragment>
               ) : (null) }
             </List>
@@ -649,7 +696,6 @@ class Collection extends React.Component{
         </div>
       );
     }} />);
-  }
-}
+};
 
 export default Collection;
