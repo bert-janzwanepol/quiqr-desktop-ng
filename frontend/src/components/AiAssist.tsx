@@ -17,7 +17,7 @@ import withStyles, { WithStyles } from "@mui/styles/withStyles";
 import CircularProgress from "@mui/material/CircularProgress";
 
 import OpenAI from "openai";
-import { hasOpenApiKey } from "../utils/type-guards";
+import { hasOpenAiApiKey } from "../utils/type-guards";
 import { EasyMarkdownDynamicField } from "./SukohForm/components/EasyMarkDownDynamic";
 import { TextFieldDynamicField } from "./SukohForm/components/TextFieldDynamic";
 import MarkdownDynamic, { MarkdownDynamicField } from "./SukohForm/components/MarkdownDynamic";
@@ -106,7 +106,7 @@ class AiAssist extends React.Component<AiAssistProps, AiAssistState> {
 
   sendToAssistent() {
     service.api.readConfKey("prefs").then(async (value) => {
-      if (hasOpenApiKey(value)) {
+      if (hasOpenAiApiKey(value)) {
         const AIclient = new OpenAI({
           apiKey: value.openAiApiKey,
           dangerouslyAllowBrowser: true,
