@@ -1,23 +1,19 @@
-import * as React           from 'react';
-import service              from '../../../services/service';
-import Chips                from '../../../components/Chips';
-import withStyles from '@mui/styles/withStyles';
-import Button               from '@mui/material/Button';
-import Box                  from '@mui/material/Box';
-import Dialog               from '@mui/material/Dialog';
-import DialogActions        from '@mui/material/DialogActions';
-import DialogContent        from '@mui/material/DialogContent';
-import DialogContentText    from '@mui/material/DialogContentText';
-import DialogTitle          from '@mui/material/DialogTitle';
+import * as React from "react";
+import service from "../../../services/service";
+import Chips from "../../../components/Chips";
+import withStyles from "@mui/styles/withStyles";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
-const useStyles = theme => ({
+const useStyles = (theme) => ({});
 
-});
-
-
-class EditTagsDialogs extends React.Component{
-
-  constructor(props){
+class EditTagsDialogs extends React.Component {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -25,61 +21,58 @@ class EditTagsDialogs extends React.Component{
       errorTextSiteName: "",
       busy: false,
       cancelText: "cancel",
-      siteconf: {}
-    }
+      siteconf: {},
+    };
   }
-  UNSAFE_componentWillUpdate(nextProps, nextState) {
-    if(this.props.siteconf.key !== nextProps.siteconf.key){
+
+  componentWillUpdate(nextProps, nextState) {
+    if (this.props.siteconf.key !== nextProps.siteconf.key) {
       let siteconf = nextProps.siteconf;
-      if(!siteconf.tags) siteconf.tags = [];
-      this.setState({siteconf: nextProps.siteconf, execButtonsDisabled: true});
+      if (!siteconf.tags) siteconf.tags = [];
+      this.setState({ siteconf: nextProps.siteconf, execButtonsDisabled: true });
     }
   }
 
-  renderFailure(){
-    return (
-      <div>
-        Something went wrong.
-      </div>
-    )
+  renderFailure() {
+    return <div>Something went wrong.</div>;
   }
 
-  handlePushItem(val){
-    if(val==="") return;
+  handlePushItem(val) {
+    if (val === "") return;
     let siteconf = this.state.siteconf;
     let copy = siteconf.tags.slice(0);
     copy.push(val);
-    siteconf.tags = copy
-    this.setState({siteconf:siteconf, execButtonsDisabled: false});
+    siteconf.tags = copy;
+    this.setState({ siteconf: siteconf, execButtonsDisabled: false });
   }
 
-  handleSwap(e: Event, {index, otherIndex}: {index: number, otherIndex: number}){
+  handleSwap(e: Event, { index, otherIndex }: { index: number; otherIndex: number }) {
     let siteconf = this.state.siteconf;
     let val = siteconf.tags.slice(0);
     let temp = val[otherIndex];
     val[otherIndex] = val[index];
     val[index] = temp;
 
-    siteconf.tags = val
-    this.setState({siteconf:siteconf, execButtonsDisabled: false});
+    siteconf.tags = val;
+    this.setState({ siteconf: siteconf, execButtonsDisabled: false });
   }
 
-  handleRequestDelete(index: number){
+  handleRequestDelete(index: number) {
     let siteconf = this.state.siteconf;
     let copy = siteconf.tags.slice(0);
-    copy.splice(index,1);
-    siteconf.tags = copy
-    this.setState({siteconf:siteconf, execButtonsDisabled: false});
+    copy.splice(index, 1);
+    siteconf.tags = copy;
+    this.setState({ siteconf: siteconf, execButtonsDisabled: false });
   }
 
-  saveSiteConf(){
-    service.api.saveSiteConf(this.state.siteconf.key, this.state.siteconf).then(()=>{
+  saveSiteConf() {
+    service.api.saveSiteConf(this.state.siteconf.key, this.state.siteconf).then(() => {
       this.props.onSavedClick();
     });
   }
 
-  renderBody(){
-    let field = {title: "tags"}
+  renderBody() {
+    let field = { title: "tags" };
     return (
       <Box>
         <Chips
@@ -92,53 +85,43 @@ class EditTagsDialogs extends React.Component{
           onSwap={this.handleSwap.bind(this)}
         />
       </Box>
-    )
+    );
   }
 
-  render(){
-
+  render() {
     let { open, siteconf } = this.props;
     let failure = this.state.failure;
 
     const actions = [
       <Button
-        key={"menuAction1"+siteconf.name}
-         onClick={()=>{
-          this.setState({
-            open: false
-          },()=>{
-            this.props.onCancelClick();
-          });
+        key={"menuAction1" + siteconf.name}
+        onClick={() => {
+          this.setState(
+            {
+              open: false,
+            },
+            () => {
+              this.props.onCancelClick();
+            }
+          );
         }}>
         {this.state.cancelText}
       </Button>,
 
-      <Button
-        key={"menuAction2"+siteconf.name}
-        disabled={this.state.execButtonsDisabled} onClick={()=>this.saveSiteConf()} >
+      <Button key={"menuAction2" + siteconf.name} disabled={this.state.execButtonsDisabled} onClick={() => this.saveSiteConf()}>
         SAVE
       </Button>,
     ];
 
     return (
-      <Dialog
-        open={open}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-        fullWidth={true}
-        maxWidth={"sm"} >
-
-        <DialogTitle id="alert-dialog-title">{"Edit tags of site: "+siteconf.name}</DialogTitle>
+      <Dialog open={open} aria-labelledby='alert-dialog-title' aria-describedby='alert-dialog-description' fullWidth={true} maxWidth={"sm"}>
+        <DialogTitle id='alert-dialog-title'>{"Edit tags of site: " + siteconf.name}</DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            { failure? this.renderFailure() : this.renderBody() }
-          </DialogContentText>
+          <DialogContentText id='alert-dialog-description'>{failure ? this.renderFailure() : this.renderBody()}</DialogContentText>
         </DialogContent>
-        <DialogActions>
-          {actions}
-        </DialogActions>
+        <DialogActions>{actions}</DialogActions>
       </Dialog>
     );
   }
 }
-export default withStyles(useStyles)(EditTagsDialogs)
+export default withStyles(useStyles)(EditTagsDialogs);

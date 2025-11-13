@@ -34,7 +34,7 @@ class SplashDialog extends React.Component<SplashDialogProps, SplashDialogState>
     this.setState({ showSplashAtStartup: this.props.showSplashAtStartup });
   }
 
-  UNSAFE_componentWillUpdate(nextProps, nextState) {
+  componentWillUpdate(nextProps, nextState) {
     if (this.props.showSplashAtStartup !== nextProps.showSplashAtStartup) {
       this.setState({ showSplashAtStartup: nextProps.showSplashAtStartup });
     }
