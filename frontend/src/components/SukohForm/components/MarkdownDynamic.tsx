@@ -6,7 +6,7 @@ import { BaseDynamic, BaseDynamicProps, BaseDynamicState } from "../../HoForm";
 import Tip from "../../Tip";
 import AiAssist from "../../AiAssist";
 import service from "../../../services/service";
-import { hasOpenApiKey } from "../../../utils/type-guards";
+import { hasOpenAiApiKey } from "../../../utils/type-guards";
 
 const md = new MarkdownIt({ html: true });
 const imgIcon =
@@ -122,7 +122,7 @@ class MarkdownDynamic extends BaseDynamic<MarkdownDynamicProps, MarkdownDynamicS
     service.api.readConfKey("prefs").then((value) => {
       this.setState({ prefs: value });
 
-      if (hasOpenApiKey(value)) {
+      if (hasOpenAiApiKey(value)) {
         this.setState({ enableAiAssist: true }, () => {
           this.forceUpdate();
         });
