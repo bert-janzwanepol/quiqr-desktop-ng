@@ -1,82 +1,76 @@
-import React from 'react';
-import type { DynamicFormNode, FieldBase, FormStateBuilder, FieldsExtender } from '../../HoForm';
+import React from "react";
+import type { DynamicFormNode, FieldBase, FormStateBuilder, FieldsExtender } from "../../HoForm";
 
-import { BaseDynamic } from '../../HoForm';
+import { BaseDynamic } from "../../HoForm";
 
 type SectionDynamicField = {
-  key: string,
-  compositeKey: string,
-  type: string,
-  title: string,
-  fields: Array<any>,
-  groupdata?: boolean
-}
+  key: string;
+  compositeKey: string;
+  type: string;
+  title: string;
+  fields: Array<any>;
+  groupdata?: boolean;
+};
 
-type SectionDynamicState = {
+type SectionDynamicState = {};
 
-}
-
-
-class SectionDynamic extends BaseDynamic<SectionDynamicField, SectionDynamicState>  {
-
-  allocateStateLevel(field: SectionDynamicField, parentState: any, rootState: any){
-    if(field.groupdata==null||field.groupdata===true){
-      if(parentState[field.key]===undefined)
-        parentState[field.key]={};
+class SectionDynamic extends BaseDynamic<SectionDynamicField, SectionDynamicState> {
+  allocateStateLevel(field: SectionDynamicField, parentState: any, rootState: any) {
+    if (field.groupdata == null || field.groupdata === true) {
+      if (parentState[field.key] === undefined) parentState[field.key] = {};
       return parentState[field.key];
     }
     return parentState;
   }
 
-  extendField(field: SectionDynamicField, fieldsExtender: FieldsExtender){
+  extendField(field: SectionDynamicField, fieldsExtender: FieldsExtender) {
     fieldsExtender.extendFields(field.fields);
   }
 
-  normalizeState({state, field, stateBuilder} : { state: any, field: SectionDynamicField, stateBuilder: FormStateBuilder }){
+  normalizeState({ state, field, stateBuilder }: { state: any; field: SectionDynamicField; stateBuilder: FormStateBuilder }) {
     stateBuilder.setLevelState(state, field.fields);
   }
 
-  getType(){
-    return 'section';
+  getType() {
+    return "section";
   }
 
-  buildBreadcumbFragment(currentNode: DynamicFormNode<SectionDynamicField>, items: Array<{label: string, node?: DynamicFormNode<FieldBase>}>): void{
-
-  }
+  buildBreadcrumbFragment(currentNode: DynamicFormNode<SectionDynamicField>, items: Array<{ label: string; node?: DynamicFormNode<FieldBase> }>): void {}
 
   buildPathFragment(node: DynamicFormNode<SectionDynamicField>, nodeLevel: number, nodes: Array<DynamicFormNode<FieldBase>>): string | null {
     return undefined;
   }
 
-  renderComponent(){
+  renderComponent() {
+    let { context } = this.props;
+    let { node, currentPath, nodePath, parentPath } = context;
+    let { field } = node;
 
-    let {context} = this.props;
-    let {node, currentPath, nodePath, parentPath} = context;
-    let {field} = node;
-
-    if(currentPath===parentPath){
+    if (currentPath === parentPath) {
       var state = node.state;
       var level = context.renderLevel({
         field,
         state,
-        parent: node.parent
+        parent: node.parent,
       });
 
-      return (<React.Fragment>
-        {field.title?<div style={{fontWeight:'bold',padding:'16px 0'}}>{field.title}</div>:undefined}
-        <div style={{padding:'16px 0px 0px 16px', marginBottom:'16px', borderLeft: 'solid 10px #eee'}}>{level}</div>
-        </React.Fragment>);
+      return (
+        <React.Fragment>
+          {field.title ? <div style={{ fontWeight: "bold", padding: "16px 0" }}>{field.title}</div> : undefined}
+          <div style={{ padding: "16px 0px 0px 16px", marginBottom: "16px", borderLeft: "solid 10px #eee" }}>{level}</div>
+        </React.Fragment>
+      );
     }
 
-    if(currentPath.startsWith(nodePath)){
+    if (currentPath.startsWith(nodePath)) {
       return context.renderLevel({
         field,
         state: node.state,
-        parent: node
+        parent: node,
       });
     }
 
-    return (null);
+    return null;
   }
 }
 

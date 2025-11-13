@@ -1,59 +1,52 @@
-import { BaseDynamic } from '../../HoForm';
-import type { DynamicFormNode, FieldsExtender, FormStateBuilder } from '../../HoForm';
+import { BaseDynamic } from "../../HoForm";
+import type { DynamicFormNode, FieldsExtender, FormStateBuilder } from "../../HoForm";
 
 type PullDynamicField = {
-  type: string,
-  key: string,
-  group?: string,
-  compositeKey: string,
-  fields: Array<any>
-}
+  type: string;
+  key: string;
+  group?: string;
+  compositeKey: string;
+  fields: Array<any>;
+};
 
-type PullDynamicState = {
-
-}
+type PullDynamicState = {};
 
 class PullDynamic extends BaseDynamic<PullDynamicField, PullDynamicState> {
-
-  allocateStateLevel(field: PullDynamicField, parentState: any, rootState: any){
-    let key = field.group||field.key;
-    if(parentState[key]===undefined)
-      parentState[key]={};
+  allocateStateLevel(field: PullDynamicField, parentState: any, rootState: any) {
+    let key = field.group || field.key;
+    if (parentState[key] === undefined) parentState[key] = {};
     return parentState[key];
   }
 
-  extendField(field: PullDynamicField, fieldExtender: FieldsExtender){
+  extendField(field: PullDynamicField, fieldExtender: FieldsExtender) {
     fieldExtender.extendFields(field.fields);
   }
 
-  normalizeState({state, field, stateBuilder} : { state: any, field: PullDynamicField, stateBuilder: FormStateBuilder }){
+  normalizeState({ state, field, stateBuilder }: { state: any; field: PullDynamicField; stateBuilder: FormStateBuilder }) {
     stateBuilder.setLevelState(state, field.fields);
   }
 
-  getType(){
-    return 'pull';
+  getType() {
+    return "pull";
   }
 
-  buildBreadcumbFragment(node : any, buttons : Array<{label:string, node:any}>){
+  buildBreadcrumbFragment(node: any, buttons: Array<{ label: string; node: any }>) {}
 
-  }
-
-  buildPathFragment(node: DynamicFormNode<PullDynamicField>){
+  buildPathFragment(node: DynamicFormNode<PullDynamicField>) {
     return undefined;
   }
 
-  renderComponent(){
+  renderComponent() {
+    let { context } = this.props;
+    let { node, currentPath, nodePath } = context;
+    let { field } = node;
 
-    let {context} = this.props;
-    let {node, currentPath, nodePath} = context;
-    let {field} = node;
-
-    if(currentPath.startsWith(nodePath)){
+    if (currentPath.startsWith(nodePath)) {
       var state = node.state;
       return context.renderLevel({ field, state, parent: node });
     }
 
-    return (null);
+    return null;
   }
 }
 

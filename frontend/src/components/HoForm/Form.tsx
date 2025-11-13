@@ -1,110 +1,100 @@
-import * as React           from 'react';
-import { Route }            from 'react-router-dom'
-import IconButton           from '@mui/material/IconButton';
-import CircularProgress           from '@mui/material/CircularProgress';
-import OpenInBrowserIcon    from '@mui/icons-material/OpenInBrowser';
-import DescriptionIcon      from '@mui/icons-material/Description';
-import ArrowBackIcon        from '@mui/icons-material/ArrowBack';
-import Button               from '@mui/material/Button';
-import Box                  from '@mui/material/Box';
-import { ComponentContext } from './component-context';
-import { Debounce }         from './debounce';
-import { FormStateBuilder } from './form-state-builder';
-import service              from '../../services/service';
-import {snackMessageService}         from '../../services/ui-service';
-import CloseIcon    from '@mui/icons-material/Close';
-import { FormBreadcumb }    from '../Breadcumb';
-import { FieldsExtender }   from './fields-extender';
+import * as React from "react";
+import { Route } from "react-router-dom";
+import IconButton from "@mui/material/IconButton";
+import CircularProgress from "@mui/material/CircularProgress";
+import OpenInBrowserIcon from "@mui/icons-material/OpenInBrowser";
+import DescriptionIcon from "@mui/icons-material/Description";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
+import { ComponentContext } from "./component-context";
+import { Debounce } from "./debounce";
+import { FormStateBuilder } from "./form-state-builder";
+import service from "../../services/service";
+import { snackMessageService } from "../../services/ui-service";
+import CloseIcon from "@mui/icons-material/Close";
+import { FormBreadcrumb } from "../Breadcrumb";
+import { FieldsExtender } from "./fields-extender";
 
 const Fragment = React.Fragment;
-const componentMarginTop = '16px';
+const componentMarginTop = "16px";
 
 class Form extends React.Component {
-
-  constructor(props : FormProps) {
-
+  constructor(props: FormProps) {
     super(props);
     this.stateBuilder = new FormStateBuilder(this.props.componentRegistry);
 
-    try{
+    try {
       let fields = JSON.parse(JSON.stringify(props.fields));
-      (new FieldsExtender(this.props.componentRegistry)).extendFields(fields);
+      new FieldsExtender(this.props.componentRegistry).extendFields(fields);
 
-      let formState = JSON.parse(JSON.stringify(props.values||{}));
+      let formState = JSON.parse(JSON.stringify(props.values || {}));
       this.stateBuilder.makeRootState(fields, formState);
 
       let root = {
-        field:{
-          key:'root',
-          compositeKey: 'root',
-          type:'root'
+        field: {
+          key: "root",
+          compositeKey: "root",
+          type: "root",
         },
         state: null,
-        parent: (null),
-        uiState: (null)
+        parent: null,
+        uiState: null,
       };
       this.root = root;
       this.currentNode = root;
       this.state = {
         document: formState,
-        path: 'ROOT/',
+        path: "ROOT/",
         fields: fields,
         renderError: null,
       };
 
       this.forceUpdateThis = this.forceUpdate.bind(this);
       this.getFormDocumentClone = this.getFormDocumentClone.bind(this);
-    }
-    catch(error){
+    } catch (error) {
       this.state = {
         document: {},
-        path: '',
+        path: "",
         fields: [],
         renderError: error.message,
-        actionButtonLoading: false
-
-      }
+        actionButtonLoading: false,
+      };
     }
   }
 
-  static shapeDocument(updatedDoc: {}, doc: {}){
+  static shapeDocument(updatedDoc: {}, doc: {}) {}
 
-  }
-
-  componentDidCatch(error: Error , info: string) {
+  componentDidCatch(error: Error, info: string) {
     this.setState({ renderError: error.message });
     console.warn(error, info);
   }
 
   componentDidMount() {
-    if(this.props.refreshed){
-      service.api.getCurrentFormNodePath().then((newNode)=>{
-        this.setState({path: newNode});
+    if (this.props.refreshed) {
+      service.api.getCurrentFormNodePath().then((newNode) => {
+        this.setState({ path: newNode });
       });
     }
 
-    service.api.readConfKey('prefs').then((value)=>{
-      this.setState({prefs: value });
+    service.api.readConfKey("prefs").then((value) => {
+      this.setState({ prefs: value });
 
-      if(value.openAiApiKey){
-        this.setState({enableAiAssist: true });
+      if (value.openAiApiKey) {
+        this.setState({ enableAiAssist: true });
+      } else {
+        this.setState({ enableAiAssist: false });
       }
-      else{
-        this.setState({enableAiAssist: false });
-      }
-
     });
-
-
   }
 
-  static getDerivedStateFromProps(props: FormProps, state: FormState){
+  static getDerivedStateFromProps(props: FormProps, state: FormState) {
     return null;
   }
 
-  generateParentPath(){
-    let encodedSiteKey = this.props.siteKey ? encodeURIComponent(this.props.siteKey) : '';
-    let encodedWorkspaceKey = this.props.workspaceKey ? encodeURIComponent(this.props.workspaceKey) : '';
+  generateParentPath() {
+    let encodedSiteKey = this.props.siteKey ? encodeURIComponent(this.props.siteKey) : "";
+    let encodedWorkspaceKey = this.props.workspaceKey ? encodeURIComponent(this.props.workspaceKey) : "";
     let basePath = `/sites/${encodedSiteKey}/workspaces/${encodedWorkspaceKey}`;
     let itemType = "collections";
 
@@ -112,68 +102,65 @@ class Form extends React.Component {
     return newPath;
   }
 
-  setPath(node){
-    window.scrollTo(0,0);
+  setPath(node) {
+    window.scrollTo(0, 0);
     this.currentNode = node;
-    this.setState({path: this.buildPath(node)},()=>{
+    this.setState({ path: this.buildPath(node) }, () => {
       service.api.setCurrentFormNodePath(this.state.path);
     });
   }
 
-  buildPath(currentNode){
-    if(currentNode==null)
-      return '';
-    let path = '';
+  buildPath(currentNode) {
+    if (currentNode == null) return "";
+    let path = "";
     let nodes = [];
     let nodeLevel = 0;
-    do{
-      if(currentNode==null) break;
+    do {
+      if (currentNode == null) break;
       nodes.push(currentNode);
-      if(currentNode===this.root){
-        path = 'ROOT/' + path;
-      }
-      else {
+      if (currentNode === this.root) {
+        path = "ROOT/" + path;
+      } else {
         let componentProplessInstance = this.props.componentRegistry.getProplessInstance(currentNode.field.type);
-        if(componentProplessInstance){
+        if (componentProplessInstance) {
           let fragment = componentProplessInstance.buildPathFragment(currentNode, nodeLevel++, nodes);
-          if(fragment) {
-            path = fragment + '/' + path;
+          if (fragment) {
+            path = fragment + "/" + path;
           }
-        }
-        else{
-          throw new Error('Could not find component of type '+currentNode.field.type);
+        } else {
+          throw new Error("Could not find component of type " + currentNode.field.type);
         }
       }
-      if(currentNode.parent==null) break;
-      else{ currentNode = currentNode.parent; }
-    } while(true);
+      if (currentNode.parent == null) break;
+      else {
+        currentNode = currentNode.parent;
+      }
+    } while (true);
 
     return path;
   }
 
-  renderField(node, onValueChanged){
-
-    if(!node.field.title){
-      node.field.title = node.field.key
+  renderField(node, onValueChanged) {
+    if (!node.field.title) {
+      node.field.title = node.field.key;
     }
 
-    if(node.field.disabled === true){
+    if (node.field.disabled === true) {
       return null;
     }
 
-    var {field} = node;
+    var { field } = node;
     let component = this.props.componentRegistry.get(field.type);
-    try{
-
-      if(component===undefined)
-        throw new Error('Could not find component of type '+field.type);
+    try {
+      if (component === undefined) throw new Error("Could not find component of type " + field.type);
 
       node.state = component.proplessInstance.allocateStateLevel(field, node.state, this.state.document);
 
       let nodePath = this.buildPath(node);
       let parentPath = this.buildPath(node.parent);
 
-      let context = new ComponentContext(this,
+      let context = new ComponentContext(
+        this,
         node,
         this.state.path,
         parentPath,
@@ -185,53 +172,40 @@ class Form extends React.Component {
       );
 
       let DynamicComponent = component.classType;
-      return (<DynamicComponent
-        key={field.key}
-        context={context} />);
-    }
-    catch(e){
+      return <DynamicComponent key={field.key} context={context} />;
+    } catch (e) {
       console.warn(e);
-      return (null);
+      return null;
     }
   }
 
   handleOpenPageInBrowser() {
-    if(this.props.pageUrl){
+    if (this.props.pageUrl) {
+      service.api
+        .getPreviewCheckConfiguration()
+        .then((conf) => {
+          if (conf && conf.enable === true) {
+            const sets = ["min_keywords", "max_keywords", "title_character_count", "description_character_count", "word_count", "content_css_selector"];
 
-      service.api.getPreviewCheckConfiguration()
-        .then((conf)=>{
-          if(conf && conf.enable === true){
-
-            const sets = [
-            'min_keywords',
-            'max_keywords',
-            'title_character_count',
-            'description_character_count',
-            'word_count',
-            'content_css_selector',
-            ];
-
-            let qstr = ""
+            let qstr = "";
             for (var i = 0; i < sets.length; i++) {
               qstr += `&${sets[i]}=${conf[sets[i]]}`;
             }
 
-            const previewUrl = conf.preview_url+"?url="+this.props.pageUrl+qstr;
-            window.require('electron').shell.openExternal(previewUrl);
-          }
-          else{
-            window.require('electron').shell.openExternal(this.props.pageUrl);
+            const previewUrl = conf.preview_url + "?url=" + this.props.pageUrl + qstr;
+            window.require("electron").shell.openExternal(previewUrl);
+          } else {
+            window.require("electron").shell.openExternal(this.props.pageUrl);
           }
         })
-        .catch((e)=>{
+        .catch((e) => {
           service.api.logToConsole(e);
-          window.require('electron').shell.openExternal(this.props.pageUrl);
+          window.require("electron").shell.openExternal(this.props.pageUrl);
         });
-
     }
   }
 
-  handleBackButton(){
+  handleBackButton() {
     this.history.push(this.generateParentPath());
   }
 
@@ -244,292 +218,284 @@ class Form extends React.Component {
    * @uiState - item in e.g. accordion, matches last number in breadcumb number
    * @parent - the previous renderLevel context object
    */
-  renderLevel({ field, state, uiState, parent}) {
+  renderLevel({ field, state, uiState, parent }) {
+    if (this.props.debug) service.api.logToConsole("RENDER LEVEL");
 
-    if(this.props.debug) service.api.logToConsole('RENDER LEVEL');
-
-    const fieldsElements = field.fields.map(function(childField){
-      let data = {field:childField, state:state, uiState, parent};
-      let field = this.renderField(data);
-      if(this.props.debug) service.api.logToConsole('FIELD', data, field, this.buildPath(data));
-      return field;
-    }.bind(this));
-
-    return (
-      <Fragment>{fieldsElements}</Fragment>
+    const fieldsElements = field.fields.map(
+      function (childField) {
+        let data = { field: childField, state: state, uiState, parent };
+        let field = this.renderField(data);
+        if (this.props.debug) service.api.logToConsole("FIELD", data, field, this.buildPath(data));
+        return field;
+      }.bind(this)
     );
+
+    return <Fragment>{fieldsElements}</Fragment>;
   }
 
-  getFormDocumentClone = ()=>{
+  getFormDocumentClone = () => {
     return JSON.parse(JSON.stringify(this.state.document));
-  }
+  };
 
   forceUpdateDebounce: Debounce = new Debounce();
-  handleChange(node: any, debounce: number){
+  handleChange(node: any, debounce: number) {
     this.forceUpdateDebounce.run(this.forceUpdateThis, debounce);
 
-    if(this.props.onChange!=null){
+    if (this.props.onChange != null) {
       this.props.onChange(this.getFormDocumentClone);
     }
   }
 
-
-
-  saveFormHandler(){
+  saveFormHandler() {
     this.props.saveFormHandler();
   }
 
-  renderBreadcumb(){
-
+  renderBreadcumb() {
     let currentNode = this.currentNode;
 
     let items = [];
     let nodes = [];
 
-    try{
-      do{
+    try {
+      do {
         nodes.push(currentNode);
 
-        if(currentNode===this.root){
-          if(this.props.collectionItemKey){
+        if (currentNode === this.root) {
+          if (this.props.collectionItemKey) {
             let label = this.props.collectionItemKey;
-            if(this.props.collectionItemKey.split("/").length > 0){
+            if (this.props.collectionItemKey.split("/").length > 0) {
               label = this.props.collectionItemKey.split("/")[0];
             }
-            items.push({label: label, node:currentNode});
+            items.push({ label: label, node: currentNode });
+          } else {
+            items.push({ label: this.props.rootName || "ROOT", node: currentNode });
           }
-          else{
-            items.push({label: this.props.rootName||'ROOT', node:currentNode});
-          }
-        }
-        else{
-
+        } else {
           let componentPropslessInstace = this.props.componentRegistry.getProplessInstance(currentNode.field.type);
-          if(componentPropslessInstace && componentPropslessInstace.buildBreadcumbFragment){
-            componentPropslessInstace.buildBreadcumbFragment(currentNode, items);
-          }
-          else{
-            throw new Error('Could not find component of type '+currentNode.field.type);
+          if (componentPropslessInstace && componentPropslessInstace.buildBreadcrumbFragment) {
+            componentPropslessInstace.buildBreadcrumbFragment(currentNode, items);
+          } else {
+            throw new Error("Could not find component of type " + currentNode.field.type);
           }
         }
         currentNode = currentNode.parent;
-      } while(currentNode);
-    }
-    catch(e){
-      items.push({label: 'Error', node:this.root});
+      } while (currentNode);
+    } catch (e) {
+      items.push({ label: "Error", node: this.root });
     }
 
     items.reverse();
 
-    return <FormBreadcumb items={items} onNodeSelected={this.setPath.bind(this)} />;
+    return <FormBreadcrumb items={items} onNodeSelected={this.setPath.bind(this)} />;
   }
 
-  getCurrentNodeDebugInfo(){
+  getCurrentNodeDebugInfo() {
     let path;
-    try{
-      path = this.buildPath(this.currentNode)
-    }
-    catch(e){
+    try {
+      path = this.buildPath(this.currentNode);
+    } catch (e) {
       path = e;
     }
     return { path: path };
   }
 
-  handleDocBuild(buildAction){
-
+  handleDocBuild(buildAction) {
     let { siteKey, singleKey, workspaceKey, collectionKey, collectionItemKey } = this.props;
 
     let promise;
-    this.setState({actionButtonLoading: true})
-    if(collectionKey){
+    this.setState({ actionButtonLoading: true });
+    if (collectionKey) {
       promise = service.api.buildCollectionItem(siteKey, workspaceKey, collectionKey, collectionItemKey, buildAction);
-    }
-    else {
+    } else {
       promise = service.api.buildSingle(siteKey, workspaceKey, singleKey, buildAction);
     }
 
-    promise.then((buildResult)=>{
+    promise.then(
+      (buildResult) => {
+        if (buildResult.stdoutType === "message") {
+          snackMessageService.addSnackMessage(
+            <div>
+              Build ${buildAction} was succesful
+              <br />
+              {buildResult.stdoutContent}
+            </div>,
+            { severity: "success" }
+          );
+        } else if (buildResult.stdoutType === "ascii_message") {
+          snackMessageService.addSnackMessage(
+            <pre>
+              Build ${buildAction} was succesful
+              <br />
+              {buildResult.stdoutContent}
+            </pre>,
+            { severity: "success" }
+          );
+        } else if (buildResult.stdoutType === "file_path") {
+          let action = (
+            <React.Fragment>
+              <Button
+                color='secondary'
+                size='small'
+                onClick={() => {
+                  service.api.openFileInEditor(buildResult.stdoutContent.replace("\n", ""));
+                  snackMessageService.reportSnackDismiss();
+                }}>
+                Open
+              </Button>
+              <IconButton
+                aria-label='close'
+                color='inherit'
+                onClick={() => {
+                  snackMessageService.reportSnackDismiss();
+                }}
+                size='large'>
+                <CloseIcon />
+              </IconButton>
+            </React.Fragment>
+          );
 
-      if(buildResult.stdoutType === "message"){
-        snackMessageService.addSnackMessage(<div>Build ${buildAction} was succesful<br/>{buildResult.stdoutContent}</div>,{severity: 'success'});
+          snackMessageService.addSnackMessage(`Build ${buildAction} was succesful`, { severity: "success", action: action });
+        } else {
+          snackMessageService.addSnackMessage(`Build ${buildAction} was succesful`, { severity: "success" });
+        }
+        this.setState({ actionButtonLoading: false });
+      },
+      () => {
+        snackMessageService.addSnackMessage(`Build failed`, { severity: "warning" });
+        this.setState({ actionButtonLoading: false });
       }
-      else if(buildResult.stdoutType === "ascii_message"){
-        snackMessageService.addSnackMessage(<pre>Build ${buildAction} was succesful<br/>{buildResult.stdoutContent}</pre>,{severity: 'success'});
-      }
-      else if(buildResult.stdoutType === "file_path"){
-        let action = (          <React.Fragment>
-          <Button color="secondary" size="small" onClick={()=>{
-            service.api.openFileInEditor(buildResult.stdoutContent.replace("\n",""));
-            snackMessageService.reportSnackDismiss()
-          }}>
-            Open
-          </Button>
-          <IconButton
-            aria-label="close"
-            color="inherit"
-            onClick={()=>{
-              snackMessageService.reportSnackDismiss()
-            }}
-            size="large">
-            <CloseIcon />
-          </IconButton>
-        </React.Fragment>
-        )
-
-        snackMessageService.addSnackMessage(`Build ${buildAction} was succesful`,{severity: 'success', action: action});
-      }
-      else{
-        snackMessageService.addSnackMessage(`Build ${buildAction} was succesful`,{severity: 'success'});
-      }
-      this.setState({actionButtonLoading: false})
-
-    }, () => {
-        snackMessageService.addSnackMessage(`Build failed`,{severity: 'warning'});
-        this.setState({actionButtonLoading: false})
-      })
-
+    );
   }
 
-
-  render(){
-
+  render() {
     let backButton = undefined;
-    if( this.props.collectionKey){
+    if (this.props.collectionKey) {
       backButton = (
-        <IconButton aria-label="back" onClick={()=>{this.handleBackButton();}} size="large">
+        <IconButton
+          aria-label='back'
+          onClick={() => {
+            this.handleBackButton();
+          }}
+          size='large'>
           <ArrowBackIcon />
         </IconButton>
       );
     }
 
     let openInEditorButton = undefined;
-    if(!this.props.hideExternalEditIcon){
+    if (!this.props.hideExternalEditIcon) {
       openInEditorButton = (
-          <Button
-            onClick={()=>{this.props.onOpenInEditor();}}
-            size="small"
-            variant="contained"
-            startIcon={<DescriptionIcon />}
-          >
-           Open in Editor
-          </Button>
+        <Button
+          onClick={() => {
+            this.props.onOpenInEditor();
+          }}
+          size='small'
+          variant='contained'
+          startIcon={<DescriptionIcon />}>
+          Open in Editor
+        </Button>
       );
     }
 
     let openInBrowserButton = undefined;
-    if(this.props.pageUrl){
+    if (this.props.pageUrl) {
       openInBrowserButton = (
-
-          <Button
-            onClick={()=>{this.handleOpenPageInBrowser();}}
-            style={{marginRight:'5px'}}
-            size="small"
-            variant="contained"
-            startIcon={<OpenInBrowserIcon />}
-          >
-            Preview Page
-          </Button>
+        <Button
+          onClick={() => {
+            this.handleOpenPageInBrowser();
+          }}
+          style={{ marginRight: "5px" }}
+          size='small'
+          variant='contained'
+          startIcon={<OpenInBrowserIcon />}>
+          Preview Page
+        </Button>
       );
     }
 
     let buildActionButtons = undefined;
-    if(this.props.buildActions){
-
-      buildActionButtons = this.props.buildActions.map((build_action)=>{
-
-
+    if (this.props.buildActions) {
+      buildActionButtons = this.props.buildActions.map((build_action) => {
         return (
           <Button
-            key={"buildButton"+build_action.key}
-            onClick={()=>{this.handleDocBuild(build_action.key);}}
-            style={{marginRight:'5px'}}
-            size="small"
-            variant="contained"
-            disabled={this.state['build_action_'+build_action]}
-            startIcon={<OpenInBrowserIcon />}
-          >
+            key={"buildButton" + build_action.key}
+            onClick={() => {
+              this.handleDocBuild(build_action.key);
+            }}
+            style={{ marginRight: "5px" }}
+            size='small'
+            variant='contained'
+            disabled={this.state["build_action_" + build_action]}
+            startIcon={<OpenInBrowserIcon />}>
             {build_action.button_text}
           </Button>
-      );
-
+        );
       });
     }
 
-
-
-    if(this.state.renderError)
-      return (<p style={{color:'red', padding:'24px'}}>{this.state.renderError}</p>)
+    if (this.state.renderError) return <p style={{ color: "red", padding: "24px" }}>{this.state.renderError}</p>;
 
     let breadcumb = this.renderBreadcumb();
 
     let form = (
-      <div key={'dynamic-form'} style={{padding:'0px'}}>
-
+      <div key={"dynamic-form"} style={{ padding: "0px" }}>
         <Box
           bgcolor='background.default'
           sx={{
-            position : 'sticky',
+            position: "sticky",
             zIndex: 1,
             top: 0,
-            paddingBottom: '16px',
-            paddingLeft: '16px',
-            paddingRight: '16px',
-            paddingTop: '6px',
-            width:'100%',
-            display:'flex'
-          }}
-        >
+            paddingBottom: "16px",
+            paddingLeft: "16px",
+            paddingRight: "16px",
+            paddingTop: "6px",
+            width: "100%",
+            display: "flex",
+          }}>
+          {backButton}
 
-        {backButton}
+          <div style={Object.assign({ flexGrow: 1 })}>{breadcumb}</div>
 
-        <div style={Object.assign({flexGrow:1})}>
-          {breadcumb}
+          <div>
+            {this.state.actionButtonLoading ? (
+              <React.Fragment>
+                &nbsp;
+                <CircularProgress size={24} />
+                &nbsp;
+              </React.Fragment>
+            ) : null}
+            {buildActionButtons}
+            {openInBrowserButton}
+            {openInEditorButton}
+          </div>
+        </Box>
+        <div key={"dynamic-form2"} style={{ padding: "20px" }}>
+          {this.renderLevel({
+            field: { fields: this.state.fields, key: "root", compositeKey: "root", type: "root" },
+            state: this.state.document,
+            uiState: undefined,
+            parent: this.root,
+          })}
+
+          {this.props.debug ? (
+            <div style={{ marginTop: componentMarginTop, overflow: "auto", border: "solid 1px #e8e8e8", borderRadius: "7px" }}>
+              <pre style={{ padding: 16, margin: 0, whiteSpace: "pre-wrap", wordWrap: "break-word" }}>{JSON.stringify(this.getCurrentNodeDebugInfo())}</pre>
+
+              <pre style={{ padding: 16, margin: 0, whiteSpace: "pre-wrap", wordWrap: "break-word" }}>{JSON.stringify(this.state, null, "   ")}</pre>
+            </div>
+          ) : undefined}
         </div>
-
-        <div>
-
-        { (this.state.actionButtonLoading ?
-          <React.Fragment>&nbsp;<CircularProgress size={24} />&nbsp;</React.Fragment>
-          :
-          null) }
-        {buildActionButtons}
-        {openInBrowserButton}
-        {openInEditorButton}
-        </div>
-
-      </Box>
-      <div key={'dynamic-form2'} style={{padding:'20px'}}>
-
-      {this.renderLevel({
-        field: {fields: this.state.fields, key:'root', compositeKey:'root', type:'root' },
-        state: this.state.document,
-        uiState: undefined,
-        parent: this.root
-      })}
-
-      { this.props.debug ?
-          <div style={{marginTop: componentMarginTop, overflow: 'auto', border: 'solid 1px #e8e8e8', borderRadius:'7px'}}>
-          <pre style={{padding:16, margin:0, whiteSpace: 'pre-wrap', wordWrap: 'break-word'}}>
-            {JSON.stringify(this.getCurrentNodeDebugInfo())}
-          </pre>
-
-          <pre style={{padding:16, margin:0, whiteSpace: 'pre-wrap', wordWrap: 'break-word'}}>
-            {JSON.stringify(this.state, null,'   ')}
-          </pre>
-          </div> : undefined }
-
-
-      </div>
       </div>
     );
 
-    return (<Route render={({history})=>{
-
-      this.history = history;
-      return form }}
-  />);
-
-
+    return (
+      <Route
+        render={({ history }) => {
+          this.history = history;
+          return form;
+        }}
+      />
+    );
   }
 }
 

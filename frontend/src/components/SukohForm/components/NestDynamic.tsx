@@ -36,7 +36,7 @@ class NestDynamic extends BaseDynamic {
     return 'nest';
   }
 
-  buildBreadcumbFragment(node, buttons){
+  buildBreadcrumbFragment(node, buttons){
     buttons.push({label: node.field.title, node});
   }
 
