@@ -3,10 +3,9 @@ import TextField from "@mui/material/TextField";
 import FormItemWrapper from "./shared/FormItemWrapper";
 import Tip from "../../Tip";
 import AiAssist from "../../AiAssist";
-import { BaseDynamic, BaseDynamicProps, BaseDynamicState } from "../../HoForm";
+import { BaseDynamic, BaseDynamicProps, BaseDynamicState, FieldBase } from "../../HoForm";
 
-export interface TextFieldDynamicField {
-  key: string;
+export interface TextFieldDynamicField extends FieldBase {
   default?: string;
   title?: string;
   tip?: string;
@@ -14,22 +13,9 @@ export interface TextFieldDynamicField {
   txtInsertButtons?: string[];
 }
 
-interface TextFieldDynamicProps extends BaseDynamicProps {
-  context: {
-    value: string;
-    setValue: (value: string, delay?: number) => void;
-    node: {
-      field: TextFieldDynamicField;
-      state: any;
-    };
-    currentPath: string;
-    parentPath: string;
-    pageUrl?: string;
-    enableAiAssist?: boolean;
-  };
-}
+type TextFieldDynamicProps = BaseDynamicProps<TextFieldDynamicField>;
 
-interface TextFieldDynamicState extends BaseDynamicState {}
+type TextFieldDynamicState = BaseDynamicState;
 
 class TextFieldDynamic extends BaseDynamic<TextFieldDynamicProps, TextFieldDynamicState> {
   normalizeState({ state, field }) {

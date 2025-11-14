@@ -3,39 +3,27 @@ import FormItemWrapper from "./shared/FormItemWrapper";
 import SimpleMDE from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
 import Tip from "../../Tip";
-import { BaseDynamic, BaseDynamicProps, BaseDynamicState } from "../../HoForm";
+import { BaseDynamic, BaseDynamicProps, BaseDynamicState, FieldBase } from "../../HoForm";
 //import service                              from './../../../services/service'
 import { EditorChange } from "codemirror";
 
-export interface EasyMarkdownDynamicField {
-  key: string;
-  compositeKey: string;
-  type: string;
+export interface EasyMarkdownDynamicField extends FieldBase {
   default?: string;
   multiLine?: boolean;
   tip?: string;
   title?: string;
 }
 
-interface EasyMarkdownDynamicProps extends BaseDynamicProps {
-  context: {
-    node: {
-      field: EasyMarkdownDynamicField;
-      state: any;
-    };
-    currentPath: string;
-    parentPath: string;
-    value: string;
-    setValue: (e: EditorChange, delay: number) => void;
-  };
-}
+type EasyMarkdownDynamicProps = BaseDynamicProps<EasyMarkdownDynamicField>;
+
+type EasyMarkdownDynamicState = BaseDynamicState;
 
 const autofocusNoSpellcheckerOptions = {
   autofocus: false,
   spellChecker: false,
 };
 
-class EasyMarkdownDynamic extends BaseDynamic<EasyMarkdownDynamicProps> {
+class EasyMarkdownDynamic extends BaseDynamic<EasyMarkdownDynamicProps, EasyMarkdownDynamicState> {
   normalizeState({ state, field }: { state: any; field: EasyMarkdownDynamicField }) {
     let key = field.key;
     if (state[key] === undefined) {

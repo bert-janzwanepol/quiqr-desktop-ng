@@ -1,21 +1,20 @@
 import React from "react";
-import type { DynamicFormNode, FieldBase, FormStateBuilder, FieldsExtender } from "../../HoForm";
+import type { DynamicFormNode, FieldBase, BaseDynamicProps, BaseDynamicState } from "../../HoForm";
 
 import { BaseDynamic } from "../../HoForm";
 
-type SectionDynamicField = {
-  key: string;
-  compositeKey: string;
-  type: string;
+type SectionDynamicField = FieldBase & {
   title: string;
   fields: Array<any>;
   groupdata?: boolean;
 };
 
-type SectionDynamicState = {};
+type SectionDynamicProps = BaseDynamicProps<SectionDynamicField>;
 
-class SectionDynamic extends BaseDynamic<SectionDynamicField, SectionDynamicState> {
-  allocateStateLevel(field: SectionDynamicField, parentState: any, rootState: any) {
+type SectionDynamicState = BaseDynamicState;
+
+class SectionDynamic extends BaseDynamic<SectionDynamicProps, SectionDynamicState> {
+  allocateStateLevel(field: SectionDynamicField, parentState: any, _rootState: any) {
     if (field.groupdata == null || field.groupdata === true) {
       if (parentState[field.key] === undefined) parentState[field.key] = {};
       return parentState[field.key];
@@ -23,11 +22,11 @@ class SectionDynamic extends BaseDynamic<SectionDynamicField, SectionDynamicStat
     return parentState;
   }
 
-  extendField(field: SectionDynamicField, fieldsExtender: FieldsExtender) {
+  extendField(field: SectionDynamicField, fieldsExtender: any) {
     fieldsExtender.extendFields(field.fields);
   }
 
-  normalizeState({ state, field, stateBuilder }: { state: any; field: SectionDynamicField; stateBuilder: FormStateBuilder }) {
+  normalizeState({ state, field, stateBuilder }: { state: any; field: SectionDynamicField; stateBuilder: any }) {
     stateBuilder.setLevelState(state, field.fields);
   }
 
@@ -35,9 +34,9 @@ class SectionDynamic extends BaseDynamic<SectionDynamicField, SectionDynamicStat
     return "section";
   }
 
-  buildBreadcrumbFragment(currentNode: DynamicFormNode<SectionDynamicField>, items: Array<{ label: string; node?: DynamicFormNode<FieldBase> }>): void {}
+  buildBreadcrumbFragment(_currentNode: DynamicFormNode<SectionDynamicField>, _items: Array<{ label: string; node?: DynamicFormNode<FieldBase> }>): void {}
 
-  buildPathFragment(node: DynamicFormNode<SectionDynamicField>, nodeLevel: number, nodes: Array<DynamicFormNode<FieldBase>>): string | null {
+  buildPathFragment(_node: DynamicFormNode<SectionDynamicField>, _nodeLevel: number, _nodes: Array<DynamicFormNode<FieldBase>>): string | null {
     return undefined;
   }
 

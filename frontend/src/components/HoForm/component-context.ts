@@ -16,6 +16,8 @@ export class ComponentContext<Field extends FieldBase> {
     form: Form;
     value: any;
     reloadAfterSave: any;
+    enableAiAssist: any;
+    pageUrl: any;
 
     //remove those?
     renderLevel: any;
@@ -23,7 +25,7 @@ export class ComponentContext<Field extends FieldBase> {
     setLevelState: any;
 
 
-    constructor(form, node, currentPath, parentPath, nodePath, proplessInstance, onValueChanged, enableAiAssist, pageUrl) {
+    constructor(form: Form, node: any, currentPath: string, parentPath: string, nodePath: string, proplessInstance: any, onValueChanged: (value: any) => void, enableAiAssist: any, pageUrl: any) {
 
         this.node = node;
 

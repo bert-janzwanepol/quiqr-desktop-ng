@@ -1,9 +1,11 @@
 import * as React from "react";
 import Border from "./../Border";
+import type { ComponentContext } from './component-context';
+import type { FieldBase } from './types';
 //import { FieldsExtender } from './fields-extender';
 
-export interface BaseDynamicProps {
-  context: any;
+export interface BaseDynamicProps<Field extends FieldBase = FieldBase> {
+  context: ComponentContext<Field>;
 }
 
 export interface BaseDynamicState {
@@ -11,7 +13,10 @@ export interface BaseDynamicState {
   error_msg: string | null;
 }
 
-export class BaseDynamic<P extends BaseDynamicProps = BaseDynamicProps, S extends BaseDynamicState = BaseDynamicState> extends React.Component<P, S> {
+export class BaseDynamic<
+  P extends BaseDynamicProps<any> = BaseDynamicProps<FieldBase>,
+  S extends BaseDynamicState = BaseDynamicState
+> extends React.Component<P, S> {
   // override this to set defaults in the field configuration.
   extendField(field: any, extender: any) {
     if (field.field) {
