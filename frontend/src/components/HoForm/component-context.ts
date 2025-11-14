@@ -15,9 +15,9 @@ export class ComponentContext<Field extends FieldBase> {
 
     form: Form;
     value: any;
-    reloadAfterSave: any;
-    enableAiAssist: any;
-    pageUrl: any;
+    reloadAfterSave: boolean;
+    enableAiAssist: boolean;
+    pageUrl: string;
 
     //remove those?
     renderLevel: any;
