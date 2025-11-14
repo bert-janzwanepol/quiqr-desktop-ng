@@ -1,28 +1,27 @@
 import { BaseDynamic } from "../../HoForm";
-import type { DynamicFormNode, FieldsExtender, FormStateBuilder } from "../../HoForm";
+import type { DynamicFormNode, FieldBase, BaseDynamicProps, BaseDynamicState, FieldsExtenderType, FormStateBuilderType } from "../../HoForm";
 
-type PullDynamicField = {
-  type: string;
-  key: string;
+type PullDynamicField = FieldBase & {
   group?: string;
-  compositeKey: string;
   fields: Array<any>;
 };
 
-type PullDynamicState = {};
+type PullDynamicProps = BaseDynamicProps<PullDynamicField>;
 
-class PullDynamic extends BaseDynamic<PullDynamicField, PullDynamicState> {
-  allocateStateLevel(field: PullDynamicField, parentState: any, rootState: any) {
+type PullDynamicState = BaseDynamicState;
+
+class PullDynamic extends BaseDynamic<PullDynamicProps, PullDynamicState> {
+  allocateStateLevel(field: PullDynamicField, parentState: any, _rootState: any) {
     let key = field.group || field.key;
     if (parentState[key] === undefined) parentState[key] = {};
     return parentState[key];
   }
 
-  extendField(field: PullDynamicField, fieldExtender: FieldsExtender) {
+  extendField(field: PullDynamicField, fieldExtender: FieldsExtenderType) {
     fieldExtender.extendFields(field.fields);
   }
 
-  normalizeState({ state, field, stateBuilder }: { state: any; field: PullDynamicField; stateBuilder: FormStateBuilder }) {
+  normalizeState({ state, field, stateBuilder }: { state: any; field: PullDynamicField; stateBuilder: FormStateBuilderType }) {
     stateBuilder.setLevelState(state, field.fields);
   }
 
@@ -30,9 +29,9 @@ class PullDynamic extends BaseDynamic<PullDynamicField, PullDynamicState> {
     return "pull";
   }
 
-  buildBreadcrumbFragment(node: any, buttons: Array<{ label: string; node: any }>) {}
+  uildBreadcrumbFragment(_node: any, _buttons: Array<{ label: string; node: any }>) {}
 
-  buildPathFragment(node: DynamicFormNode<PullDynamicField>) {
+  buildPathFragment(_node: DynamicFormNode<PullDynamicField>) {
     return undefined;
   }
 

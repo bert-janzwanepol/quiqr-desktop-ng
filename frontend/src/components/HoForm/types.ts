@@ -26,15 +26,6 @@ export interface ComponentProps<P extends BaseComponentProps, S extends BaseComp
     context: ComponentContext<FieldBase>
 };
 
-// FormStateBuilder type (placeholder - define properly if needed elsewhere)
-export interface FormStateBuilder {
-    setLevelState: (state: any, fields: Array<any>) => void;
-}
-
-// FieldsExtender type (placeholder - define properly if needed elsewhere)
-export interface FieldsExtender {
-    extendFields: (fields: Array<any>) => void;
-}
-
-// Helper type alias for Dynamic components - just a clearer name for BaseDynamicProps
-export type BaseDynamicPropsWithContext<Field extends FieldBase> = import('./BaseDynamic').BaseDynamicProps<Field>;
+// Re-export the real classes for convenience
+export type { FormStateBuilder } from './form-state-builder';
+export type { FieldsExtender } from './fields-extender';

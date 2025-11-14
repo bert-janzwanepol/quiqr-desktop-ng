@@ -2,7 +2,8 @@ import * as React from "react";
 import Border from "./../Border";
 import type { ComponentContext } from './component-context';
 import type { FieldBase } from './types';
-//import { FieldsExtender } from './fields-extender';
+import type { FieldsExtender } from './fields-extender';
+import type { FormStateBuilder } from './form-state-builder';
 
 export interface BaseDynamicProps<Field extends FieldBase = FieldBase> {
   context: ComponentContext<Field>;
@@ -18,7 +19,7 @@ export class BaseDynamic<
   S extends BaseDynamicState = BaseDynamicState
 > extends React.Component<P, S> {
   // override this to set defaults in the field configuration.
-  extendField(field: any, extender: any) {
+  extendField(field: any, extender: FieldsExtender) {
     if (field.field) {
       extender.extendFields([field.field]);
     }
@@ -28,7 +29,7 @@ export class BaseDynamic<
   }
 
   // override this to set a initial value, a default value or a calculated value (e.g: "now" converts to a date).
-  normalizeState({ state, field, stateBuilder }) {}
+  normalizeState({ state, field, stateBuilder }: { state: any; field: any; stateBuilder: FormStateBuilder }) {}
 
   shouldComponentUpdate(nextProps, nextState) {
     return true;

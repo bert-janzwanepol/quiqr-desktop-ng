@@ -11,3 +11,6 @@ export const ComponentRegistry = _ComponentRegistry;
 export const FieldsExtender = _FieldsExtender;
 export const FormStateBuilder = _FormStateBuilder;
 export * from './types';
+
+export type { FieldsExtender as FieldsExtenderType } from './fields-extender';
+export type { FormStateBuilder as FormStateBuilderType } from './form-state-builder';
