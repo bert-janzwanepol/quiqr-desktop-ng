@@ -276,7 +276,14 @@ class Form extends React.Component<FormProps, FormState> {
       function (childField) {
         let data = { field: childField, state: state, uiState, parent };
         let field = this.renderField(data);
-        if (this.props.debug) service.api.logToConsole("FIELD", data, field, this.buildPath(data));
+        if (this.props.debug) service.api.logToConsole(
+          {
+            data,
+            field,
+            buildPathData: this.buildPath(data),
+          },
+          "FIELD"
+        );
         return field;
       }.bind(this)
     );
