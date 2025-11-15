@@ -192,7 +192,7 @@ export class API {
     return mainProcessBridge.request('copyCollectionItemToLang', {siteKey, workspaceKey, collectionKey, collectionItemKey, collectionItemNewKey, destLang});
   }
 
-  openFileInEditor(filepath: string, create: boolean, relativeToRoot: boolean){
+  openFileInEditor(filepath: string, create: boolean = false, relativeToRoot: boolean = false){
     mainProcessBridge.requestVoid('openFileInEditor', {filepath, create, relativeToRoot});
   }
 

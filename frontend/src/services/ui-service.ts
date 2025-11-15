@@ -1,5 +1,7 @@
 import {BaseService} from './base-service';
-import mainProcessBridge from './../utils/main-process-bridge';
+import mainProcessBridge from '../utils/main-process-bridge';
+
+type SnackSeverity = 'success' | 'warning'
 
 class SnackMessageService extends BaseService {
 
@@ -23,7 +25,7 @@ class SnackMessageService extends BaseService {
         return false;
     }
 
-    addSnackMessage( message, {severity, action, onActionClick, autoHideDuration=3000} = {} ){
+    addSnackMessage( message, {severity, action, onActionClick, autoHideDuration=3000}: {severity: SnackSeverity; action?: any, onActionClick?: unknown; autoHideDuration?: number} ){
         this._snackMessageQueue.push({message, severity, action, onActionClick, autoHideDuration});
         if(this._tryAssingCurrentSnack())
             this._notifyChanges();
