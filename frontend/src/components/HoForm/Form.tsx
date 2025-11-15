@@ -15,11 +15,56 @@ import { snackMessageService } from "../../services/ui-service";
 import CloseIcon from "@mui/icons-material/Close";
 import { FormBreadcrumb } from "../Breadcrumb";
 import { FieldsExtender } from "./fields-extender";
+import { ComponentRegistry } from "./component-registry";
+import type { FieldBase } from "./types";
+import { hasOpenAiApiKey, isValidPreviewConfiguration } from "../../utils/type-guards";
 
 const Fragment = React.Fragment;
 const componentMarginTop = "16px";
 
-class Form extends React.Component {
+interface BuildAction {
+  key: string;
+  button_text: string;
+}
+
+interface FormProps {
+  fields: Array<FieldBase>;
+  values?: any;
+  componentRegistry: ComponentRegistry;
+  siteKey?: string;
+  workspaceKey?: string;
+  collectionKey?: string;
+  collectionItemKey?: string;
+  singleKey?: string;
+  rootName?: string;
+  pageUrl?: string;
+  refreshed?: boolean;
+  debug?: boolean;
+  hideExternalEditIcon?: boolean;
+  buildActions?: Array<BuildAction>;
+  onChange?: (getDocument: () => any) => void;
+  saveFormHandler: () => void;
+  onOpenInEditor: () => void;
+}
+
+interface FormState {
+  document: any;
+  path: string;
+  fields: Array<FieldBase>;
+  renderError?: string | null;
+  actionButtonLoading?: boolean;
+  prefs?: any;
+  enableAiAssist?: boolean;
+  [key: string]: any; // For dynamic build_action_* properties
+}
+
+class Form extends React.Component<FormProps, FormState> {
+  stateBuilder: FormStateBuilder;
+  root: any;
+  currentNode: any;
+  history: any;
+  forceUpdateThis: () => void;
+
   constructor(props: FormProps) {
     super(props);
     this.stateBuilder = new FormStateBuilder(this.props.componentRegistry);
@@ -57,7 +102,7 @@ class Form extends React.Component {
         document: {},
         path: "",
         fields: [],
-        renderError: error.message,
+        renderError: error instanceof Error ? error.message : String(error),
         actionButtonLoading: false,
       };
     }
@@ -73,14 +118,16 @@ class Form extends React.Component {
   componentDidMount() {
     if (this.props.refreshed) {
       service.api.getCurrentFormNodePath().then((newNode) => {
-        this.setState({ path: newNode });
+        if (typeof newNode === 'string') {
+          this.setState({ path: newNode });
+        }
       });
     }
 
     service.api.readConfKey("prefs").then((value) => {
       this.setState({ prefs: value });
 
-      if (value.openAiApiKey) {
+      if (hasOpenAiApiKey(value)) {
         this.setState({ enableAiAssist: true });
       } else {
         this.setState({ enableAiAssist: false });
@@ -184,7 +231,11 @@ class Form extends React.Component {
       service.api
         .getPreviewCheckConfiguration()
         .then((conf) => {
-          if (conf && conf.enable === true) {
+          console.log(conf);
+          return conf;
+        })
+        .then((conf) => {
+          if (isValidPreviewConfiguration(conf) && conf.enable) {
             const sets = ["min_keywords", "max_keywords", "title_character_count", "description_character_count", "word_count", "content_css_selector"];
 
             let qstr = "";
@@ -193,14 +244,14 @@ class Form extends React.Component {
             }
 
             const previewUrl = conf.preview_url + "?url=" + this.props.pageUrl + qstr;
-            window.require("electron").shell.openExternal(previewUrl);
+            service.api.openExternal(previewUrl);
           } else {
-            window.require("electron").shell.openExternal(this.props.pageUrl);
+            service.api.openExternal(this.props.pageUrl);
           }
         })
         .catch((e) => {
           service.api.logToConsole(e);
-          window.require("electron").shell.openExternal(this.props.pageUrl);
+          service.api.openExternal(this.props.pageUrl);
         });
     }
   }

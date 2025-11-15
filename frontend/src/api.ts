@@ -260,6 +260,10 @@ export class API {
     return mainProcessBridge.request('openCustomCommand', {command});
   }
 
+  openExternal(url: string) {
+    return mainProcessBridge.request('openExternal', { url });
+  }
+
   getThumbnailForPath(siteKey: string, workspaceKey: string, targetPath: string){
     return mainProcessBridge.request('getThumbnailForPath', {siteKey, workspaceKey, targetPath}, {timeout: 400000});
   }

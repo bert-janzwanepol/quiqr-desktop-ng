@@ -205,6 +205,17 @@ api.openFileInEditor = function({filepath, create=false, relativeToRoot=false}, 
   }
 }
 
+api.openExternal = async function({url}, context){
+  try{
+    await shell.openExternal(url);
+    context.resolve();
+  }
+  catch(e){
+    context.reject(e);
+    console.log(e);
+  }
+}
+
 api.listWorkspaces = async function({siteKey}, context){
   let service = await getSiteServicePromise(siteKey);
   let workspaces = await service.listWorkspaces();
@@ -393,7 +404,7 @@ api.setCurrentFormNodePath = async function({path}, context){
   context.resolve(true);
 }
 
-api.getCurrentFormNodePath = async function(_, context){
+api.getCurrentFormNodePath = async function(_, context) {
   context.resolve(global.currentFormNodePath)
 }
 
