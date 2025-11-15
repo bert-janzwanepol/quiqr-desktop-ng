@@ -59,12 +59,11 @@ class SnackMessageService extends BaseService {
 
 class ConsoleService extends BaseService {
 
-    /* :: _consoleIsHiddden : bool */
-    /* :: _consoleTimeout : any */
-    /* :: _consoleMessages : Array<{id: number, line:string}> */
-    /* :: _consoleBuffer : Array<{id: number, line:string}> */
-    /* :: consoleMessageLastId : number */
-
+    _consoleIsHiddden: boolean
+    _consoleTimeout: any
+    _consoleMessages: { id: number, line: string }[]
+    _consoleBuffer: { id: number, line: string }[]
+    consoleMessageLastId: number 
 
     constructor(){
         super();
