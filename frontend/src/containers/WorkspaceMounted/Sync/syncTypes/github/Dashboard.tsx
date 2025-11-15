@@ -200,7 +200,7 @@ class Dashboard extends React.Component{
 
       this.refreshRemoteStatus(false);
 
-      snackMessageService.addSnackMessage(`Sync: ${mode} from remote finished.`,'success');
+      snackMessageService.addSnackMessage(`Sync: ${mode} from remote finished.`, { severity: "success" });
 
     }).catch((e)=>{
       snackMessageService.addSnackMessage(`Sync: ${mode} from remote failed.`, {severity: 'warning'});
@@ -540,5 +540,3 @@ class Dashboard extends React.Component{
 }
 
 export default withStyles(useStyles)(Dashboard);
-
-

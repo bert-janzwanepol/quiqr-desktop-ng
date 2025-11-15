@@ -2,17 +2,20 @@ import {BaseService} from './base-service';
 import mainProcessBridge from '../utils/main-process-bridge';
 
 type SnackSeverity = 'success' | 'warning'
-type SnackMessage = {
-    message: string;
+
+
+type SnackArgs = {
     severity: SnackSeverity; 
     action?: any, onActionClick?: unknown; 
     autoHideDuration?: number
 }
+
+type SnackQueueItem = { message: string } & SnackArgs;
 class SnackMessageService extends BaseService {
 
-    _snackMessageQueue: SnackMessage[]
-    _currentSnackMessage: SnackMessage | undefined;
-    _previousSnackMessage: SnackMessage | undefined;
+    _snackMessageQueue: SnackQueueItem[]
+    _currentSnackMessage: SnackQueueItem | undefined;
+    _previousSnackMessage: SnackQueueItem | undefined;
 
     constructor(){
 
@@ -34,7 +37,7 @@ class SnackMessageService extends BaseService {
         return false;
     }
 
-    addSnackMessage(message: SnackMessage['message'], { severity, action, onActionClick, autoHideDuration = 3000 }: SnackMessage ){
+    addSnackMessage(message: string, { severity, action, onActionClick, autoHideDuration = 3000 }: SnackArgs ){
         this._snackMessageQueue.push({message, severity, action, onActionClick, autoHideDuration});
         if(this._tryAssingCurrentSnack())
             this._notifyChanges();

@@ -424,7 +424,7 @@ const Collection: React.FC<CollectionProps> = ({ siteKey, workspaceKey, collecti
         if (result.copied) {
           setState(prev => ({ ...prev, modalBusy: false, view: undefined }));
           //service.api.logToConsole("copied to "+ destLang);
-          snackMessageService.addSnackMessage(`Copies ${itemKey} to ${destLang}.`, 'success');
+          snackMessageService.addSnackMessage(`Copies ${itemKey} to ${destLang}.`, { severity: "success" });
         } else {
           setState(prev => ({ ...prev, modalBusy: false, view: undefined }));
         }

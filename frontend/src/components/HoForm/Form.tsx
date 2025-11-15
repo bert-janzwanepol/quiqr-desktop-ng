@@ -229,7 +229,9 @@ class Form extends React.Component<FormProps, FormState> {
 
   handleOpenPageInBrowser() {
     if (!this.props.pageUrl) {
-      snackMessageService.addSnackMessage(<div>No page URL (pageUrl) has been set in</div>, { severity: "warning" });
+      snackMessageService.addSnackMessage("No page URL (pageUrl) has been set", { severity: "warning" });
+
+      return;
     }
 
     service.api
@@ -372,20 +374,14 @@ class Form extends React.Component<FormProps, FormState> {
       (buildResult) => {
         if (buildResult.stdoutType === "message") {
           snackMessageService.addSnackMessage(
-            <div>
-              Build ${buildAction} was succesful
-              <br />
-              {buildResult.stdoutContent}
-            </div>,
+            `Build ${buildAction} was succesful
+              {buildResult.stdoutContent}`,
             { severity: "success" }
           );
         } else if (buildResult.stdoutType === "ascii_message") {
           snackMessageService.addSnackMessage(
-            <pre>
-              Build ${buildAction} was succesful
-              <br />
-              {buildResult.stdoutContent}
-            </pre>,
+              `Build ${buildAction} was succesful
+              ${buildResult.stdoutContent}`
             { severity: "success" }
           );
         } else if (buildResult.stdoutType === "file_path") {

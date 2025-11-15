@@ -29,7 +29,7 @@ class Dashboard extends React.Component{
         false,
         Meta.syncingText, Meta.icon());
 
-      snackMessageService.addSnackMessage('Sync: sync from folder finished.','success');
+      snackMessageService.addSnackMessage("Sync: sync from folder finished.", { severity: "success" });
 
     }).catch((e)=>{
       snackMessageService.addSnackMessage('Sync: sync from folder failed.', {severity: 'warning'});
@@ -138,5 +138,3 @@ class Dashboard extends React.Component{
 }
 
 export default withStyles(useStyles)(Dashboard);
-
-
