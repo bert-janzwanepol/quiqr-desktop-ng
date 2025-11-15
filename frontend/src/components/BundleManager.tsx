@@ -74,7 +74,7 @@ const BundleManagerHeader: React.FC<BundleManagerHeaderProps> = React.memo(
             onClick={() => {
               const { clipboard } = window.require("electron");
               clipboard.writeText(encodeURI(originalLabel));
-              snackMessageService.addSnackMessage("File path copied to clipboard");
+              snackMessageService.addSnackMessage("File path copied to clipboard", {severity: 'success'});
             }}>
             <FileCopyIcon />
           </IconButton>
