@@ -381,7 +381,7 @@ class Form extends React.Component<FormProps, FormState> {
         } else if (buildResult.stdoutType === "ascii_message") {
           snackMessageService.addSnackMessage(
               `Build ${buildAction} was succesful
-              ${buildResult.stdoutContent}`
+              ${buildResult.stdoutContent}`,
             { severity: "success" }
           );
         } else if (buildResult.stdoutType === "file_path") {
