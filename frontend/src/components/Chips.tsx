@@ -8,7 +8,7 @@ const Chips = ({ field, fullWidth, items, onPushItem, onRequestDelete, onSwap, s
   const [value, setValue] = useState('');
   const [dragFromIndex, setDragFromIndex] = useState(undefined);
   const [dragToIndex, setDragToIndex] = useState(undefined);
-  const documentMouseUpListenerRef = useRef();
+  const documentMouseUpListenerRef = useRef(null);
 
   const onChangeHandler = useCallback((e) => {
     setValue(e.target.value);
@@ -75,7 +75,7 @@ const Chips = ({ field, fullWidth, items, onPushItem, onRequestDelete, onSwap, s
     };
   }, [dragFromIndex]);
 
-  const renderChip = useCallback((index, label, opacity) => {
+  const renderChip = useCallback((index, label, opacity = 1) => {
     return (<Chip
       key={'chip-'+index}
       style={{opacity:opacity, margin:'2px'}}
