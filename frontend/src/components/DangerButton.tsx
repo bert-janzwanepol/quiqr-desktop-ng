@@ -3,7 +3,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 
 const DangerButton = ({ onClick, loadedButton, button, loadedProps }) => {
   const [clicked, setClicked] = useState(false);
-  const timeoutRef = useRef(0);
+  const timeoutRef = useRef(null);
 
   const clearTimeoutRef = useCallback(() => {
     if (timeoutRef.current) {
