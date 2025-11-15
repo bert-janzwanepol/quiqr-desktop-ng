@@ -64,6 +64,7 @@ class Form extends React.Component<FormProps, FormState> {
   currentNode: any;
   history: any;
   forceUpdateThis: () => void;
+  cache: string[];
 
   constructor(props: FormProps) {
     super(props);
@@ -118,7 +119,7 @@ class Form extends React.Component<FormProps, FormState> {
   componentDidMount() {
     if (this.props.refreshed) {
       service.api.getCurrentFormNodePath().then((newNode) => {
-        if (typeof newNode === 'string') {
+        if (typeof newNode === "string") {
           this.setState({ path: newNode });
         }
       });
@@ -227,29 +228,31 @@ class Form extends React.Component<FormProps, FormState> {
   }
 
   handleOpenPageInBrowser() {
-    if (this.props.pageUrl) {
-      service.api
-        .getPreviewCheckConfiguration()
-        .then((conf) => {
-          if (isValidPreviewConfiguration(conf) && conf.enable) {
-            const sets = ["min_keywords", "max_keywords", "title_character_count", "description_character_count", "word_count", "content_css_selector"];
-
-            let qstr = "";
-            for (var i = 0; i < sets.length; i++) {
-              qstr += `&${sets[i]}=${conf[sets[i]]}`;
-            }
-
-            const previewUrl = conf.preview_url + "?url=" + this.props.pageUrl + qstr;
-            service.api.openExternal(previewUrl);
-          } else {
-            service.api.openExternal(this.props.pageUrl);
-          }
-        })
-        .catch((e) => {
-          service.api.logToConsole(e);
-          service.api.openExternal(this.props.pageUrl);
-        });
+    if (!this.props.pageUrl) {
+      snackMessageService.addSnackMessage(<div>No page URL (pageUrl) has been set in</div>, { severity: "warning" });
     }
+
+    service.api
+      .getPreviewCheckConfiguration()
+      .then((conf) => {
+        if (isValidPreviewConfiguration(conf) && conf.enable) {
+          const sets = ["min_keywords", "max_keywords", "title_character_count", "description_character_count", "word_count", "content_css_selector"];
+
+          let qstr = "";
+          for (var i = 0; i < sets.length; i++) {
+            qstr += `&${sets[i]}=${conf[sets[i]]}`;
+          }
+
+          const previewUrl = conf.preview_url + "?url=" + this.props.pageUrl + qstr;
+          service.api.openExternal(previewUrl);
+        } else {
+          service.api.openExternal(this.props.pageUrl);
+        }
+      })
+      .catch((e) => {
+        service.api.logToConsole(e);
+        service.api.openExternal(this.props.pageUrl);
+      });
   }
 
   handleBackButton() {
@@ -272,14 +275,15 @@ class Form extends React.Component<FormProps, FormState> {
       function (childField) {
         let data = { field: childField, state: state, uiState, parent };
         let field = this.renderField(data);
-        if (this.props.debug) service.api.logToConsole(
-          {
-            data,
-            field,
-            buildPathData: this.buildPath(data),
-          },
-          "FIELD"
-        );
+        if (this.props.debug)
+          service.api.logToConsole(
+            {
+              data,
+              field,
+              buildPathData: this.buildPath(data),
+            },
+            "FIELD"
+          );
         return field;
       }.bind(this)
     );
