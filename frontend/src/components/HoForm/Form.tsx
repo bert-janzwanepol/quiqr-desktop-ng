@@ -110,9 +110,9 @@ class Form extends React.Component<FormProps, FormState> {
 
   static shapeDocument(updatedDoc: {}, doc: {}) {}
 
-  componentDidCatch(error: Error, info: string) {
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     this.setState({ renderError: error.message });
-    console.warn(error, info);
+    console.warn(error, errorInfo);
   }
 
   componentDidMount() {
