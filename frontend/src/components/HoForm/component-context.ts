@@ -69,7 +69,7 @@ export class ComponentContext<Field extends FieldBase> {
         return this.value;
     }
 
-    setValue(value: any, debounce?: number = 0) {
+    setValue(value: any, debounce: number = 0) {
         if (this.onValueChanged) { //if this property is defined, it will intercept any change
             this.onValueChanged(value);
             return;
