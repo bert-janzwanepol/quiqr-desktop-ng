@@ -231,10 +231,6 @@ class Form extends React.Component<FormProps, FormState> {
       service.api
         .getPreviewCheckConfiguration()
         .then((conf) => {
-          console.log(conf);
-          return conf;
-        })
-        .then((conf) => {
           if (isValidPreviewConfiguration(conf) && conf.enable) {
             const sets = ["min_keywords", "max_keywords", "title_character_count", "description_character_count", "word_count", "content_css_selector"];
 
