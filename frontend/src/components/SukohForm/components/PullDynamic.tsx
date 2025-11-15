@@ -1,10 +1,10 @@
 import { BaseDynamic } from "../../HoForm";
 import type { DynamicFormNode, FieldBase, BaseDynamicProps, BaseDynamicState, FieldsExtenderType, FormStateBuilderType } from "../../HoForm";
 
-type PullDynamicField = FieldBase & {
+interface PullDynamicField extends FieldBase {
   group?: string;
   fields: Array<any>;
-};
+}
 
 type PullDynamicProps = BaseDynamicProps<PullDynamicField>;
 
@@ -12,7 +12,7 @@ type PullDynamicState = BaseDynamicState;
 
 class PullDynamic extends BaseDynamic<PullDynamicProps, PullDynamicState> {
   allocateStateLevel(field: PullDynamicField, parentState: any, _rootState: any) {
-    let key = field.group || field.key;
+    let key = field.group;
     if (parentState[key] === undefined) parentState[key] = {};
     return parentState[key];
   }

@@ -3,11 +3,11 @@ import type { DynamicFormNode, FieldBase, BaseDynamicProps, BaseDynamicState } f
 
 import { BaseDynamic } from "../../HoForm";
 
-type SectionDynamicField = FieldBase & {
+interface SectionDynamicField extends FieldBase {
   title: string;
   fields: Array<any>;
   groupdata?: boolean;
-};
+}
 
 type SectionDynamicProps = BaseDynamicProps<SectionDynamicField>;
 
