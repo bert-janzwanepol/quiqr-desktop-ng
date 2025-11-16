@@ -1,6 +1,5 @@
 import * as React from "react";
 import QuiqrColorLogo from "../svg-assets/QuiqrColorLogo";
-import withStyles from "@mui/styles/withStyles";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -8,8 +7,6 @@ import Checkbox from "@mui/material/Checkbox";
 import Typography from "@mui/material/Typography";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
-
-const useStyles = (theme) => ({});
 
 interface SplashDialogProps {
   showSplashAtStartup: boolean;
@@ -111,4 +108,4 @@ class SplashDialog extends React.Component<SplashDialogProps, SplashDialogState>
     );
   }
 }
-export default withStyles(useStyles)(SplashDialog);
+export default SplashDialog;
