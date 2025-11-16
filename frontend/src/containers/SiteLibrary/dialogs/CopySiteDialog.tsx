@@ -12,7 +12,32 @@ import DialogTitle from "@mui/material/DialogTitle";
 
 const useStyles = (theme) => ({});
 
-class CopyDialog extends React.Component {
+interface CopyDialogProps {
+  open: boolean;
+  siteconf: {
+    key: string;
+    name: string;
+  };
+  localsites?: string[];
+  onSavedClick: () => void;
+  onCancelClick: () => void;
+  classes?: any; // Added by withStyles HOC
+}
+
+interface CopyDialogState {
+  execButtonsDisabled: boolean;
+  errorTextSiteName: string;
+  busy: boolean;
+  cancelText: string;
+  siteconf: {
+    key?: string;
+    name?: string;
+  };
+  open?: boolean;
+  failure?: boolean;
+}
+
+class CopyDialog extends React.Component<CopyDialogProps, CopyDialogState> {
   constructor(props) {
     super(props);
 
