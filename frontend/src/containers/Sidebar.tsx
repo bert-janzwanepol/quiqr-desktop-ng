@@ -1,5 +1,4 @@
 import React                   from 'react';
-import withStyles from '@mui/styles/withStyles';
 import Divider                 from '@mui/material/Divider';
 import List                    from '@mui/material/List';
 import ListSubheader           from '@mui/material/ListSubheader';
@@ -12,12 +11,6 @@ import Collapse                from '@mui/material/Collapse';
 import ExpandLess              from '@mui/icons-material/ExpandLess';
 import ExpandMore              from '@mui/icons-material/ExpandMore';
 import IconButton              from '@mui/material/IconButton';
-
-const useStyles = theme => ({
-  nested: {
-    paddingLeft: theme.spacing(4),
-  },
-});
 
 class Sidebar extends React.Component{
 
@@ -69,7 +62,6 @@ class Sidebar extends React.Component{
   }
 
   renderNetstedItems(item, index){
-    const { classes } = this.props;
     let initOpen;
     let childItems = item.childItems.map((itemChild, index)=>{
 
@@ -82,7 +74,7 @@ class Sidebar extends React.Component{
           key={"itemNestChild"+itemChild.label}
           onClick={ itemChild.onClick }
           selected={itemChild.selected}
-          button className={classes.nested} >
+          button sx={{ pl: 4 }} >
           <ListItemText primary={itemChild.label} />
         </ListItem>
       )
@@ -197,4 +189,4 @@ class Sidebar extends React.Component{
   }
 }
 
-export default withStyles(useStyles)(Sidebar);
+export default Sidebar;
