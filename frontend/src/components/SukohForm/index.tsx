@@ -152,6 +152,7 @@ export class SukohForm extends React.Component<SukohFormProps, SukohFormState>{
     return (
       <React.Fragment>
         <Form
+          plugins={this.props.plugins}
           debug={false}
           componentRegistry={componentRegistry}
           siteKey={this.props.siteKey}

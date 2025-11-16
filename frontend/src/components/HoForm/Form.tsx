@@ -45,6 +45,7 @@ interface FormProps {
   onChange?: (getDocument: () => any) => void;
   saveFormHandler: () => void;
   onOpenInEditor: () => void;
+  plugins:any;
 }
 
 interface FormState {
