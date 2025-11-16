@@ -1,5 +1,4 @@
 import * as React           from 'react';
-import withStyles, { WithStyles } from '@mui/styles/withStyles';
 import Button               from '@mui/material/Button';
 import Box                  from '@mui/material/Box';
 import Dialog               from '@mui/material/Dialog';
@@ -8,21 +7,17 @@ import DialogContent        from '@mui/material/DialogContent';
 import DialogContentText    from '@mui/material/DialogContentText';
 import DialogTitle          from '@mui/material/DialogTitle';
 
-const useStyles = () => ({
-
-});
-
 interface SiteConf {
   name: string;
   key: string;
 }
 
-type DeleteSiteDialogProps = WithStyles<typeof useStyles> & {
+interface DeleteSiteDialogProps {
   open: boolean;
   siteconf: SiteConf;
   onCancelClick: () => void;
   onDelete: (key: string) => void;
-};
+}
 
 class DeleteSiteDialog extends React.Component<DeleteSiteDialogProps>{
 
@@ -60,4 +55,4 @@ class DeleteSiteDialog extends React.Component<DeleteSiteDialogProps>{
     );
   }
 }
-export default withStyles(useStyles)(DeleteSiteDialog)
+export default DeleteSiteDialog;
