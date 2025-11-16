@@ -240,7 +240,6 @@ class App extends React.Component<{}, AppState> {
               <ToolbarButton
                 key={"toolbarbutton-library"}
                 action={() => {
-                  console.log("hallo");
                   history.push("/sites/last");
                 }}
                 title='Site Library'
