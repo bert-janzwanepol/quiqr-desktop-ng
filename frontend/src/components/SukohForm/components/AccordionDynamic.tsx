@@ -55,7 +55,6 @@ class AccordionDynamic extends BaseDynamic<AccordionDynamicProps, AccordionDynam
   constructor(props) {
     super(props);
 
-    this.orgNode = null;
     this.state = {
       index: null,
       dragFromIndex: null,
