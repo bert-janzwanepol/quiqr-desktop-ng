@@ -13,7 +13,6 @@ import FormControl from "@mui/material/FormControl";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
-import withStyles, { WithStyles } from "@mui/styles/withStyles";
 import CircularProgress from "@mui/material/CircularProgress";
 
 import OpenAI from "openai";
@@ -22,28 +21,7 @@ import { EasyMarkdownDynamicField } from "./SukohForm/components/EasyMarkDownDyn
 import { TextFieldDynamicField } from "./SukohForm/components/TextFieldDynamic";
 import MarkdownDynamic, { MarkdownDynamicField } from "./SukohForm/components/MarkdownDynamic";
 
-const useStyles = (theme) => ({
-  keyButton: {
-    marginLeft: "auto",
-    margin: theme.spacing(1),
-    //marginTop: theme.spacing(2),
-  },
-
-  textfield: {
-    margin: theme.spacing(1),
-  },
-
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 300,
-  },
-
-  selectEmpty: {
-    marginTop: theme.spacing(2),
-  },
-});
-
-interface AiAssistProps extends WithStyles<typeof useStyles> {
+interface AiAssistProps {
   inValue: string;
   inField: TextFieldDynamicField | EasyMarkdownDynamicField | MarkdownDynamicField;
   pageUrl: string;
@@ -138,8 +116,6 @@ class AiAssist extends React.Component<AiAssistProps, AiAssistState> {
   }
 
   renderDialog() {
-    let { classes } = this.props;
-
     return (
       <Dialog open={this.state.dialogOpen} aria-labelledby='alert-dialog-title' aria-describedby='alert-dialog-descriptio' fullWidth={true} maxWidth={"md"}>
         <DialogTitle id='alert-dialog-title'>{"AI Assist on: " + this.props.inField.title}</DialogTitle>
@@ -147,7 +123,7 @@ class AiAssist extends React.Component<AiAssistProps, AiAssistState> {
           <Box my={3} sx={{ display: "flex" }}>
             <TextField
               fullWidth
-              className={classes.textfield}
+              sx={{ m: 1 }}
               disabled={this.props.inValue === ""}
               id='standard-full-width'
               label='Current Text'
@@ -157,7 +133,7 @@ class AiAssist extends React.Component<AiAssistProps, AiAssistState> {
           </Box>
 
           <Box my={0} sx={{ display: "flex" }}>
-            <FormControl variant='outlined' className={classes.formControl}>
+            <FormControl variant='outlined' sx={{ m: 1, minWidth: 300 }}>
               <InputLabel id='demo-simple-select-outlined-label'>Run AI Assist with text</InputLabel>
               <Select
                 labelId='demo-simple-select-outlined-label'
@@ -201,7 +177,7 @@ class AiAssist extends React.Component<AiAssistProps, AiAssistState> {
             </FormControl>
 
             <TextField
-              className={classes.textfield}
+              sx={{ m: 1 }}
               fullWidth
               id='standard-full-width'
               label='Command Prompt'
@@ -217,7 +193,7 @@ class AiAssist extends React.Component<AiAssistProps, AiAssistState> {
 
           <Box my={0} sx={{ display: "flex" }}>
             <Button
-              className={classes.keyButton}
+              sx={{ marginLeft: "auto", m: 1 }}
               onClick={() => {
                 this.sendToAssistent();
               }}
@@ -238,7 +214,7 @@ class AiAssist extends React.Component<AiAssistProps, AiAssistState> {
           <Box my={3} sx={{ display: "flex" }}>
             <TextField
               fullWidth
-              className={classes.textfield}
+              sx={{ m: 1 }}
               multiline
               id='standard-full-width'
               label='Result Text'
@@ -300,4 +276,4 @@ class AiAssist extends React.Component<AiAssistProps, AiAssistState> {
   }
 }
 
-export default withStyles(useStyles)(AiAssist);
+export default AiAssist;

@@ -8,7 +8,6 @@ import FormPartialNewFromHugoTheme from "./partials/FormPartialNewFromHugoTheme"
 import FormPartialNewFromScratch from "./partials/FormPartialNewFromScratch";
 import FormPartialNewFromFolder from "./partials/FormPartialNewFromFolder";
 import FormPartialImportFromGit from "./partials/FormPartialImportFromGit";
-import withStyles from "@mui/styles/withStyles";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
@@ -30,36 +29,12 @@ import FormControl from "@mui/material/FormControl";
 import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
 
-const useStyles = (theme) => ({
-  paper: {
-    height: "160px",
-    padding: "40px",
-    cursor: "pointer",
-    /*
-    backgroundColor:"#eee",
-    */
-    "&:hover": {
-      backgroundColor: "#eee",
-      color: "#222",
-    },
-  },
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 300,
-  },
-  keyButton: {
-    margin: theme.spacing(1),
-    marginTop: theme.spacing(2),
-  },
-});
-
 interface NewSiteDialogProps {
   open: boolean;
   newOrImport: "new" | "import";
   importSiteURL?: string;
   mountSite: (siteKey: string) => void;
   onClose: () => void;
-  classes?: any; // Added by withStyles HOC
 }
 
 interface NewSiteDialogState {
@@ -185,8 +160,6 @@ class NewSiteDialog extends React.Component<NewSiteDialogProps, NewSiteDialogSta
   }
 
   renderStep1Cards() {
-    const { classes } = this.props;
-
     const sourceDefsNew = [
       {
         type: "scratch",
@@ -245,7 +218,15 @@ class NewSiteDialog extends React.Component<NewSiteDialogProps, NewSiteDialogSta
             onClick={() => {
               this.setState(source.stateUpdate);
             }}
-            className={classes.paper}
+            sx={{
+              height: "160px",
+              padding: "40px",
+              cursor: "pointer",
+              "&:hover": {
+                backgroundColor: "#eee",
+                color: "#222",
+              }
+            }}
             elevation={5}>
             <Box display='flex' alignItems='center' justifyContent='center'>
               {source.icon}
@@ -269,8 +250,6 @@ class NewSiteDialog extends React.Component<NewSiteDialogProps, NewSiteDialogSta
   }
 
   renderStep2Form() {
-    const { classes } = this.props;
-
     const filteredVersionItems = this.state.filteredHugoVersions.map((version, index) => {
       return (
         <MenuItem key={"version-" + version} value={version}>
@@ -359,7 +338,7 @@ class NewSiteDialog extends React.Component<NewSiteDialogProps, NewSiteDialogSta
         </Box>
 
         <Box my={2}>
-          <FormControl variant='outlined' className={classes.formControl}>
+          <FormControl variant='outlined' sx={{ m: 1, minWidth: 300 }}>
             <InputLabel id='demo-simple-select-outlined-label'>Hugo Version</InputLabel>
             <Select
               labelId='demo-simple-select-outlined-label'
@@ -387,7 +366,7 @@ class NewSiteDialog extends React.Component<NewSiteDialogProps, NewSiteDialogSta
           </FormControl>
 
           <FormControlLabel
-            className={classes.keyButton}
+            sx={{ m: 1, mt: 2 }}
             control={
               <Switch
                 checked={this.state.hugoExtended || false}
@@ -594,4 +573,4 @@ class NewSiteDialog extends React.Component<NewSiteDialogProps, NewSiteDialogSta
   }
 }
 
-export default withStyles(useStyles)(NewSiteDialog);
+export default NewSiteDialog;

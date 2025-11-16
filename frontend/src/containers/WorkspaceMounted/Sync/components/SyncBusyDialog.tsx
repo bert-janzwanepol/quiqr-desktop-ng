@@ -1,5 +1,4 @@
 import * as React           from 'react';
-import withStyles from '@mui/styles/withStyles';
 import Button               from '@mui/material/Button';
 import Box                  from '@mui/material/Box';
 import MuiDialogTitle       from '@mui/material/DialogTitle';
@@ -10,23 +9,11 @@ import DialogContent        from '@mui/material/DialogContent';
 import DialogContentText    from '@mui/material/DialogContentText';
 import LinearProgress       from '@mui/material/LinearProgress';
 
-const useStyles = theme => ({
-  root: {
-    margin: 0,
-  },
-  serverFormLogo: {
-    position: 'absolute' as const,
-    right: theme.spacing(3),
-    top: theme.spacing(3),
-  },
-});
-
 interface SyncBusyDialogProps {
   open?: boolean;
   icon?: React.ReactNode;
   serverTitle?: string;
   onClose: () => void;
-  classes?: any; // Added by withStyles HOC
 }
 
 interface SyncBusyDialogState {
@@ -53,7 +40,7 @@ class SyncBusyDialog extends React.Component<SyncBusyDialogProps, SyncBusyDialog
   }
 
   render(){
-    let { open, classes } = this.props;
+    let { open } = this.props;
 
     return (
       <Dialog
@@ -63,8 +50,8 @@ class SyncBusyDialog extends React.Component<SyncBusyDialogProps, SyncBusyDialog
         fullWidth={true}
         maxWidth="sm" >
 
-        <MuiDialogTitle className={classes.root}>
-          <Box className={classes.serverFormLogo}>
+        <MuiDialogTitle sx={{ margin: 0 }}>
+          <Box sx={{ position: 'absolute', right: '24px', top: '24px' }}>
           {this.props.icon}
           </Box>
 
@@ -88,4 +75,4 @@ class SyncBusyDialog extends React.Component<SyncBusyDialogProps, SyncBusyDialog
   }
 }
 
-export default withStyles(useStyles)(SyncBusyDialog);
+export default SyncBusyDialog;

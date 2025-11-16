@@ -1,7 +1,7 @@
 import React from "react";
 import { Route } from "react-router-dom";
 import service from "./../../../services/service";
-import withStyles from "@mui/styles/withStyles";
+import Box from "@mui/material/Box";
 import SyncConfigDialog from "./components/SyncConfigDialog";
 import SyncBusyDialog from "./components/SyncBusyDialog";
 import Button from "@mui/material/Button";
@@ -9,23 +9,6 @@ import Button from "@mui/material/Button";
 import { Dashboard as GitHubDashboard } from "./syncTypes/github";
 import { Dashboard as SysGitDashboard } from "./syncTypes/sysgit";
 import { Dashboard as FolderDashboard } from "./syncTypes/folder";
-
-const useStyles = (theme) => ({
-  container: {
-    height: "100%",
-  },
-
-  root: {
-    display: "flex",
-    flexWrap: "wrap",
-  },
-
-  textField: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-    width: "50ch",
-  },
-});
 
 class SyncRouteGeneral extends React.Component {
   history: any;
@@ -202,7 +185,7 @@ class SyncRouteGeneral extends React.Component {
 
     if (site.publish.length < 1) {
       content = (
-        <div>
+        <Box>
           <p>No sync server is configured. Add one first.</p>
           <Button
             onClick={() => {
@@ -212,7 +195,7 @@ class SyncRouteGeneral extends React.Component {
             variant='contained'>
             add sync server
           </Button>
-        </div>
+        </Box>
       );
     } else if (site.publish.length === 1) {
       content = this.renderMainCard(site.publish[0]);
@@ -238,7 +221,7 @@ class SyncRouteGeneral extends React.Component {
           this.history = history;
           return (
             <React.Fragment>
-              <div className={this.props.classes.container}>{content}</div>
+              <Box sx={{ height: '100%' }}>{content}</Box>
 
               <SyncBusyDialog
                 {...this.state.serverBusyDialog}
@@ -279,4 +262,4 @@ class SyncRouteGeneral extends React.Component {
   }
 }
 
-export default withStyles(useStyles)(SyncRouteGeneral);
+export default SyncRouteGeneral;

@@ -5,38 +5,10 @@ import Box                   from '@mui/material/Box';
 import InputLabel            from '@mui/material/InputLabel';
 import MenuItem              from '@mui/material/MenuItem';
 import FormControl           from '@mui/material/FormControl';
-import withStyles from '@mui/styles/withStyles';
 import service               from './../../services/service';
 import FolderPicker          from '../../components/FolderPicker';
 
-const useStyles = theme => ({
-
-  container:{
-    padding: '20px',
-    height: '100%'
-  },
-
-  root: {
-    display: 'flex',
-    flexWrap: 'wrap' as const, // We need this else this type in useStyles will be evaluated as string instead of the literal value 'wrap'
-  },
-
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 300,
-  },
-
-  textField: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-    width: '50ch',
-  },
-
-});
-
-interface PrefsGeneralProps {
-  classes: any;
-}
+interface PrefsGeneralProps {}
 
 interface Prefs {
   interfaceStyle?: string;
@@ -98,9 +70,8 @@ class PrefsGeneral extends React.Component<PrefsGeneralProps, PrefsGeneralState>
   }
 
   render(){
-    const { classes } = this.props;
     return (
-      <div className={ this.props.classes.container }>
+      <Box sx={{ padding: '20px', height: '100%' }}>
         <Typography variant="h4">General Preferences</Typography>
 
         <Box my={2} mx={1}>
@@ -111,7 +82,7 @@ class PrefsGeneral extends React.Component<PrefsGeneralProps, PrefsGeneralState>
         </Box>
 
         <Box my={2}>
-          <FormControl variant="outlined" className={classes.formControl}>
+          <FormControl variant="outlined" sx={{ m: 1, minWidth: 300 }}>
             <InputLabel>Interface Style</InputLabel>
             <Select
               value={this.state.prefsInterfaceStyle}
@@ -156,10 +127,10 @@ class PrefsGeneral extends React.Component<PrefsGeneralProps, PrefsGeneralState>
           */}
 
 
-      </div>
+      </Box>
     );
   }
 
 }
 
-export default withStyles(useStyles)(PrefsGeneral);
+export default PrefsGeneral;

@@ -1,5 +1,4 @@
 import * as React                       from 'react';
-import withStyles from '@mui/styles/withStyles';
 import Button                           from '@mui/material/Button';
 import MuiDialogTitle                   from '@mui/material/DialogTitle';
 import Grid                             from '@mui/material/Grid';
@@ -26,29 +25,6 @@ import {Meta as FolderMeta}             from '../syncTypes/folder'
 import {FormConfig as FolderExportForm} from '../syncTypes/folder'
 import {CardNew as CardNewFolder}       from '../syncTypes/folder'
 
-const useStyles = theme => ({
-
-  root: {
-    margin: 0,
-    padding: theme.spacing(2),
-  },
-
-  serverFormLogo: {
-    position: 'absolute',
-    right: theme.spacing(3),
-    top: theme.spacing(3),
-  },
-
-  paper: {
-    padding:"40px",
-    cursor: "pointer",
-    backgroundColor:"#eee",
-    '&:hover': {
-      backgroundColor:"#ccc"
-    }
-  }
-});
-
 interface SyncConfigDialogProps {
   open?: boolean;
   site: {
@@ -68,7 +44,6 @@ interface SyncConfigDialogProps {
   closeText: string;
   onClose: () => void;
   onSave: (inkey: string) => void;
-  classes?: any; // Added by withStyles HOC
 }
 
 interface SyncConfigDialogState {
@@ -124,7 +99,6 @@ class SyncConfigDialog extends React.Component<SyncConfigDialogProps, SyncConfig
   }
 
   renderServerCards(){
-    const {classes} = this.props;
     const sysGitBinAvailable = true;
     return (
 
@@ -134,7 +108,6 @@ class SyncConfigDialog extends React.Component<SyncConfigDialogProps, SyncConfig
           { (sysGitBinAvailable ?
           <Grid item xs={6}>
             <CardNewSysGit
-              classes={classes}
               handleClick={()=>{
                 this.setState({serverType: 'sysgit',
                   dialogSize: "md",
@@ -146,7 +119,6 @@ class SyncConfigDialog extends React.Component<SyncConfigDialogProps, SyncConfig
           <Grid item xs={6}>
 
             <CardNewGitHub
-              classes={classes}
               handleClick={()=>{
                 this.setState({serverType: 'github',
                   dialogSize: "md",
@@ -157,7 +129,6 @@ class SyncConfigDialog extends React.Component<SyncConfigDialogProps, SyncConfig
 
           <Grid item xs={6}>
             <CardNewFolder
-              classes={classes}
               handleClick={()=>{
                 this.setState({serverType: 'folder',
                   dialogSize: "md",
@@ -172,7 +143,7 @@ class SyncConfigDialog extends React.Component<SyncConfigDialogProps, SyncConfig
   }
 
   render(){
-    let { open, classes, modAction, closeText } = this.props;
+    let { open, modAction, closeText } = this.props;
     let content, serverFormLogo = null;
     let saveButtonHidden = true;
     let configDialogTitle = '';
@@ -255,8 +226,8 @@ class SyncConfigDialog extends React.Component<SyncConfigDialogProps, SyncConfig
         fullWidth={true}
         maxWidth={this.state.dialogSize} >
 
-        <MuiDialogTitle disableTypography className={classes.root}>
-          <Box className={classes.serverFormLogo}>
+        <MuiDialogTitle disableTypography sx={{ margin: 0, p: 2 }}>
+          <Box sx={{ position: 'absolute', right: '24px', top: '24px' }}>
           {serverFormLogo}
           </Box>
           <Typography variant="h6">{modAction + " " + configDialogTitle}</Typography>
@@ -275,4 +246,4 @@ class SyncConfigDialog extends React.Component<SyncConfigDialogProps, SyncConfig
   }
 }
 
-export default withStyles(useStyles)(SyncConfigDialog);
+export default SyncConfigDialog;

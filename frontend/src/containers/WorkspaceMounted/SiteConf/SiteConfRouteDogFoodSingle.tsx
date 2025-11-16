@@ -1,32 +1,8 @@
 import React          from 'react';
 import Typography     from '@mui/material/Typography';
-import withStyles from '@mui/styles/withStyles';
+import Box            from '@mui/material/Box';
 import Single         from '../Single';
 import service        from './../../../services/service';
-
-
-const useStyles = theme => ({
-
-  container:{
-    padding: '20px',
-    height: '100%'
-  },
-
-  root: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
-
-  textField: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-    width: '50ch',
-  },
-
-  iconButton: {
-    padding: 10,
-  },
-});
 
 class SiteConfRouteEtalage extends React.Component {
 
@@ -106,14 +82,14 @@ class SiteConfRouteEtalage extends React.Component {
         /> ;
 
     let complete = (
-      <div className={ this.props.classes.container }>
+      <Box sx={{ padding: '20px', height: '100%' }}>
         <Typography variant="h4">Site: {this.state.siteconf.name}</Typography>
         <Typography variant="h5">{this.props.title}</Typography>
         { single }
-      </div>);
+      </Box>);
 
     return complete;
   }
 }
 
-export default withStyles(useStyles)(SiteConfRouteEtalage);
+export default SiteConfRouteEtalage;

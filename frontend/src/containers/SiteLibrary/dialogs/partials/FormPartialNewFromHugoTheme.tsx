@@ -1,7 +1,6 @@
 import * as React            from 'react';
 import service               from '../../../../services/service';
 import ScreenShotPlaceholder from '../../../../img-assets/screenshot-placeholder.png';
-import withStyles from '@mui/styles/withStyles';
 import TextField             from '@mui/material/TextField';
 import Button                from '@mui/material/Button';
 import Typography            from '@mui/material/Typography';
@@ -16,32 +15,6 @@ import Card                  from '@mui/material/Card';
 import CardContent           from '@mui/material/CardContent';
 import CardMedia             from '@mui/material/CardMedia';
 
-const useStyles = theme => ({
-
-  root: {
-    margin: 0,
-    display: 'flex',
-  },
-  details: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-
-  rightButton: {
-    marginLeft: theme.spacing(1),
-    width: 400,
-    height: 55,
-  },
-
-  content: {
-    flex: '1 0 auto',
-  },
-  cover: {
-    width: 351,
-  },
-
-});
-
 const regexpHttp      = new RegExp('^http(s?)://', 'i')
 
 interface FormPartialNewFromHugoThemeProps {
@@ -51,7 +24,6 @@ interface FormPartialNewFromHugoThemeProps {
     newTypeHugoThemeLastValidatedUrl: string;
     newHugoThemeInfoDict: any;
   }) => void;
-  classes?: any; // Added by withStyles HOC
 }
 
 interface FormPartialNewFromHugoThemeState {
@@ -198,9 +170,6 @@ class FormPartialNewFromHugoTheme extends React.Component<FormPartialNewFromHugo
   }
 
   render(){
-
-    const {classes} = this.props;
-
     return (
       <React.Fragment>
         <Box my={3}>
@@ -251,24 +220,24 @@ class FormPartialNewFromHugoTheme extends React.Component<FormPartialNewFromHugo
             error={(this.state.newTypeHugoThemeErrorText === '' ? false : true)}
             helperText={this.state.newTypeHugoThemeErrorText}
           />
-          <Button variant="contained" disabled={(this.state.newTypeHugoThemeBusy || !this.state.newTypeHugoThemeReadyForValidation ? true : false)} className={classes.rightButton} color="primary" onClick={()=>{
+          <Button variant="contained" disabled={(this.state.newTypeHugoThemeBusy || !this.state.newTypeHugoThemeReadyForValidation ? true : false)} sx={{ ml: 1, width: 400, height: 55 }} color="primary" onClick={()=>{
             this.validateURL(this.state.newTypeHugoThemeUrl);
           }}>Validate Remote Repository</Button>
 
         </Box>
 
         <Box my={3}>
-          <Card className={classes.root} variant="outlined">
+          <Card sx={{ margin: 0, display: 'flex' }} variant="outlined">
             <CardMedia
-              className={classes.cover}
+              sx={{ width: 351 }}
               image={(this.state.newTypeHugoThemeScreenshot?this.state.newTypeHugoThemeScreenshot:ScreenShotPlaceholder)}
               title="site screenshot"
             />
-            <div className={classes.details}>
-              <CardContent className={classes.content}>
+            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+              <CardContent sx={{ flex: '1 0 auto' }}>
 
                 <TableContainer>
-                  <Table className={classes.table} size="small" aria-label="a dense table">
+                  <Table size="small" aria-label="a dense table">
                     <TableBody>
 
                       <TableRow>
@@ -351,7 +320,7 @@ class FormPartialNewFromHugoTheme extends React.Component<FormPartialNewFromHugo
                 </TableContainer>
 
               </CardContent>
-            </div>
+            </Box>
 
           </Card>
         </Box>
@@ -363,5 +332,5 @@ class FormPartialNewFromHugoTheme extends React.Component<FormPartialNewFromHugo
 
 }
 
-export default withStyles(useStyles)(FormPartialNewFromHugoTheme);
+export default FormPartialNewFromHugoTheme;
 

@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import service from "../../../../services/service";
-import { makeStyles } from "@mui/styles";
-import { Theme } from "@mui/material/styles";
 import CircularProgress from "@mui/material/CircularProgress";
 import Table from "@mui/material/Table";
 import TableRow from "@mui/material/TableRow";
@@ -26,84 +24,12 @@ import IconButton from "@mui/material/IconButton";
 import InputLabel from "@mui/material/InputLabel";
 import InputAdornment from "@mui/material/InputAdornment";
 import LinearProgress from "@mui/material/LinearProgress";
-import clsx from "clsx";
 import OutlinedInput from "@mui/material/OutlinedInput";
-
-const useStyles = makeStyles((theme: Theme) => ({
-  root: {
-    margin: 0,
-    display: "flex",
-  },
-  details: {
-    display: "flex",
-    flexDirection: "column",
-  },
-
-  rightButton: {
-    marginLeft: theme.spacing(1),
-    width: 400,
-    height: 55,
-  },
-
-  content: {
-    flex: "1 0 auto",
-  },
-  cover: {
-    width: 351,
-  },
-
-  serverFormLogo: {
-    position: "absolute",
-    right: theme.spacing(3),
-    top: theme.spacing(3),
-  },
-
-  paper: {
-    height: "160px",
-    padding: "40px",
-    cursor: "pointer",
-    backgroundColor: "#eee",
-    "&:hover": {
-      backgroundColor: "#ccc",
-    },
-  },
-
-  keyButton: {
-    margin: theme.spacing(1),
-    marginTop: theme.spacing(2),
-  },
-
-  textfield: {
-    margin: theme.spacing(1),
-  },
-
-  progressLabel: {
-    marginLeft: theme.spacing(3),
-    backgroundColor: "white",
-  },
-
-  keyField: {
-    margin: theme.spacing(1),
-    width: "60ch",
-  },
-
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 300,
-  },
-
-  margin: {
-    margin: theme.spacing(1),
-  },
-
-  table: {},
-}));
+import clsx from "clsx";
 
 const regexpHttp = new RegExp("^http(s?)://", "i");
 
 const FormPartialNewFromScratch = (props) => {
-  const classes = useStyles();
-
   const [importTypeGitUrl, setImportTypeGitUrl] = useState("");
   const [importTypeGitBusy, setImportTypeGitBusy] = useState(false);
   const [importTypeGitReadyForValidation, setImportTypeGitReadyForValidation] = useState(false);
@@ -280,7 +206,9 @@ const FormPartialNewFromScratch = (props) => {
             label='Username / Organization'
             helperText='GitHub username or organization containing the target repository'
             variant='outlined'
-            className={classes.textfield}
+            sx={{
+              margin: theme => theme.spacing(1)
+            }}
             value={privData.username}
             onChange={(e) => {
               updatePubData({ username: e.target.value });
@@ -291,8 +219,9 @@ const FormPartialNewFromScratch = (props) => {
             label='E-mail'
             helperText='E-mail address to use for commit messagessages'
             variant='outlined'
-            className={classes.textfield}
-            value={privData.email}
+            sx={{
+              margin: theme => theme.spacing(1)
+            }}            value={privData.email}
             onChange={(e) => {
               updatePubData({ email: e.target.value });
             }}
@@ -304,8 +233,9 @@ const FormPartialNewFromScratch = (props) => {
             label='Repository'
             helperText='Target Repository'
             variant='outlined'
-            className={classes.textfield}
-            value={privData.repository}
+            sx={{
+              margin: theme => theme.spacing(1)
+            }}            value={privData.repository}
             onChange={(e) => {
               updatePubData({ repository: e.target.value });
             }}
@@ -321,23 +251,42 @@ const FormPartialNewFromScratch = (props) => {
             value={this.state.privData.branch}
             helperText="Target Branch"
             variant="outlined"
-            className={classes.textfield}
-          />
+            sx={{
+              margin: theme => theme.spacing(1)
+            }}          />
           */}
         </Box>
         <Box my={1}>
           {keyPairBusy ? (
-            <FormControl className={classes.margin}>
-              <InputLabel shrink htmlFor='progress' className={classes.progressLabel}>
+            <FormControl sx={{
+               margin: theme => theme.spacing(1),
+            }}>
+              <InputLabel shrink htmlFor='progress' sx={ {
+                marginLeft: theme => theme.spacing(3),
+                backgroundColor: "white",
+              }}>
                 Deploy Public Key
               </InputLabel>
-              <Paper variant='outlined' id='progress' elevation={1} className={classes.paper}>
+              <Paper variant='outlined' id='progress' elevation={1} sx={{
+                height: "160px",
+                padding: "40px",
+                cursor: "pointer",
+                backgroundColor: "#eee",
+                "&:hover": {
+                  backgroundColor: "#ccc",
+                },
+              }}>
                 <LinearProgress />
               </Paper>
             </FormControl>
           ) : (
             <React.Fragment>
-              <FormControl className={clsx(classes.margin, classes.keyField)} variant='outlined'>
+              <FormControl sx={{
+                  margin: theme => theme.spacing(1),
+                  width: "60ch",
+                }} 
+                variant='outlined'
+              >
                 <InputLabel htmlFor='outlined-adornment-password'>Deploy Public Key</InputLabel>
 
                 <OutlinedInput
@@ -369,7 +318,10 @@ const FormPartialNewFromScratch = (props) => {
             </React.Fragment>
           )}
           <Button
-            className={classes.keyButton}
+            sx={{
+              margin: theme => theme.spacing(1),
+              marginTop: theme => theme.spacing(2),
+            }}
             disabled={keyPairBusy}
             onClick={() => {
               const { clipboard } = window.require("electron");
@@ -379,7 +331,10 @@ const FormPartialNewFromScratch = (props) => {
             Copy
           </Button>
           <Button
-            className={classes.keyButton}
+            sx={{
+              margin: theme => theme.spacing(1),
+              marginTop: theme => theme.spacing(2),
+            }}
             onClick={() => {
               getKeyPair();
             }}
@@ -391,7 +346,7 @@ const FormPartialNewFromScratch = (props) => {
         </Box>
       </React.Fragment>
     );
-  }, [classes, privData, keyPairBusy, showPassword, updatePubData, getKeyPair]);
+  }, [privData, keyPairBusy, showPassword, updatePubData, getKeyPair]);
 
   const renderPublicField = useCallback(() => {
     return (
@@ -423,7 +378,11 @@ const FormPartialNewFromScratch = (props) => {
           <Button
             variant='contained'
             disabled={importTypeGitBusy || !importTypeGitReadyForValidation ? true : false}
-            className={classes.rightButton}
+            sx={{ 
+              marginLeft: theme => theme.spacing(1),
+              width: 400,
+              height: 55,
+            }}
             color='primary'
             onClick={() => {
               validateURL(importTypeGitUrl);
@@ -433,12 +392,14 @@ const FormPartialNewFromScratch = (props) => {
         </Box>
 
         <Box my={2}>
-          <Card className={classes.root} variant='outlined'>
-            <CardMedia className={classes.cover} image={importTypeGitScreenshot ? importTypeGitScreenshot : ScreenShotPlaceholder} title='site screenshot' />
-            <div className={classes.details}>
-              <CardContent className={classes.content}>
+          <Card sx={{
+            display: 'flex'
+          } } variant='outlined'>
+            <CardMedia sx={{ width: 351 }} image={importTypeGitScreenshot ? importTypeGitScreenshot : ScreenShotPlaceholder} title='site screenshot' />
+            <Box sx={{display: 'flex', flexDirection: 'column'}}>
+              <CardContent sx={{ flex: "1 0 auto" }}>
                 <TableContainer component={Paper}>
-                  <Table className={classes.table} size='small' aria-label='a dense table'>
+                  <Table size='small' aria-label='a dense table'>
                     <TableBody>
                       <TableRow>
                         <TableCell align='right'>
@@ -490,13 +451,12 @@ const FormPartialNewFromScratch = (props) => {
                   </Table>
                 </TableContainer>
               </CardContent>
-            </div>
+            </Box>
           </Card>
         </Box>
       </React.Fragment>
     );
   }, [
-    classes,
     importTypeGitUrl,
     importTypeGitBusy,
     importTypeGitReadyForValidation,
@@ -515,7 +475,10 @@ const FormPartialNewFromScratch = (props) => {
     <React.Fragment>
       <Box my={2}>
         <FormControlLabel
-          className={classes.keyButton}
+          sx={{
+            margin: theme => theme.spacing(1),
+            marginTop: theme => theme.spacing(2),
+          }}
           control={
             <Switch
               checked={useDeployKey || false}

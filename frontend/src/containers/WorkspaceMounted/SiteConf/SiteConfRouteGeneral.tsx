@@ -1,37 +1,12 @@
 import React          from 'react';
 import service        from './../../../services/service';
 import Typography     from '@mui/material/Typography';
-import withStyles from '@mui/styles/withStyles';
 import TextField      from '@mui/material/TextField';
 import IconButton     from '@mui/material/IconButton';
 import Grid           from '@mui/material/Grid';
+import Box            from '@mui/material/Box';
 import FolderIcon     from '@mui/icons-material/Folder';
 import LaunchIcon   from '@mui/icons-material/Launch';
-
-const useStyles = theme => ({
-
-  container:{
-    padding: '20px',
-    height: '100%'
-  },
-
-  root: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
-
-  textField: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-    width: '50ch',
-  },
-
-  iconButton: {
-    padding: 10,
-  },
-
-
-});
 
 class SiteConfRouteGeneral extends React.Component {
 
@@ -103,7 +78,7 @@ class SiteConfRouteGeneral extends React.Component {
 
 
     return (
-      <div className={ this.props.classes.container }>
+      <Box sx={{ padding: '20px', height: '100%' }}>
         <Typography variant="h4">Site: {this.state.siteconf.name}</Typography>
         <Typography variant="h5">General Configuration</Typography>
         <Grid container  spacing={1} alignItems="flex-end">
@@ -155,7 +130,7 @@ class SiteConfRouteGeneral extends React.Component {
           <Grid item xs={2}>
             <IconButton
               color="primary"
-              className={classes.iconButton}
+              sx={{ padding: '10px' }}
               aria-label="directions"
               onClick={()=>{
                 service.api.openFileInEditor(this.state.source.path);
@@ -167,7 +142,7 @@ class SiteConfRouteGeneral extends React.Component {
 
             <IconButton
               color="primary"
-              className={classes.iconButton}
+              sx={{ padding: '10px' }}
               aria-label="directions"
               onClick={()=>{
                 service.api.openCustomCommand(this.state.customOpenInCommand.replace('%site_path', this.state.source.path).replace('%site_name', this.state.siteconf.name))
@@ -179,9 +154,9 @@ class SiteConfRouteGeneral extends React.Component {
           </Grid>
 
         </Grid>
-      </div>
+      </Box>
     );
   }
 }
 
-export default withStyles(useStyles)(SiteConfRouteGeneral);
+export default SiteConfRouteGeneral;

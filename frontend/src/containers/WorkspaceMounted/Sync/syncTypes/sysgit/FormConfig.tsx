@@ -1,7 +1,6 @@
 import * as React          from 'react';
 import service             from '../../../../../services/service';
 import TextField           from '@mui/material/TextField';
-import withStyles from '@mui/styles/withStyles';
 import Button              from '@mui/material/Button';
 import Box                 from '@mui/material/Box';
 import clsx                from 'clsx';
@@ -18,48 +17,6 @@ import MenuItem            from '@mui/material/MenuItem';
 import LinearProgress      from '@mui/material/LinearProgress';
 import Select              from '@mui/material/Select';
 import Paper               from '@mui/material/Paper';
-
-const useStyles = theme => ({
-
-  keyButton: {
-    margin: theme.spacing(1),
-    marginTop: theme.spacing(2),
-  },
-
-  textfield: {
-    margin: theme.spacing(1),
-  },
-
-  progressLabel:{
-    marginLeft: theme.spacing(3),
-    backgroundColor: "white",
-  },
-
-  paper:{
-    margin: theme.spacing(1),
-    width: '60ch',
-    padding: theme.spacing(3),
-  },
-
-  keyField: {
-    margin: theme.spacing(1),
-    width: '60ch',
-  },
-
-  smallField: {
-    margin: theme.spacing(1),
-    width: '20ch',
-  },
-
-
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 300,
-  },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
-  },
-});
 
 class FormConfig extends React.Component{
 
@@ -146,8 +103,6 @@ class FormConfig extends React.Component{
   }
 
   renderGitHubActionsForm(){
-    let { classes } = this.props;
-
     if(this.state.pubData.pullOnly===true){
       return null
     }
@@ -157,7 +112,7 @@ class FormConfig extends React.Component{
         <React.Fragment>
 
           <Box my={1}>
-            <FormControl variant="outlined" className={classes.formControl}>
+            <FormControl variant="outlined" sx={{ m: 1, minWidth: 300 }}>
               <InputLabel id="demo-simple-select-outlined-label">Publish Source or Build</InputLabel>
               <Select
                 labelId="demo-simple-select-outlined-label"
@@ -198,7 +153,7 @@ class FormConfig extends React.Component{
           <Box my={1}>
 
 
-            <FormControlLabel className={classes.keyButton}
+            <FormControlLabel sx={{ m: 1, mt: 2 }}
               control={
                 <Switch
                   checked={this.state.pubData.overrideBaseURLSwitch}
@@ -233,7 +188,7 @@ class FormConfig extends React.Component{
               value={this.state.pubData.overrideBaseURL}
               helperText="Override Hugo Configuration with new baseURL"
               variant="outlined"
-              className={classes.smallField}
+              sx={{ m: 1, width: '20ch' }}
             />
 
           </Box>
@@ -245,8 +200,6 @@ class FormConfig extends React.Component{
   }
 
   render(){
-    let { classes } = this.props;
-
     return (
       <React.Fragment>
         <Box my={1} sx={{display:'flex'}}>
@@ -255,7 +208,7 @@ class FormConfig extends React.Component{
             label="Sync name"
             helperText="This helps identifying the correct Synchronization target"
             variant="outlined"
-            className={classes.textfield}
+            sx={{ m: 1 }}
             value={this.state.pubData.title}
             onChange={(e)=>{
               this.updatePubData({title: e.target.value });
@@ -269,7 +222,7 @@ class FormConfig extends React.Component{
             label="git server url (only SSH supported)"
             helperText="e.g: git@github.com:quiqr/quiqr-template-kitchen-sink.git"
             variant="outlined"
-            className={classes.textfield}
+            sx={{ m: 1 }}
             value={this.state.pubData.git_server_url}
             onChange={(e)=>{
               this.updatePubData({git_server_url: e.target.value });
@@ -281,7 +234,7 @@ class FormConfig extends React.Component{
             label="E-mail"
             helperText="E-mail address to use for commit messages"
             variant="outlined"
-            className={classes.textfield}
+            sx={{ m: 1 }}
             value={this.state.pubData.email}
             onChange={(e)=>{
               this.updatePubData({email: e.target.value });
@@ -300,24 +253,24 @@ class FormConfig extends React.Component{
             value={this.state.pubData.branch}
             helperText="Target Branch"
             variant="outlined"
-            className={classes.textfield}
+            sx={{ m: 1 }}
           />
         </Box>
         <Box my={1}>
 
           {(this.state.keyPairBusy ?
-            <FormControl className={classes.margin}>
-              <InputLabel shrink htmlFor="progress" className={classes.progressLabel}>
+            <FormControl sx={{ m: 1 }}>
+              <InputLabel shrink htmlFor="progress" sx={{ ml: 3, backgroundColor: 'white' }}>
                 Deploy Public Key
               </InputLabel>
-              <Paper variant="outlined" id="progress" elevation={1} className={classes.paper}>
+              <Paper variant="outlined" id="progress" elevation={1} sx={{ m: 1, width: '60ch', p: 3 }}>
                 <LinearProgress   />
               </Paper>
             </FormControl>
             :
 
             <React.Fragment>
-              <FormControl className={clsx(classes.margin, classes.keyField)} variant="outlined">
+              <FormControl sx={{ m: 1, width: '60ch' }} variant="outlined">
                 <InputLabel htmlFor="outlined-adornment-password">Deploy Public Key</InputLabel>
 
                 <OutlinedInput
@@ -350,17 +303,17 @@ class FormConfig extends React.Component{
               </FormControl>
             </React.Fragment>
           )}
-          <Button className={classes.keyButton} disabled={this.state.keyPairBusy} onClick={()=>{
+          <Button sx={{ m: 1, mt: 2 }} disabled={this.state.keyPairBusy} onClick={()=>{
 
             const {clipboard} = window.require('electron')
             clipboard.writeText(this.state.pubData.deployPublicKey)
 
           }} variant="contained">Copy</Button>
-          <Button className={classes.keyButton} onClick={()=>{this.getKeyPair()}} disabled={this.state.keyPairBusy} color="secondary" variant="contained">Re-generate</Button>
+          <Button sx={{ m: 1, mt: 2 }} onClick={()=>{this.getKeyPair()}} disabled={this.state.keyPairBusy} color="secondary" variant="contained">Re-generate</Button>
 
         </Box>
         <Box my={1}>
-          <FormControlLabel className={classes.keyButton}
+          <FormControlLabel sx={{ m: 1, mt: 2 }}
             control={
               <Switch
                 checked={this.state.pubData.pullOnly}
@@ -382,7 +335,7 @@ class FormConfig extends React.Component{
             label="Pull Only"
           />
 
-          <FormControl variant="outlined" className={classes.formControl}>
+          <FormControl variant="outlined" sx={{ m: 1, minWidth: 300 }}>
             <InputLabel id="demo-simple-select-outlined-label">Selective Synchronization</InputLabel>
             <Select
               labelId="demo-simple-select-outlined-label"
@@ -408,5 +361,5 @@ class FormConfig extends React.Component{
   }
 }
 
-export default withStyles(useStyles)(FormConfig);
+export default FormConfig;
 

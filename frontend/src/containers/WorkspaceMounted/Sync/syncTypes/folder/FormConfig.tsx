@@ -1,6 +1,5 @@
 import * as React from "react";
 import TextField from "@mui/material/TextField";
-import withStyles from "@mui/styles/withStyles";
 import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
 import Switch from "@mui/material/Switch";
@@ -19,7 +18,6 @@ interface PubData {
 }
 
 interface FormConfigProps {
-  classes: any;
   publishConf?: {
     config: PubData;
   };
@@ -30,41 +28,6 @@ interface FormConfigProps {
 interface FormConfigState {
   pubData: PubData;
 }
-
-const useStyles = (theme) => ({
-  keyButton: {
-    margin: theme.spacing(1),
-    marginTop: theme.spacing(2),
-  },
-
-  textfield: {
-    margin: theme.spacing(1),
-  },
-
-  progressLabel: {
-    marginLeft: theme.spacing(3),
-    backgroundColor: "white",
-  },
-
-  paper: {
-    margin: theme.spacing(1),
-    width: "60ch",
-    padding: theme.spacing(3),
-  },
-
-  keyField: {
-    margin: theme.spacing(1),
-    width: "60ch",
-  },
-
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 300,
-  },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
-  },
-});
 
 class FormConfig extends React.Component<FormConfigProps, FormConfigState> {
   constructor(props: FormConfigProps) {
@@ -102,8 +65,6 @@ class FormConfig extends React.Component<FormConfigProps, FormConfigState> {
   }
 
   render() {
-    let { classes } = this.props;
-
     return (
       <React.Fragment>
         <div style={{ marginTop: "20px" }}>
@@ -117,7 +78,7 @@ class FormConfig extends React.Component<FormConfigProps, FormConfigState> {
         </div>
 
         <Box my={2}>
-          <FormControl variant='outlined' className={classes.formControl}>
+          <FormControl variant='outlined' sx={{ m: 1, minWidth: 300 }}>
             <InputLabel id='demo-simple-select-outlined-label'>Publish Source and Build</InputLabel>
             <Select
               labelId='demo-simple-select-outlined-label'
@@ -144,7 +105,7 @@ class FormConfig extends React.Component<FormConfigProps, FormConfigState> {
 
         <Box my={2}>
           <FormControlLabel
-            className={classes.keyButton}
+            sx={{ m: 1, mt: 2 }}
             control={
               <Switch
                 checked={this.state.pubData.overrideBaseURLSwitch}
@@ -177,7 +138,7 @@ class FormConfig extends React.Component<FormConfigProps, FormConfigState> {
             value={this.state.pubData.overrideBaseURL}
             helperText='Override Hugo Configuration with new baseURL'
             variant='outlined'
-            className={classes.textfield}
+            sx={{ m: 1 }}
           />
         </Box>
       </React.Fragment>
@@ -185,4 +146,4 @@ class FormConfig extends React.Component<FormConfigProps, FormConfigState> {
   }
 }
 
-export default withStyles(useStyles)(FormConfig);
+export default FormConfig;

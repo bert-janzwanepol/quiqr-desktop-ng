@@ -1,7 +1,6 @@
 import * as React            from 'react';
 import service               from '../../../../services/service';
 import ScreenShotPlaceholder from '../../../../img-assets/screenshot-placeholder.png';
-import withStyles from '@mui/styles/withStyles';
 import Typography            from '@mui/material/Typography';
 import Box                   from '@mui/material/Box';
 import CircularProgress      from '@mui/material/CircularProgress';
@@ -16,28 +15,7 @@ import CardMedia             from '@mui/material/CardMedia';
 import FolderPicker          from '../../../../components/FolderPicker';
 import { HugoSiteDirResponse, isHugoSiteDirResponse } from '../../../../utils/type-guards';
 
-const useStyles = theme => ({
-
-  root: {
-    margin: 0,
-    display: 'flex',
-  },
-  details: {
-    display: 'flex',
-    flexDirection: 'column' as const,
-  },
-
-  content: {
-    flex: '1 0 auto',
-  },
-  cover: {
-    width: 351,
-  },
-
-});
-
 interface FormPartialNewFromFolderProps {
-  classes: any;
   onSetVersion: (version?: string) => void;
   onSetName: (name: string) => void;
   onValidationDone: (data: {
@@ -133,9 +111,6 @@ class FormPartialNewFromFolder extends React.Component<FormPartialNewFromFolderP
   }
 
   render(){
-
-    const {classes} = this.props;
-
     return (
       <React.Fragment>
         <Box my={3}>
@@ -156,17 +131,17 @@ class FormPartialNewFromFolder extends React.Component<FormPartialNewFromFolderP
         </Box>
 
         <Box my={3}>
-          <Card className={classes.root} variant="outlined">
+          <Card sx={{ margin: 0, display: 'flex' }} variant="outlined">
             <CardMedia
-              className={classes.cover}
+              sx={{ width: 351 }}
               image={(this.state.newTypeFolderScreenshot?this.state.newTypeFolderScreenshot:ScreenShotPlaceholder)}
               title="site screenshot"
             />
-            <div className={classes.details}>
-              <CardContent className={classes.content}>
+            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+              <CardContent sx={{ flex: '1 0 auto' }}>
 
                 <TableContainer>
-                  <Table className={classes.table} size="small" aria-label="a dense table">
+                  <Table size="small" aria-label="a dense table">
                     <TableBody>
 
                       <TableRow>
@@ -220,7 +195,7 @@ class FormPartialNewFromFolder extends React.Component<FormPartialNewFromFolderP
                 </TableContainer>
 
               </CardContent>
-            </div>
+            </Box>
 
           </Card>
         </Box>
@@ -232,4 +207,4 @@ class FormPartialNewFromFolder extends React.Component<FormPartialNewFromFolderP
 
 }
 
-export default withStyles(useStyles)(FormPartialNewFromFolder);
+export default FormPartialNewFromFolder;

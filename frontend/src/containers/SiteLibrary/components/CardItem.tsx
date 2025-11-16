@@ -8,35 +8,6 @@ import { red }               from '@mui/material/colors';
 import service               from '../../../services/service';
 import ScreenShotPlaceholder from '../../../img-assets/screenshot-placeholder.png';
 
-import withStyles from '@mui/styles/withStyles';
-
-const useStyles = theme => ({
-  root: {
-    width: 345,
-  },
-  content:{
-    minHeight: '200',
-  },
-  media: {
-    height: 0,
-    paddingTop: '56.25%', // 16:9
-    backgroundColor: "#ccc"
-  },
-  expand: {
-    transform: 'rotate(0deg)',
-    marginLeft: 'auto',
-    transition: theme.transitions.create('transform', {
-      duration: theme.transitions.duration.shortest,
-    }),
-  },
-  expandOpen: {
-    transform: 'rotate(180deg)',
-  },
-  avatarNoFavicon: {
-    backgroundColor: red[500],
-  }
-});
-
 
 class CardItem extends React.Component {
 
@@ -92,9 +63,7 @@ class CardItem extends React.Component {
   }
 
   render(){
-    const { classes } = this.props;
-
-    let siteAvatar = ( <Avatar aria-label="recipe" variant="rounded" className={classes.avatarNoFavicon}>
+    let siteAvatar = ( <Avatar aria-label="recipe" variant="rounded" sx={{ backgroundColor: red[500] }}>
       {this.props.site.name.charAt(0)}
     </Avatar>
     )
@@ -107,7 +76,7 @@ class CardItem extends React.Component {
         {this.props.itemMenuItems}
         <Card
           elevation={5}
-          className={classes.root}>
+          sx={{ width: 345 }}>
             <CardHeader
               avatar={
                 siteAvatar
@@ -121,7 +90,7 @@ class CardItem extends React.Component {
           <CardActionArea>
 
             <CardMedia onClick={this.props.siteClick}
-              className={classes.media}
+              sx={{ height: 0, paddingTop: '56.25%', backgroundColor: '#ccc' }}
               image={this.state.screenshot}
               title="Site screenshot"
             />
@@ -133,6 +102,6 @@ class CardItem extends React.Component {
 
 }
 
-export default withStyles(useStyles)(CardItem);
+export default CardItem;
 
 

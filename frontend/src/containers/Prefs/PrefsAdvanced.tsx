@@ -2,30 +2,9 @@ import React          from 'react';
 import service        from './../../services/service';
 import Typography     from '@mui/material/Typography';
 import TextField      from '@mui/material/TextField';
+import Box            from '@mui/material/Box';
 
-import withStyles from '@mui/styles/withStyles';
-
-const useStyles = theme => ({
-
-  container:{
-    padding: '20px',
-    height: '100%'
-  },
-
-  root: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
-  textfield: {
-    margin: theme.spacing(1),
-  },
-
-
-});
-
-interface PrefsAdvancedProps {
-  classes?: any; // Added by withStyles HOC
-}
+interface PrefsAdvancedProps {}
 
 interface PrefsAdvancedState {
   // Global prefs object read from config file via readConfKey('prefs')
@@ -95,18 +74,17 @@ class PrefsAdvanced extends React.Component<PrefsAdvancedProps, PrefsAdvancedSta
   }
 
   render(){
-    const { classes } = this.props;
     return (
-      <div className={ this.props.classes.container }>
+      <Box sx={{ padding: '20px', height: '100%' }}>
         <Typography variant="h4">Advanced Preferences</Typography>
 
-        <div className={classes.root}>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
           <TextField
             id="openInCommand"
             label="Custom open-in-command"
             helperText='Command to open directory in. E.g. alacritty --title "%site_name" --working-directory "%site_path"'
             variant="outlined"
-            className={classes.textfield}
+            sx={{ m: 1 }}
             value={this.state.customOpenInCommand}
             onChange={(e)=>{
               this.setState({customOpenInCommand: e.target.value });
@@ -114,15 +92,15 @@ class PrefsAdvanced extends React.Component<PrefsAdvancedProps, PrefsAdvancedSta
             }}
           />
 
-        </div>
+        </Box>
 
-        <div className={classes.root}>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
           <TextField
             id="openAiApiKey"
             label="openAiApikey"
             helperText='Enter API key to enable AI services. Translate texts, create meta summaries, etc..'
             variant="outlined"
-            className={classes.textfield}
+            sx={{ m: 1 }}
             value={this.state.openAiApiKey}
             onChange={(e)=>{
               this.setState({openAiApiKey: e.target.value });
@@ -130,16 +108,16 @@ class PrefsAdvanced extends React.Component<PrefsAdvancedProps, PrefsAdvancedSta
             }}
           />
 
-        </div>
+        </Box>
 
 
-        <div className={classes.root}>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
           <TextField
             id="gitBinary"
             label="Path to git binary"
             helperText='providing a path to a installed version of git enables the real git sync target'
             variant="outlined"
-            className={classes.textfield}
+            sx={{ m: 1 }}
             value={this.state.systemGitBinPath}
             onChange={(e)=>{
               this.setState({systemGitBinPath: e.target.value });
@@ -147,12 +125,12 @@ class PrefsAdvanced extends React.Component<PrefsAdvancedProps, PrefsAdvancedSta
             }}
           />
 
-        </div>
+        </Box>
 
-      </div>
+      </Box>
     );
   }
 
 }
 
-export default withStyles(useStyles)(PrefsAdvanced);
+export default PrefsAdvanced;

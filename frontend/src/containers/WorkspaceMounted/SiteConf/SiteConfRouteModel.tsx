@@ -2,7 +2,6 @@ import React           from 'react';
 import { Route }            from 'react-router-dom';
 import service         from './../../../services/service';
 import Typography      from '@mui/material/Typography';
-import withStyles from '@mui/styles/withStyles';
 import TextField       from '@mui/material/TextField';
 import IconButton      from '@mui/material/IconButton';
 import DescriptionIcon from '@mui/icons-material/Description';
@@ -10,31 +9,6 @@ import Grid            from '@mui/material/Grid';
 import Box             from '@mui/material/Box';
 import FolderIcon from '@mui/icons-material/Folder';
 import BallotIcon from '@mui/icons-material/Ballot';
-
-
-const useStyles = theme => ({
-
-  container:{
-    padding: '20px',
-    height: '100%'
-  },
-
-  root: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
-
-  iconButton: {
-    padding: 10,
-  },
-
-  textField: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-    width: '50ch',
-  },
-
-});
 
 class SiteConfRouteModel extends React.Component {
 
@@ -93,7 +67,6 @@ class SiteConfRouteModel extends React.Component {
   }
 
   renderDogFoodIcon(item, history){
-    const { classes } = this.props;
     let encodedSiteKey = this.props.siteKey;
     let encodedWorkspaceKey = this.props.workspaceKey;
     let basePath = `/sites/${encodedSiteKey}/workspaces/${encodedWorkspaceKey}/siteconf`;
@@ -102,7 +75,7 @@ class SiteConfRouteModel extends React.Component {
       return (
         <IconButton
           color="primary"
-          className={classes.iconButton}
+          sx={{ padding: '10px' }}
           aria-label="directions"
           onClick={()=>{
             let fileBaseName = item.filename.split('/').reverse()[0];
@@ -119,7 +92,6 @@ class SiteConfRouteModel extends React.Component {
   }
 
   renderSection(title, files, history){
-    const { classes } = this.props;
 //    let encodedSiteKey = this.props.siteKey;
 //    let encodedWorkspaceKey = this.props.workspaceKey;
 //    let basePath = `/sites/${encodedSiteKey}/workspaces/${encodedWorkspaceKey}/siteconf`;
@@ -130,7 +102,7 @@ class SiteConfRouteModel extends React.Component {
     return (
       <Box m={2}>
         <Typography variant="h6">{title}</Typography>
-        <div className={classes.root}>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
 
           {files.map((item, index)=>{
 
@@ -152,7 +124,7 @@ class SiteConfRouteModel extends React.Component {
 
                   <IconButton
                     color="primary"
-                    className={classes.iconButton}
+                    sx={{ padding: '10px' }}
                     aria-label="directions"
                     onClick={()=>{
                       service.api.openFileInEditor(item.filename);
@@ -166,7 +138,7 @@ class SiteConfRouteModel extends React.Component {
               </Grid>
             );
           })}
-        </div>
+        </Box>
       </Box>
     );
   }
@@ -188,7 +160,7 @@ class SiteConfRouteModel extends React.Component {
     }
 
     return (
-      <div className={ this.props.classes.container }>
+      <Box sx={{ padding: '20px', height: '100%' }}>
 
         <Typography variant="h4">Site: {this.state.siteconf.name}</Typography>
         <Typography variant="h5">Model Configuration</Typography>
@@ -199,9 +171,9 @@ class SiteConfRouteModel extends React.Component {
         {this.renderSection("Include Files Subs", includeFilesSub, history)}
         {this.renderSection("Partial Files", partialFiles, history)}
 
-      </div>
+      </Box>
     );
   }
 }
 
-export default withStyles(useStyles)(SiteConfRouteModel);
+export default SiteConfRouteModel;
