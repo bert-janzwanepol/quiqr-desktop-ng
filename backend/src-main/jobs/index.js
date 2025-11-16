@@ -9,7 +9,7 @@ module.exports.createThumbnailJob = (src , dest )=> {
 }
 
 module.exports.globJob = (expression , options ) => {
-    return jobsManager.runSharedBackgroundJob(
+    return jobsManager.runBackgroundJob(
         `glob-job:${expression}(${JSON.stringify(options)})`,
         require.resolve('./glob-job'),
         {expression, options}

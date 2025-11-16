@@ -17,7 +17,6 @@ class BackgroundJobRunner{
       });
 
       worker.on('message', (result) => {
-        console.log('Background job completed successfully');
         resolve(result);
       });
 

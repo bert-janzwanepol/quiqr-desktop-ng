@@ -10,8 +10,6 @@ and sends the result back to the main thread.
   try {
     const { actionPath, params } = workerData;
 
-    console.log('Worker executing action:', actionPath);
-
     // Require the action module
     const action = require(actionPath);
 

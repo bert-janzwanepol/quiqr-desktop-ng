@@ -12,18 +12,15 @@ const action = async ({src , dest}) => {
   const ext = path.extname(src).toLowerCase();
 
   if(ext === ".gif" || ext === ".svg" || ext === ".ico" ) {
-    console.log('COPYING')
     await fs.copy(src, dest);
 
     return 'image copied';
   }
 
   try {
-    console.log('SRC:', src)
     const image = await Jimp.read(src);
     await image.scaleToFit({h: 400, w: 400}).write(dest);
   } catch (e) {
-    console.log(e);
     throw new Error(e)
   }
   

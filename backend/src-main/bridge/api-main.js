@@ -182,8 +182,8 @@ api.openFileExplorer = function({filepath, relativeToRoot=false}, context){
     }
   }
   catch(e){
-    context.reject(e);
     console.log(e);
+    context.reject(e);
   }
 }
 
@@ -200,8 +200,8 @@ api.openFileInEditor = function({filepath, create=false, relativeToRoot=false}, 
     shell.openPath(filepath);
   }
   catch(e){
-    context.reject(e)
     console.log(e);
+    context.reject(e)
   }
 }
 
@@ -211,8 +211,8 @@ api.openExternal = async function({url}, context){
     context.resolve();
   }
   catch(e){
-    context.reject(e);
     console.log(e);
+    context.reject(e);
   }
 }
 
@@ -606,7 +606,6 @@ api.getValueByConfigPath = async function({searchRootNode, path }, context){
 
       let confObj = configuration[searchRootNode].find(x => x['key'] === 'mainConfig');
       let value = confObj.fields.find(x => x['key'] === 'use_font_icons');
-      console.log("JIOEJOEE")
       //let value = confObj['use_font_icons'];
       context.resolve(value);
     }
@@ -913,7 +912,6 @@ api.getThumbnailForPath = function({siteKey, workspaceKey, targetPath}, promise)
   });
 }
 api.getThumbnailForCollectionOrSingleItemImage = function({siteKey, workspaceKey, collectionKey, collectionItemKey, targetPath}, promise){
-  console.log('getThumbnailForCollectionOrSingleItemImage START:', { siteKey, workspaceKey, collectionKey, collectionItemKey, targetPath });
 
   getWorkspaceService(siteKey, workspaceKey, function(err, {workspaceService}){
     if(err){
@@ -926,7 +924,6 @@ api.getThumbnailForCollectionOrSingleItemImage = function({siteKey, workspaceKey
 
     workspaceService.getThumbnailForCollectionOrSingleItemImage(collectionKey, collectionItemKey, targetPath)
       .then((result)=>{
-        console.log('getThumbnailForCollectionOrSingleItemImage - SUCCESS, result:', result ? 'got result' : 'null');
         promise.resolve(result);
       })
       .catch((error)=>{
