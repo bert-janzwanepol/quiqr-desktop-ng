@@ -829,11 +829,7 @@ class WorkspaceService{
 
       if(!thumbSrcExists){
         try{
-          await createThumbnailJob(completePath, thumbSrc)
-          .then(()=>{})
-          .catch((e)=>{
-            console.log('ERROR: ' + e.stdout.toString());
-          });
+          await createThumbnailJob(completePath, thumbSrc);
         }
         catch(e){
           return 'NOT_FOUND';
@@ -851,7 +847,6 @@ class WorkspaceService{
     else{
       return 'NO_IMAGE';
     }
-
   }
 
 
