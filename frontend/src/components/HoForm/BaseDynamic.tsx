@@ -29,7 +29,7 @@ export class BaseDynamic<
   }
 
   // override this to set a initial value, a default value or a calculated value (e.g: "now" converts to a date).
-  normalizeState({ state, field, stateBuilder }: { state: any; field: any; stateBuilder: FormStateBuilder }) {}
+  normalizeState({ state, field, stateBuilder }: { state: any; field: any; stateBuilder?: FormStateBuilder }) {}
 
   shouldComponentUpdate(nextProps, nextState) {
     return true;

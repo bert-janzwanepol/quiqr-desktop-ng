@@ -62,7 +62,7 @@ class AccordionDynamic extends BaseDynamic {
     return "accordion";
   }
 
-  normalizeState(state, field, stateBuilder) {
+  normalizeState({state, field, stateBuilder}) {
     if (field && field.arrayIndicesAreKeys !== true) {
       dynamicComponentUtils.normalizeStateForArrayOfObject(state, field, stateBuilder);
     }
