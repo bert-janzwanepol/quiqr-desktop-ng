@@ -3,28 +3,37 @@ import { consoleService } from '../../services/ui-service';
 
 const consoleStyle ={
   pre: {
-    position:'fixed',
+    position:'fixed' as const,
     right:'0',
     padding:'10px 10px 100px 10px',
-    overflow:'auto',
+    overflow:'auto' as const,
     margin:'0',
     width:'100%',
     lineHeight:'1.4',
     height:'calc(100% - 0px)',
     fontFamily:'monospace',
-    fontWeight:'bold',
+    fontWeight:'bold' as const,
     background:'#1E1729',
     color:'#d4d4d4',
-    whiteSpace: 'pre-wrap',
-    wordWrap: 'break-word',
+    whiteSpace: 'pre-wrap' as const,
+    wordWrap: 'break-word' as const,
     zIndex:3
   }
 }
 
-class ConsoleOutput extends React.Component{
-  constructor(props){
+type ConsoleOutputState = {
+  autoscroll: boolean;
+};
+
+class ConsoleOutput extends React.Component<{}, ConsoleOutputState>{
+  closeTimeout: any;
+  preElement: HTMLPreElement | null = null;
+  scrollRef: React.RefObject<HTMLDivElement>;
+
+  constructor(props: {}){
     super(props);
     this.closeTimeout = undefined;
+    this.scrollRef = React.createRef();
     this.state = {
       autoscroll: true
     }
@@ -38,8 +47,10 @@ class ConsoleOutput extends React.Component{
     consoleService.unregisterListener(this);
   }
 
-  componentDidUpdate(preProps){
-    this.refs.scroll.scrollIntoView({ behavior: "smooth" });
+  componentDidUpdate(preProps: {}){
+    if (this.scrollRef.current) {
+      this.scrollRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   }
 
   render(){
@@ -53,16 +64,16 @@ class ConsoleOutput extends React.Component{
     return <React.Fragment>
       <pre
         style={preStyle}
-        ref={ (pre) => this.preElement = pre }
+        ref={ (pre) => { this.preElement = pre; } }
       >
-        { consoleService.getConsoleMessages().map(({key, line}) => line).join('\n') }
-        <div ref="scroll" />
+        { consoleService.getConsoleMessages().map((msg) => msg.line).join('\n') }
+        <div ref={this.scrollRef} />
       </pre>
     </React.Fragment>;
   }
 }
 
-class Console extends React.Component{
+class Console extends React.Component<{}, {}>{
 
   render(){
     return (<React.Fragment>
