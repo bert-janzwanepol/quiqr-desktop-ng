@@ -1,7 +1,6 @@
 import * as React from "react";
 import service from "../../../services/service";
 import Chips from "../../../components/Chips";
-import withStyles from "@mui/styles/withStyles";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Dialog from "@mui/material/Dialog";
@@ -9,8 +8,6 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-
-const useStyles = (theme) => ({});
 
 interface EditTagsDialogsProps {
   open: boolean;
@@ -21,7 +18,6 @@ interface EditTagsDialogsProps {
   };
   onSavedClick: () => void;
   onCancelClick: () => void;
-  classes?: any; // Added by withStyles HOC
 }
 
 interface EditTagsDialogsState {
@@ -150,4 +146,4 @@ class EditTagsDialogs extends React.Component<EditTagsDialogsProps, EditTagsDial
     );
   }
 }
-export default withStyles(useStyles)(EditTagsDialogs);
+export default EditTagsDialogs;
