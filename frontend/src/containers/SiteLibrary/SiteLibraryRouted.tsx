@@ -57,7 +57,7 @@ class SiteLibraryRouted extends React.Component{
     this.updateLocalSites();
 
     //PORTQUIQR
-    //this.updateCommunityTemplates();
+    this.updateCommunityTemplates();
 
     service.api.stopHugoServer();
 
@@ -72,6 +72,20 @@ class SiteLibraryRouted extends React.Component{
       this.setState({sitesListingView: view });
     });
 
+  }
+
+  updateCommunityTemplates() {
+     service.api
+      .updateCommunityTemplates()
+      .then(data => {
+        this.setState({
+            quiqrCommunityTemplatesError: null,
+            quiqrCommunityTemplates: data
+          });
+      })
+      .catch((e: Error) => {
+          this.setState({quiqrCommunityTemplatesError: e.message});
+      });
   }
 
   //PORTQUIQR

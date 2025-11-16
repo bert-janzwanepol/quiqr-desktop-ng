@@ -378,6 +378,10 @@ export class API {
     return mainProcessBridge.request('invalidateCache', {});
   }
 
+  updateCommunityTemplates() {
+    return mainProcessBridge.request('updateCommunityTemplates', {});
+  }
+
 }
 
 export const instance = new API();

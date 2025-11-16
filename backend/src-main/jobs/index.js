@@ -15,3 +15,10 @@ module.exports.globJob = (expression , options ) => {
         {expression, options}
     );
 }
+
+module.exports.updateCommunityTemplatesJob = () => {
+    return jobsManager.runBackgroundJob(
+        'update-community-templates-job',
+        require.resolve('./update-community-templates-job.js')
+    )
+}

@@ -22,6 +22,8 @@ const GithubKeyManager          = require('../sync/github/github-key-manager');
 const { EnvironmentResolver }   = require('../utils/environment-resolver');
 const chokidar                  = require('chokidar');
 
+const { updateCommunityTemplatesJob } = require('../jobs');
+
 let api = {};
 
 function bindResponseToContext(promise, context){
@@ -1049,6 +1051,10 @@ api.publisherDispatchAction = function({siteKey, publishConf, action, actionPara
       context.reject(err);
     });
   });
+}
+
+api.updateCommunityTemplates = function(data, context) {
+  bindResponseToContext(updateCommunityTemplatesJob(), context);
 }
 
 module.exports = api;
