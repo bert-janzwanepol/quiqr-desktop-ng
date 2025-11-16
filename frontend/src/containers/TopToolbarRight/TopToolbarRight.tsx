@@ -1,16 +1,8 @@
 import * as React from 'react';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import withStyles, { WithStyles } from '@mui/styles/withStyles';
 
-const useStyles = (theme: any) => ({
-  iconButton: {
-    margin: theme.spacing(0),
-    padding: theme.spacing(0),
-  },
-});
-
-interface TopToolbarRightProps extends WithStyles<typeof useStyles> {
+interface TopToolbarRightProps {
   itemsLeft: React.ReactElement[];
   itemsCenter: React.ReactElement[];
   itemsRight: React.ReactElement[];
@@ -46,4 +38,4 @@ class TopToolbarRight extends React.Component<TopToolbarRightProps> {
   }
 }
 
-export default withStyles(useStyles)(TopToolbarRight);
+export default TopToolbarRight;
