@@ -9,8 +9,23 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 //import service from '../services/service';
 
-export default class ProgressDialog extends React.Component{
-  constructor(props){
+interface ProgressConfig {
+  title: string;
+  message: string;
+  percent: number;
+  visible: boolean;
+}
+
+type ProgressDialogProps = {
+  conf: ProgressConfig;
+};
+
+type ProgressDialogState = {
+  confObj: ProgressConfig;
+};
+
+export default class ProgressDialog extends React.Component<ProgressDialogProps, ProgressDialogState>{
+  constructor(props: ProgressDialogProps){
     super(props);
     this.state = {
       confObj: {
@@ -22,7 +37,7 @@ export default class ProgressDialog extends React.Component{
     };
   }
 
-  componentDidUpdate(preProps){
+  componentDidUpdate(){
     if(this.state.confObj !== this.props.conf){
       this.setState({confObj:this.props.conf});
     }
