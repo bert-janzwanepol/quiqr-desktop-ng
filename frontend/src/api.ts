@@ -207,7 +207,7 @@ export class API {
     collectionItemKey: string,
     targetPath: string,
     { title, extensions }:{title: string, extensions: Array<string>},
-    forceFileName: string
+    forceFileName?: string
   ){
 
     let properties = ['openFile'];

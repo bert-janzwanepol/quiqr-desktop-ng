@@ -11,9 +11,19 @@ import service           from '../services/service';
 
 const extensions = [ 'gif' , 'png' , 'svg' , 'jpg' , 'jpeg' ];
 
-class ImageThumb extends React.Component{
+type ImageThumbProps = {
+  getBundleThumbnailSrc: (imagePath: string) => Promise<string>;
+  imagePath: string;
+  onClick?: () => void;
+};
 
-  constructor(props){
+type ImageThumbState = {
+  src: string | null | 'NOT_FOUND' | undefined;
+};
+
+class ImageThumb extends React.Component<ImageThumbProps, ImageThumbState>{
+
+  constructor(props: ImageThumbProps){
     super(props);
     this.state = {
       src: null
@@ -35,7 +45,7 @@ class ImageThumb extends React.Component{
     return (
       <div className="checkered" style={{ maxWidth:'200px', height:'auto', marginBottom:'0px', overflow:'hidden', backgroundColor: '#ccc'}}>
         {
-          this.state.src === undefined ? (<Spinner size={32} margin={16} color={ 'RGBA(255,255,255,.3)' } />)
+          this.state.src === undefined ? (<Spinner size={32} margin={'16px'} color={ 'RGBA(255,255,255,.3)' } />)
           : this.state.src === 'NOT_FOUND'? (<IconBroken className="fadeIn animated" style={{width:32, height:32, margin:16, color:'#e84b92'}} />)
           :
             (
@@ -46,14 +56,41 @@ class ImageThumb extends React.Component{
   }
 }
 
+interface DialogConf {
+  visible: boolean;
+  title: string;
+}
 
+interface FormProps {
+  siteKey: string;
+  workspaceKey: string;
+  collectionKey: string;
+  collectionItemKey: string;
+}
 
-export default class SelectImagesDialog extends React.Component{
-  getExt(file){
-    return file.split('.').pop().toLowerCase();
+interface ImageItem {
+  filename: string;
+  src: string;
+}
+
+type SelectImagesDialogProps = {
+  conf: DialogConf;
+  formProps: FormProps;
+  uploadPath: string;
+  reload: () => void;
+  style: React.CSSProperties;
+  imageItems: ImageItem[];
+  getBundleThumbnailSrc: (imagePath: string) => Promise<string>;
+  handleSelect: (filename: string) => void;
+  handleClose: () => void;
+};
+
+export default class SelectImagesDialog extends React.Component<SelectImagesDialogProps>{
+  getExt(file: string){
+    return file.split('.').pop()?.toLowerCase() || '';
   }
 
-  isImage(file){
+  isImage(file: string){
     if(file){
       if( extensions.includes(this.getExt(file)) ){
         return true;
