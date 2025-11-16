@@ -19,13 +19,9 @@ import CardItem                     from './components/CardItem';
 import BlockDialog                  from './../../components/BlockDialog';
 import Spinner                      from './../../components/Spinner';
 import service                      from './../../services/service';
-import withStyles from '@mui/styles/withStyles';
 
 //PORTQUIQR
 //const net = window.require('electron').remote.net;
-
-const useStyles = theme => ({
-});
 
 class SiteLibraryRouted extends React.Component{
 
@@ -604,4 +600,4 @@ class SiteLibraryRouted extends React.Component{
   }
 }
 
-export default withStyles(useStyles)(SiteLibraryRouted);
+export default SiteLibraryRouted;
