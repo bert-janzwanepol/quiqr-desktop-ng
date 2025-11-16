@@ -1,18 +1,18 @@
 import React from 'react';
-import { BaseDynamic } from '../../HoForm';
+import { BaseDynamic, BaseDynamicProps, BaseDynamicState, FieldBase } from '../../HoForm';
 
-type EmptyLineDynamicField = {
+interface EmptyLineDynamicField extends FieldBase {
   key: string,
   compositeKey: string,
   type: string,
   amount?: number
 }
 
-type EmptyLineDynamicState = {
+type EmptyLineDynamicProps = BaseDynamicProps<EmptyLineDynamicField>;
 
-}
+type EmptyLineDynamicState = BaseDynamicState;
 
-class EmptyLineDynamic extends BaseDynamic<EmptyLineDynamicField, EmptyLineDynamicState> {
+class EmptyLineDynamic extends BaseDynamic<EmptyLineDynamicProps, EmptyLineDynamicState> {
 
   getType(){
     return 'empty-line';
