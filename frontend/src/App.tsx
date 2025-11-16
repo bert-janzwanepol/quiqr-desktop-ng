@@ -480,7 +480,6 @@ class App extends React.Component<{}, AppState> {
 
     return (
       <StyledEngineProvider injectFirst>
-        (
         <ThemeProvider theme={this.state.theme}>
           <CssBaseline />
           <React.Fragment>
@@ -510,7 +509,6 @@ class App extends React.Component<{}, AppState> {
             </div>
           </React.Fragment>
         </ThemeProvider>
-        )
       </StyledEngineProvider>
     );
   }
