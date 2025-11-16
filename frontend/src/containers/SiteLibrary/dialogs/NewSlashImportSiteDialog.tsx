@@ -53,7 +53,46 @@ const useStyles = (theme) => ({
   },
 });
 
-class NewSiteDialog extends React.Component {
+interface NewSiteDialogProps {
+  open: boolean;
+  newOrImport: "new" | "import";
+  importSiteURL?: string;
+  mountSite: (siteKey: string) => void;
+  onClose: () => void;
+  classes?: any; // Added by withStyles HOC
+}
+
+interface NewSiteDialogState {
+  title: string;
+  filteredHugoVersions: string[];
+  newType: string;
+  newReadyForNew: boolean;
+  newReadyForNaming: boolean;
+  newLastStepBusy: boolean;
+  hugoVersionSelectDisable: boolean;
+  hugoExtended: boolean | string;
+  hugoVersion: string;
+  generateQuiqrModel: boolean;
+  newSiteNameErrorText: string;
+  newSiteName: string;
+  dialogSize?: string;
+  newTypeHugoThemeLastValidatedUrl?: string;
+  newHugoThemeInfoDict?: any;
+  newSiteKey?: string | null;
+  newTypeScratchConfigFormat?: string;
+  newTypeFolderLastValidatedPath?: string;
+  gitPrivateRepo?: boolean;
+  privData?: {
+    username: string;
+    repository: string;
+    deployPrivateKey: string;
+    email: string;
+  };
+  importTypeGitLastValidatedUrl?: string;
+  hugoExtendedEnabled?: boolean;
+}
+
+class NewSiteDialog extends React.Component<NewSiteDialogProps, NewSiteDialogState> {
   constructor(props) {
     super(props);
 

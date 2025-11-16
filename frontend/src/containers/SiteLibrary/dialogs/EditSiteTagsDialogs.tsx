@@ -12,7 +12,33 @@ import DialogTitle from "@mui/material/DialogTitle";
 
 const useStyles = (theme) => ({});
 
-class EditTagsDialogs extends React.Component {
+interface EditTagsDialogsProps {
+  open: boolean;
+  siteconf: {
+    key: string;
+    name: string;
+    tags?: string[];
+  };
+  onSavedClick: () => void;
+  onCancelClick: () => void;
+  classes?: any; // Added by withStyles HOC
+}
+
+interface EditTagsDialogsState {
+  execButtonsDisabled: boolean;
+  errorTextSiteName: string;
+  busy: boolean;
+  cancelText: string;
+  siteconf: {
+    key?: string;
+    name?: string;
+    tags?: string[];
+  };
+  open?: boolean;
+  failure?: boolean;
+}
+
+class EditTagsDialogs extends React.Component<EditTagsDialogsProps, EditTagsDialogsState> {
   constructor(props) {
     super(props);
 

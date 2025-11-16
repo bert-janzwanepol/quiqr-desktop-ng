@@ -7,7 +7,25 @@ import Dialog            from '@mui/material/Dialog';
 import DialogActions     from '@mui/material/DialogActions';
 import DialogContent     from '@mui/material/DialogContent';
 
-class CopyItemKeyDialog extends React.Component{
+interface CopyItemKeyDialogProps {
+  value: string;
+  viewKey?: string;
+  busy?: boolean;
+  confirmLabel: string;
+  title: string;
+  textfieldlabel: string;
+  handleClose?: () => void;
+  handleConfirm?: (titleToKey?: string, value?: string) => void;
+}
+
+interface CopyItemKeyDialogState {
+  value: string;
+  initialValue: string;
+  valid: boolean | null;
+  titleToKey?: string;
+}
+
+class CopyItemKeyDialog extends React.Component<CopyItemKeyDialogProps, CopyItemKeyDialogState>{
 
   constructor(props ){
     super(props);

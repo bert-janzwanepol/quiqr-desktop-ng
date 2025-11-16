@@ -44,7 +44,41 @@ const useStyles = theme => ({
 
 const regexpHttp      = new RegExp('^http(s?)://', 'i')
 
-class FormPartialNewFromHugoTheme extends React.Component{
+interface FormPartialNewFromHugoThemeProps {
+  onSetName: (name: string) => void;
+  onValidationDone: (newState: {
+    newReadyForNaming: boolean;
+    newTypeHugoThemeLastValidatedUrl: string;
+    newHugoThemeInfoDict: any;
+  }) => void;
+  classes?: any; // Added by withStyles HOC
+}
+
+interface FormPartialNewFromHugoThemeState {
+  newNameErrorText: string;
+  newType: string;
+  newTypeHugoThemeUrl: string;
+  newTypeHugoThemeBusy: boolean;
+  newTypeHugoThemeReadyForValidation: boolean;
+  newTypeHugoThemeLastValidatedUrl: string;
+  newTypeHugoThemeReadyForNew: boolean;
+  newTypeHugoThemeProvider: string;
+  newTypeHugoThemeErrorText: string;
+  newTypeHugoThemeScreenshot: string | null;
+  newHugoThemeInfoDict?: any;
+  newHugoThemeMinVersion?: string | null;
+  newHugoThemeName?: string | null;
+  newHugoThemeLicense?: string | null;
+  newHugoThemeLicenseLink?: string | null;
+  newHugoThemeHomepage?: string | null;
+  newHugoThemeDemopage?: string | null;
+  newHugoThemeDescription?: string | null;
+  newHugoThemeExampleSite?: boolean | null;
+  newHugoThemeAuthor?: string | null;
+  newHugoThemeAuthorHomepage?: string | null;
+}
+
+class FormPartialNewFromHugoTheme extends React.Component<FormPartialNewFromHugoThemeProps, FormPartialNewFromHugoThemeState>{
 
   constructor(props){
     super(props);

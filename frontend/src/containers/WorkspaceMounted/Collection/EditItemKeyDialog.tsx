@@ -8,7 +8,25 @@ import DialogActions     from '@mui/material/DialogActions';
 import DialogContent     from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 
-class EditItemKeyDialog extends React.Component{
+interface EditItemKeyDialogProps {
+  value: string;
+  viewKey?: string;
+  busy?: boolean;
+  confirmLabel: string;
+  title: string;
+  textfieldlabel: string;
+  handleClose?: () => void;
+  handleConfirm?: (titleToKey?: string, value?: string) => void;
+}
+
+interface EditItemKeyDialogState {
+  value: string;
+  initialValue: string;
+  valid: boolean | null;
+  titleToKey?: string;
+}
+
+class EditItemKeyDialog extends React.Component<EditItemKeyDialogProps, EditItemKeyDialogState>{
 
   constructor(props ){
     super(props);
@@ -88,7 +106,6 @@ class EditItemKeyDialog extends React.Component{
     return (
 
       <Dialog
-        modal={true}
         fullWidth={true}
         maxWidth="sm"
         open={true}

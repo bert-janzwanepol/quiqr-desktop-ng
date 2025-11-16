@@ -12,7 +12,32 @@ import DialogTitle from "@mui/material/DialogTitle";
 
 const useStyles = (theme) => ({});
 
-class RenameDialog extends React.Component {
+interface RenameDialogProps {
+  open: boolean;
+  siteconf: {
+    key: string;
+    name: string;
+  };
+  localsites?: string[];
+  onSavedClick: () => void;
+  onCancelClick: () => void;
+  classes?: any; // Added by withStyles HOC
+}
+
+interface RenameDialogState {
+  execButtonsDisabled: boolean;
+  errorTextSiteName: string;
+  busy: boolean;
+  cancelText: string;
+  siteconf: {
+    key?: string;
+    name?: string;
+  };
+  open?: boolean;
+  failure?: boolean;
+}
+
+class RenameDialog extends React.Component<RenameDialogProps, RenameDialogState> {
   constructor(props) {
     super(props);
 

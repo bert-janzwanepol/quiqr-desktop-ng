@@ -49,7 +49,37 @@ const useStyles = theme => ({
   }
 });
 
-class SyncConfigDialog extends React.Component{
+interface SyncConfigDialogProps {
+  open?: boolean;
+  site: {
+    key: string;
+    publish: Array<{
+      key: string;
+      config: any;
+    }>;
+  };
+  publishConf?: {
+    key: string;
+    config: {
+      type: string;
+    };
+  };
+  modAction: string;
+  closeText: string;
+  onClose: () => void;
+  onSave: (inkey: string) => void;
+  classes?: any; // Added by withStyles HOC
+}
+
+interface SyncConfigDialogState {
+  serverType: string | null;
+  saveEnabled: boolean;
+  pubData: any;
+  dialogSize: string;
+  publishKey?: string;
+}
+
+class SyncConfigDialog extends React.Component<SyncConfigDialogProps, SyncConfigDialogState>{
 
   constructor(props){
     super(props);

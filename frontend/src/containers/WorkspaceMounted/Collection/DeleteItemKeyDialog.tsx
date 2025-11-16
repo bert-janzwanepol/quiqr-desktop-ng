@@ -7,7 +7,19 @@ import DialogContent     from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import Spinner           from './../../../components/Spinner'
 
-class DeleteItemKeyDialog extends React.Component{
+interface DeleteItemKeyDialogProps {
+  busy?: boolean;
+  itemLabel: string;
+  handleClose?: () => void;
+  handleConfirm?: (value: string) => void;
+}
+
+interface DeleteItemKeyDialogState {
+  value: string;
+  valid: boolean | null;
+}
+
+class DeleteItemKeyDialog extends React.Component<DeleteItemKeyDialogProps, DeleteItemKeyDialogState>{
   constructor(props){
     super(props);
     this.state = {
@@ -33,7 +45,6 @@ class DeleteItemKeyDialog extends React.Component{
       <Dialog
         fullWidth={true}
         maxWidth="sm"
-        modal={true}
         open={true}
         onClose={this.handleClose}
       >

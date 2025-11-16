@@ -11,18 +11,29 @@ import DialogContentText    from '@mui/material/DialogContentText';
 import LinearProgress       from '@mui/material/LinearProgress';
 
 const useStyles = theme => ({
-
   root: {
     margin: 0,
   },
   serverFormLogo: {
-    position: 'absolute',
+    position: 'absolute' as const,
     right: theme.spacing(3),
     top: theme.spacing(3),
   },
 });
 
-class SyncBusyDialog extends React.Component{
+interface SyncBusyDialogProps {
+  open?: boolean;
+  icon?: React.ReactNode;
+  serverTitle?: string;
+  onClose: () => void;
+  classes?: any; // Added by withStyles HOC
+}
+
+interface SyncBusyDialogState {
+  infoTxt: string;
+}
+
+class SyncBusyDialog extends React.Component<SyncBusyDialogProps, SyncBusyDialogState>{
 
   constructor(props){
     super(props);
@@ -52,7 +63,7 @@ class SyncBusyDialog extends React.Component{
         fullWidth={true}
         maxWidth="sm" >
 
-        <MuiDialogTitle disableTypography className={classes.root}>
+        <MuiDialogTitle className={classes.root}>
           <Box className={classes.serverFormLogo}>
           {this.props.icon}
           </Box>

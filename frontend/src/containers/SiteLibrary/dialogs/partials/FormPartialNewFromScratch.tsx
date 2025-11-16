@@ -9,7 +9,16 @@ const useStyles = theme => ({
 
 });
 
-class FormPartialNewFromScratch extends React.Component{
+interface FormPartialNewFromScratchProps {
+  onChange: (newState: { newTypeScratchConfigFormat: string }) => void;
+  classes?: any; // Added by withStyles HOC
+}
+
+interface FormPartialNewFromScratchState {
+  configFormat: string;
+}
+
+class FormPartialNewFromScratch extends React.Component<FormPartialNewFromScratchProps, FormPartialNewFromScratchState>{
 
   constructor(props){
     super(props);
