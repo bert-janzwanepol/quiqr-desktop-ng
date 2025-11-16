@@ -3,7 +3,7 @@ import { Switch, Route } from "react-router-dom";
 import AppsIcon from "@mui/icons-material/Apps";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import SettingsApplicationsIcon from "@mui/icons-material/SettingsApplications";
-import { createTheme, ThemeProvider, StyledEngineProvider, adaptV4Theme, Theme } from "@mui/material/styles";
+import { createTheme, ThemeProvider, StyledEngineProvider, Theme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { blue } from "@mui/material/colors";
 import Workspace from "./containers/WorkspaceMounted/Workspace";
@@ -43,16 +43,14 @@ class App extends React.Component<{}, AppState> {
 
     //let win = window.require('electron').remote.getCurrentWindow();
     let style = styleLightDefault;
-    let theme = createTheme(
-      adaptV4Theme({
-        palette: {
-          mode: "light",
-          primary: {
-            main: blue[500],
-          },
+    let theme = createTheme({
+      palette: {
+        mode: "light",
+        primary: {
+          main: blue[500],
         },
-      })
-    );
+      },
+    });
 
     this.state = {
       splashDialogOpen: false,
@@ -81,16 +79,14 @@ class App extends React.Component<{}, AppState> {
           themeStyle = "dark";
         }
 
-        let theme = createTheme(
-          adaptV4Theme({
-            palette: {
-              mode: themeStyle,
-              primary: {
-                main: blue[500],
-              },
+        let theme = createTheme({
+          palette: {
+            mode: themeStyle,
+            primary: {
+              main: blue[500],
             },
-          })
-        );
+          },
+        });
 
         this.setState({
           style: themeStyle === "light" ? styleLightDefault : styleDarkDefault,

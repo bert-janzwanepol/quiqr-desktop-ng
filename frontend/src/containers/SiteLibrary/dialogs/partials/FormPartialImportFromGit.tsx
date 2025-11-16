@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import service from "../../../../services/service";
 import { makeStyles } from "@mui/styles";
+import { Theme } from "@mui/material/styles";
 import CircularProgress from "@mui/material/CircularProgress";
 import Table from "@mui/material/Table";
 import TableRow from "@mui/material/TableRow";
@@ -28,7 +29,7 @@ import LinearProgress from "@mui/material/LinearProgress";
 import clsx from "clsx";
 import OutlinedInput from "@mui/material/OutlinedInput";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   root: {
     margin: 0,
     display: "flex",
@@ -90,6 +91,12 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     minWidth: 300,
   },
+
+  margin: {
+    margin: theme.spacing(1),
+  },
+
+  table: {},
 }));
 
 const regexpHttp = new RegExp("^http(s?)://", "i");
@@ -430,7 +437,7 @@ const FormPartialNewFromScratch = (props) => {
             <CardMedia className={classes.cover} image={importTypeGitScreenshot ? importTypeGitScreenshot : ScreenShotPlaceholder} title='site screenshot' />
             <div className={classes.details}>
               <CardContent className={classes.content}>
-                <TableContainer xcomponent={Paper}>
+                <TableContainer component={Paper}>
                   <Table className={classes.table} size='small' aria-label='a dense table'>
                     <TableBody>
                       <TableRow>
