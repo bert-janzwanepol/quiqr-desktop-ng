@@ -1,3 +1,6 @@
+import * as React from 'react';
+import type { BaseDynamicProps } from '../../HoForm/BaseDynamic';
+import type { FieldBase } from '../../HoForm/types';
 import AccordionDynamic       from './AccordionDynamic';
 import ChipsDynamic           from './ChipsDynamic';
 import ColorToolDynamic       from './ColorToolDynamic';
@@ -26,7 +29,7 @@ import SliderDynamic          from './SliderDynamic';
 import BundleImgThumbDynamic  from './BundleImgThumbDynamic';
 import EisenhouwerDynamic  from './EisenhouwerDynamic';
 
-export default [
+const components: Array<React.ComponentType<BaseDynamicProps<FieldBase>>> = [
     AccordionDynamic,
     BundleImgThumbDynamic,
     ChipsDynamic,
