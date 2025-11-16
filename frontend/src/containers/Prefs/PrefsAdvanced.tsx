@@ -23,14 +23,39 @@ const useStyles = theme => ({
 
 });
 
-class PrefsAdvanced extends React.Component {
+interface PrefsAdvancedProps {
+  classes?: any; // Added by withStyles HOC
+}
+
+interface PrefsAdvancedState {
+  // Global prefs object read from config file via readConfKey('prefs')
+  prefs: {
+    dataFolder?: string;
+    interfaceStyle?: string;
+    sitesListingView?: string;
+    libraryView?: string;
+    openAiApiKey?: string;
+    systemGitBinPath?: string;
+    customOpenInCommand?: string;
+    [key: string]: any; // Allow other preference keys
+  };
+  // Individual input field state (mirrors values from prefs for controlled inputs)
+  systemGitBinPath?: string;
+  openAiApiKey?: string;
+  customOpenInCommand?: string;
+}
+
+class PrefsAdvanced extends React.Component<PrefsAdvancedProps, PrefsAdvancedState> {
 
   history: any;
 
   constructor(props){
     super(props);
     this.state = {
-      prefs : {}
+      prefs: {},
+      systemGitBinPath: "",
+      openAiApiKey: "",
+      customOpenInCommand: "",
     };
   }
 
