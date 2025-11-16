@@ -1,17 +1,11 @@
 import * as React            from 'react';
-import withStyles from '@mui/styles/withStyles';
 import InputLabel            from '@mui/material/InputLabel';
 import FormControl           from '@mui/material/FormControl';
 import Select                from '@mui/material/Select';
 import MenuItem              from '@mui/material/MenuItem';
 
-const useStyles = theme => ({
-
-});
-
 interface FormPartialNewFromScratchProps {
   onChange: (newState: { newTypeScratchConfigFormat: string }) => void;
-  classes?: any; // Added by withStyles HOC
 }
 
 interface FormPartialNewFromScratchState {
@@ -35,12 +29,9 @@ class FormPartialNewFromScratch extends React.Component<FormPartialNewFromScratc
   }
 
   render(){
-
-    const {classes} = this.props;
-
     return (
       <React.Fragment>
-          <FormControl variant="outlined" className={classes.formControl}>
+          <FormControl variant="outlined" sx={{ m: 1, minWidth: 300 }}>
             <InputLabel id="demo-simple-select-outlined-label">Config Format</InputLabel>
             <Select
               labelId="demo-simple-select-outlined-label"
@@ -72,6 +63,6 @@ class FormPartialNewFromScratch extends React.Component<FormPartialNewFromScratc
 
 }
 
-export default withStyles(useStyles)(FormPartialNewFromScratch);
+export default FormPartialNewFromScratch;
 
 
