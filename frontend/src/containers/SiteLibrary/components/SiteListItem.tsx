@@ -7,14 +7,6 @@ import Avatar from '@mui/material/Avatar';
 import { red } from '@mui/material/colors';
 import service              from '../../../services/service';
 
-import withStyles from '@mui/styles/withStyles';
-
-const useStyles = theme => ({
-  avatarNoFavicon: {
-    backgroundColor: red[500],
-  }
-});
-
 
 class SiteListItem extends React.Component {
 
@@ -53,9 +45,7 @@ class SiteListItem extends React.Component {
   }
 
   render(){
-    const { classes } = this.props;
-
-    let siteAvatar = ( <Avatar aria-label="recipe"  variant="rounded" className={classes.avatarNoFavicon}>
+    let siteAvatar = ( <Avatar aria-label="recipe"  variant="rounded" sx={{ backgroundColor: red[500] }}>
       {this.props.site.name.charAt(0)}
     </Avatar>
     )
@@ -93,6 +83,6 @@ class SiteListItem extends React.Component {
 
 }
 
-export default withStyles(useStyles)(SiteListItem);
+export default SiteListItem;
 
 
