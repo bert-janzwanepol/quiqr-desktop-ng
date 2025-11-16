@@ -20,20 +20,20 @@ if (isPackaged) {
   // renderer and main process - prod build
   if (electronEnv.isRenderer) {
     // renderer process - prod build
-    rootPath = path.join(__dirname, '..', '..', '..');
+    rootPath = path.join(__dirname, '..', '..', '..', '..');
   } else if (!module.parent) {
     // main process - prod build (case: run "start")
-    rootPath = path.join(__dirname, '..', '..', '..');
+    rootPath = path.join(__dirname, '..', '..', '..', '..');
   } else {
     // main process - prod (case: run "build")
-    rootPath = path.join(__dirname, '..', '..', '..');
+    rootPath = path.join(__dirname, '..', '..', '..', '..');
   }
 } else if (electronEnv.isRenderer) {
   // renderer process - dev build
-  rootPath = path.join(__dirname, '..', '..', '..');
+  rootPath = path.join(__dirname, '..', '..', '..', '..');
 } else {
   // main process - dev build
-  rootPath = path.join(__dirname, '..', '..', '..');
+  rootPath = path.join(__dirname, '..', '..', '..', '..');
 }
 
 module.exports.rootPath = path.resolve(rootPath);

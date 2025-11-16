@@ -122,24 +122,6 @@ const FormPartialNewFromScratch = (props) => {
   const [importQuiqrForms, setImportQuiqrForms] = useState("");
   const [useDeployKey, setUseDeployKey] = useState(false);
 
-  const getKeyPair = useCallback(() => {
-    setKeyPairBusy(true);
-
-    let promise = service.api.createKeyPairGithub();
-
-    promise.then(
-      (resp) => {
-        updatePubData({ deployPrivateKey: resp.keyPair[0], deployPublicKey: resp.keyPair[1] }, () => {
-          setKeyPairBusy(false);
-        });
-      },
-      (e) => {
-        service.api.logToConsole(e, "ERRR");
-        setKeyPairBusy(false);
-      }
-    );
-  }, [updatePubData]);
-
   const updatePubData = useCallback(
     (newData, callback = null) => {
       const newPrivData = { ...privData, ...newData };
@@ -161,26 +143,23 @@ const FormPartialNewFromScratch = (props) => {
     [privData, props]
   );
 
-  useEffect(() => {
-    if (props.importSiteURL && importTypeGitUrl !== props.importSiteURL) {
-      setImportTypeGitUrl(props.importSiteURL);
-      if (preValidateURL(props.importSiteURL)) {
-        validateURL(props.importSiteURL);
-      }
-    }
-  }, [props.importSiteURL, importTypeGitUrl, preValidateURL, validateURL]);
+  const getKeyPair = useCallback(() => {
+    setKeyPairBusy(true);
 
-  const resetImportTypeGitState = useCallback(() => {
-    setImportTypeGitProvider("");
-    setImportTypeGitErrorText("");
-    setImportTypeGitBusy(false);
-    setImportTypeGitLastValidatedUrl("");
-    setImportTypeGitReadyForValidation(false);
-    setImportTypeGitScreenshot(null);
-    setImportHugoTheme("");
-    setImportQuiqrModel("");
-    setImportQuiqrForms("");
-  }, []);
+    let promise = service.api.createKeyPairGithub();
+
+    promise.then(
+      (resp) => {
+        updatePubData({ deployPrivateKey: resp.keyPair[0], deployPublicKey: resp.keyPair[1] }, () => {
+          setKeyPairBusy(false);
+        });
+      },
+      (e) => {
+        service.api.logToConsole(e, "ERRR");
+        setKeyPairBusy(false);
+      }
+    );
+  }, [updatePubData]);
 
   const preValidateURL = useCallback((url) => {
     if (!regexpHttp.test(url)) {
@@ -194,14 +173,17 @@ const FormPartialNewFromScratch = (props) => {
     }
   }, []);
 
-  const validatePrivRepo = useCallback(() => {
-    props.onSetVersion();
-    props.onValidationDone({
-      newReadyForNaming: true,
-      gitPrivateRepo: true,
-      privData: privData,
-    });
-  }, [props, privData]);
+  const resetImportTypeGitState = useCallback(() => {
+    setImportTypeGitProvider("");
+    setImportTypeGitErrorText("");
+    setImportTypeGitBusy(false);
+    setImportTypeGitLastValidatedUrl("");
+    setImportTypeGitReadyForValidation(false);
+    setImportTypeGitScreenshot(null);
+    setImportHugoTheme("");
+    setImportQuiqrModel("");
+    setImportQuiqrForms("");
+  }, []);
 
   const validateURL = useCallback(
     (url) => {
@@ -261,6 +243,26 @@ const FormPartialNewFromScratch = (props) => {
     },
     [props, resetImportTypeGitState]
   );
+
+  useEffect(() => {
+    if (props.importSiteURL && importTypeGitUrl !== props.importSiteURL) {
+      setImportTypeGitUrl(props.importSiteURL);
+      if (preValidateURL(props.importSiteURL)) {
+        validateURL(props.importSiteURL);
+      }
+    }
+  }, [props.importSiteURL, importTypeGitUrl, preValidateURL, validateURL]);
+
+
+
+  const validatePrivRepo = useCallback(() => {
+    props.onSetVersion();
+    props.onValidationDone({
+      newReadyForNaming: true,
+      gitPrivateRepo: true,
+      privData: privData,
+    });
+  }, [props, privData]);
 
   const renderDeployKeyForm = useCallback(() => {
     return (
