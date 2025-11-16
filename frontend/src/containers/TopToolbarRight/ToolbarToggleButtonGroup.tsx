@@ -3,21 +3,13 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import withStyles, { WithStyles } from '@mui/styles/withStyles';
-
-const useStyles = (theme: any) => ({
-  iconButton: {
-    margin: theme.spacing(0),
-    padding: theme.spacing(0),
-  },
-});
 
 interface OptionItem {
   icon: React.ReactElement;
   value: string;
 }
 
-interface ToolbarToggleButtonGroupProps extends WithStyles<typeof useStyles> {
+interface ToolbarToggleButtonGroupProps {
   title?: string;
   optionItems: OptionItem[];
   activeOption: string;
@@ -41,7 +33,7 @@ class ToolbarToggleButtonGroup extends React.Component<
   }
 
   render() {
-    const { classes, title, optionItems, activeOption } = this.props;
+    const { title, optionItems, activeOption } = this.props;
     return (
       <Box display="flex" justifyContent="center" flexDirection="column" border={0} m={0.6} px={1}>
         <ToggleButtonGroup value={activeOption} exclusive size="small">
@@ -58,7 +50,7 @@ class ToolbarToggleButtonGroup extends React.Component<
             );
           })}
         </ToggleButtonGroup>
-        <Button size="small" className={classes.iconButton}>
+        <Button size="small" sx={{ m: 0, p: 0 }}>
           {title}
         </Button>
       </Box>
@@ -66,4 +58,4 @@ class ToolbarToggleButtonGroup extends React.Component<
   }
 }
 
-export default withStyles(useStyles)(ToolbarToggleButtonGroup);
+export default ToolbarToggleButtonGroup;
