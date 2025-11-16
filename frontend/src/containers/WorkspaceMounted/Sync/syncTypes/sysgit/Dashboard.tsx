@@ -1,5 +1,4 @@
 import * as React              from 'react';
-import withStyles from '@mui/styles/withStyles';
 import Box                     from '@mui/material/Box';
 import Divider                 from '@mui/material/Divider';
 import Paper                   from '@mui/material/Paper';
@@ -26,9 +25,6 @@ import SettingsIcon            from '@mui/icons-material/Settings';
 import Meta                    from './Meta'
 import {snackMessageService}   from '../../../../../services/ui-service';
 import service                 from '../../../../../services/service';
-
-const useStyles = theme => ({
-});
 
 class Dashboard extends React.Component{
 
@@ -539,4 +535,4 @@ class Dashboard extends React.Component{
 
 }
 
-export default withStyles(useStyles)(Dashboard);
+export default Dashboard;
