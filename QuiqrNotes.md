@@ -43,7 +43,8 @@ open url: http://localhost:4001/sites
 axios.defaults.timeout = 30000
 axios.defaults.timeoutErrorMessage='timeout'
 
-- [ ] background jobs not working (thumbnail not ported yet)
+- [x] background jobs not working (thumbnail not ported yet)
+    - [ ] large image collections cause Worker error: Error: Error: maxMemoryUsageInMB limit exceeded by at least 39MB
 - [ ] electron progress popup not correctly visible
 - [ ] templates gallery not working
 - [ ] pipeline build failing
