@@ -1,12 +1,8 @@
 import * as React          from 'react';
-import withStyles from '@mui/styles/withStyles';
 import Box                 from '@mui/material/Box';
 import Paper               from '@mui/material/Paper';
 import Typography          from '@mui/material/Typography';
 import GitHubIcon          from '@mui/icons-material/GitHub';
-
-const useStyles = theme => ({
-});
 
 class CardNew extends React.Component{
 
@@ -36,6 +32,6 @@ class CardNew extends React.Component{
 
 }
 
-export default withStyles(useStyles)(CardNew);
+export default CardNew;
 
 
