@@ -13,13 +13,44 @@ import Button from "@mui/material/Button";
 import dynamicComponentUtils from "./shared/dynamic-component-utils";
 import { Accordion, AccordionItem } from "../../Accordion";
 import DangerButton from "../../DangerButton";
-import { BaseDynamic } from "../../HoForm";
+import { BaseDynamic, BaseDynamicProps, BaseDynamicState } from "../../HoForm";
+import type { FieldBase } from "../../HoForm/types";
 import service from "../../../services/service";
 
 const Fragment = React.Fragment;
 
-class AccordionDynamic extends BaseDynamic {
-  documentMouseUpListener;
+interface ExtendedFieldBase extends FieldBase {
+  lazy?: boolean;
+  lazyTemp?: boolean;
+  arrayTitle?: boolean;
+}
+
+interface AccordionField extends FieldBase {
+  title: string;
+  fields: ExtendedFieldBase[];
+  arrayIndicesAreKeys?: boolean;
+  disableCreate?: boolean;
+  disableSort?: boolean;
+  disableDelete?: boolean;
+  dynFormSearchKey?: string;
+  dynFormObjectRoot?: string;
+}
+
+interface AccordionDynamicProps extends BaseDynamicProps<AccordionField> {}
+
+interface AccordionDynamicState extends BaseDynamicState {
+  index: number | null;
+  dragFromIndex: number | null;
+  dragToIndex: number | null;
+  dynFields: Record<string, ExtendedFieldBase[]>;
+  dynFieldsEmpty: ExtendedFieldBase[];
+  headerBackgroundColor: string;
+  itemCount: number;
+  shouldSaveAccordionState: boolean;
+}
+
+class AccordionDynamic extends BaseDynamic<AccordionDynamicProps, AccordionDynamicState> {
+  documentMouseUpListener: ((e: MouseEvent) => void) | undefined;
 
   constructor(props) {
     super(props);
@@ -34,6 +65,7 @@ class AccordionDynamic extends BaseDynamic {
       headerBackgroundColor: "#efefef",
       itemCount: 0,
       shouldSaveAccordionState: false,
+      error_msg: null,
     };
   }
 
@@ -441,7 +473,7 @@ class AccordionDynamic extends BaseDynamic {
       }
     }
 
-    let headStyle = {
+    let headStyle: React.CSSProperties = {
       backgroundColor: this.state.headerBackgroundColor,
     };
     // #aaa looks kind of good on light and dark mode
@@ -452,7 +484,10 @@ class AccordionDynamic extends BaseDynamic {
       };
     }
     if (itemDisabled) {
-      headStyle.color = "#cccccc";
+      headStyle = {
+        ...headStyle,
+        color: "#cccccc",
+      };
     }
     let enableSort = true;
     if (field.arrayIndicesAreKeys === true || field.disableSort === true) {
@@ -466,6 +501,8 @@ class AccordionDynamic extends BaseDynamic {
         bodyStyle={{ padding: "16px 16px 0px 16px" }}
         //headStyle={{padding:'16px 16px 0px 16px' }}
         body={context.renderLevel(newNode)}
+        active={false} // Will be overridden by parent Accordion component
+        onHeadClick={() => {}} // Will be overridden by parent Accordion component
         wrapperProps={{
           onMouseEnter: this.getOnItemMouseEnter(childIndexOrKey),
         }}
