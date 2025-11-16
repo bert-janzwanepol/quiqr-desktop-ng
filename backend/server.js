@@ -17,24 +17,36 @@ const startServer = () => {
       //const { args } = req.body;
       const method = req.path.split('/')[2]
       let context = {};
+      let responded = false;
 
       context.reject = function(error){
+        if (responded) {
+          return;
+        }
+        responded = true;
         let pack = {
           key: method+"Response",
           response: {error:error?error.stack:'Something went wrong.'}
         };
         console.log('API_MAIN_FAIL: '+ method, pack);
+        res.status(500).json(pack.response);
       }
 
       context.resolve = function(response){
+        if (responded) {
+          return;
+        }
+        responded = true;
         res.json( response );
-        //console.log('API_MAIN_RESPONDED: '+ method, response);
       }
 
-      apiMain[method](data, context);
-
-      //console.log("data",data)
-
+      // Catch synchronous errors
+      try {
+        apiMain[method](data, context);
+      } catch(error) {
+        console.log('API_MAIN_SYNC_ERROR: '+ method, error);
+        context.reject(error);
+      }
     });
 
   }

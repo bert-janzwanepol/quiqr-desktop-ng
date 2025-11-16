@@ -546,9 +546,14 @@ api.serveWorkspace = function({siteKey, workspaceKey, serveKey}, context){
   });
 }
 
-api.stopHugoServer = function(){
-  if(global.hugoServer){
-    global.hugoServer.stopIfRunning();
+api.stopHugoServer = function(data, context){
+  try {
+    if(global.hugoServer){
+      global.hugoServer.stopIfRunning();
+    }
+    context.resolve({ stopped: true });
+  } catch(error) {
+    context.reject(error);
   }
 }
 api.showLogWindow = function(){
@@ -902,19 +907,30 @@ api.getThumbnailForPath = function({siteKey, workspaceKey, targetPath}, promise)
         promise.resolve(result);
       })
       .catch((error)=>{
-        console.log(error)
-        //promise.reject(error);
+        console.log('getThumbnailForPath error:', error);
+        promise.reject(error);
       });
   });
 }
 api.getThumbnailForCollectionOrSingleItemImage = function({siteKey, workspaceKey, collectionKey, collectionItemKey, targetPath}, promise){
+  console.log('getThumbnailForCollectionOrSingleItemImage START:', { siteKey, workspaceKey, collectionKey, collectionItemKey, targetPath });
+
   getWorkspaceService(siteKey, workspaceKey, function(err, {workspaceService}){
-    if(err){ promise.reject(err); return; }
+    if(err){
+      console.log('getThumbnailForCollectionOrSingleItemImage - getWorkspaceService ERROR:', err);
+      promise.reject(err);
+      return;
+    }
+
+    console.log('getThumbnailForCollectionOrSingleItemImage - calling workspaceService method...');
+
     workspaceService.getThumbnailForCollectionOrSingleItemImage(collectionKey, collectionItemKey, targetPath)
       .then((result)=>{
+        console.log('getThumbnailForCollectionOrSingleItemImage - SUCCESS, result:', result ? 'got result' : 'null');
         promise.resolve(result);
       })
       .catch((error)=>{
+        console.log('getThumbnailForCollectionOrSingleItemImage - PROMISE ERROR:', error);
         promise.reject(error);
       });
   });

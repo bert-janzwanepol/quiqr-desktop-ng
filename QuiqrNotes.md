@@ -36,9 +36,9 @@ open url: http://localhost:4001/sites
 - [ ] log Window not working
 
 - [ ] performance is slow (maybe swith with ipc and express)
-- [ ] after a while axios or express is not working anymore. Complete application Crash
-    - [ ] seems to be causes by not able to stop hugo server
-    - [ ] axios timeout settings seems to fix this a bit
+- [x] after a while axios or express is not working anymore. Complete application Crash
+    - [x] seems to be causes by not able to stop hugo server
+    - [x] axios timeout settings seems to fix this a bit
 
 axios.defaults.timeout = 30000
 axios.defaults.timeoutErrorMessage='timeout'
