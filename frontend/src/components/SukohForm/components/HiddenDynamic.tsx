@@ -1,19 +1,15 @@
-//@flow
-
 import { BaseDynamic } from '../../HoForm';
-//import type { ComponentContext, DynamicFormNode, ComponentProps, FieldBase } from '../../HoForm';
+import type { FieldBase, BaseDynamicProps, BaseDynamicState } from '../../HoForm';
 
-type HiddenDynamicField = {
-  type: string,
-  key: string,
-  compositeKey: string,
-  default?: string
+interface HiddenDynamicField extends FieldBase {
+  default?: string;
 }
 
-type HiddenDynamicState = {
-}
+type HiddenDynamicProps = BaseDynamicProps<HiddenDynamicField>;
 
-class HiddenDynamic extends BaseDynamic<HiddenDynamicField, HiddenDynamicState> {
+type HiddenDynamicState = BaseDynamicState;
+
+class HiddenDynamic extends BaseDynamic<HiddenDynamicProps, HiddenDynamicState> {
 
   normalizeState({state, field}: {state: any, field: HiddenDynamicField}){
     let key = field.key;
