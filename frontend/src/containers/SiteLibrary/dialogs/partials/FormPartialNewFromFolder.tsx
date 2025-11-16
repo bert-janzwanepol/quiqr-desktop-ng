@@ -14,6 +14,7 @@ import Card                  from '@mui/material/Card';
 import CardContent           from '@mui/material/CardContent';
 import CardMedia             from '@mui/material/CardMedia';
 import FolderPicker          from '../../../../components/FolderPicker';
+import { HugoSiteDirResponse, isHugoSiteDirResponse } from '../../../../utils/type-guards';
 
 const useStyles = theme => ({
 
@@ -23,7 +24,7 @@ const useStyles = theme => ({
   },
   details: {
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection: 'column' as const,
   },
 
   content: {
@@ -35,8 +36,29 @@ const useStyles = theme => ({
 
 });
 
+interface FormPartialNewFromFolderProps {
+  classes: any;
+  onSetVersion: (version?: string) => void;
+  onSetName: (name: string) => void;
+  onValidationDone: (data: {
+    newReadyForNaming: boolean;
+    newTypeFolderLastValidatedPath: string;
+    newFolderInfoDict: HugoSiteDirResponse;
+  }) => void;
+}
 
-class FormPartialNewFromFolder extends React.Component{
+interface FormPartialNewFromFolderState {
+  newType: string;
+  newTypeFolderBusy: boolean;
+  newFolderInfoDict: HugoSiteDirResponse;
+  newTypeFolderScreenshot: string | null;
+  newTypeFolderTheme?: string;
+  newFolderSiteTitle?: string;
+  newFolderPath?: string | null;
+  newTypeFolderErrorText?: string;
+}
+
+class FormPartialNewFromFolder extends React.Component<FormPartialNewFromFolderProps, FormPartialNewFromFolderState>{
 
   constructor(props){
     super(props);
@@ -52,12 +74,15 @@ class FormPartialNewFromFolder extends React.Component{
   resetNewTypeFolderState(){
     this.setState({
       newTypeFolderBusy: false,
-      newTypeFolderInfoDict: {},
+      newFolderInfoDict: {},
       newTypeFolderScreenshot: null,
+      newTypeFolderTheme: undefined,
+      newFolderSiteTitle: undefined,
+      newTypeFolderErrorText: undefined,
     })
   }
 
-  validateDir(path){
+  validateDir(path: string | null){
 
     this.props.onSetVersion();
     if(!path) return;
@@ -67,26 +92,36 @@ class FormPartialNewFromFolder extends React.Component{
 
     service.api.hugosite_dir_show(path)
       .then((response)=>{
-        if(response){
-
+        if(!isHugoSiteDirResponse(response)){
+          service.api.logToConsole("Invalid response from hugosite_dir_show");
           this.setState({
-            newTypeFolderScreenshot: (response.Screenshot ? response.Screenshot:null),
-            newTypeFolderBusy: false,
-            newTypeFolderTheme: (response.hugoConfigExists ? response.hugoConfigParsed.theme : ""),
-            newFolderSiteTitle: (response.hugoConfigExists ? response.hugoConfigParsed.title : ""),
-            newFolderInfoDict: response,
-          })
-          if(response.quiqrModelParsed){
-            this.props.onSetVersion(response.quiqrModelParsed.hugover);
-          }
-
-          this.props.onSetName(response.dirName);
-          this.props.onValidationDone({
-            newReadyForNaming:true,
-            newTypeFolderLastValidatedPath: path,
-            newFolderInfoDict: response,
-          })
+            newTypeFolderErrorText: "Received invalid response from server",
+            newTypeFolderBusy: false
+          });
+          return;
         }
+
+        this.setState({
+          newTypeFolderScreenshot: (response.Screenshot ? response.Screenshot : null),
+          newTypeFolderBusy: false,
+          newTypeFolderTheme: (response.hugoConfigExists && response.hugoConfigParsed ? response.hugoConfigParsed.theme : ""),
+          newFolderSiteTitle: (response.hugoConfigExists && response.hugoConfigParsed ? response.hugoConfigParsed.title : ""),
+          newFolderInfoDict: response,
+        })
+
+        if(response.quiqrModelParsed){
+          this.props.onSetVersion(response.quiqrModelParsed.hugover);
+        }
+
+        if(response.dirName){
+          this.props.onSetName(response.dirName);
+        }
+
+        this.props.onValidationDone({
+          newReadyForNaming:true,
+          newTypeFolderLastValidatedPath: path,
+          newFolderInfoDict: response,
+        })
       })
       .catch((e)=>{
         service.api.logToConsole(e);
@@ -198,4 +233,3 @@ class FormPartialNewFromFolder extends React.Component{
 }
 
 export default withStyles(useStyles)(FormPartialNewFromFolder);
-

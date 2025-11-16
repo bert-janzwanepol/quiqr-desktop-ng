@@ -18,7 +18,7 @@ const useStyles = theme => ({
 
   root: {
     display: 'flex',
-    flexWrap: 'wrap',
+    flexWrap: 'wrap' as const, // We need this else this type in useStyles will be evaluated as string instead of the literal value 'wrap'
   },
 
   formControl: {
@@ -34,7 +34,22 @@ const useStyles = theme => ({
 
 });
 
-class PrefsGeneral extends React.Component {
+interface PrefsGeneralProps {
+  classes: any;
+}
+
+interface Prefs {
+  interfaceStyle?: string;
+  dataFolder?: string;
+}
+
+interface PrefsGeneralState {
+  prefs: Prefs;
+  prefsDataFolder: string;
+  prefsInterfaceStyle: string;
+}
+
+class PrefsGeneral extends React.Component<PrefsGeneralProps, PrefsGeneralState> {
 
   history: any;
 
@@ -51,7 +66,7 @@ class PrefsGeneral extends React.Component {
   componentDidMount(){
 
     //service.registerListener(this);
-    service.api.readConfKey('prefs').then((value)=>{
+    service.api.readConfKey('prefs').then((value: Prefs)=>{
       this.setState({prefs: value });
 
       if(value.interfaceStyle){
@@ -75,9 +90,11 @@ class PrefsGeneral extends React.Component {
    // service.unregisterListener(this);
   }
 
-  handleFolderSelected(folder){
-    service.api.saveConfPrefKey("dataFolder",folder);
-    this.setState({prefsDataFolder: folder });
+  handleFolderSelected(folder: string | null){
+    if (folder) {
+      service.api.saveConfPrefKey("dataFolder", folder);
+      this.setState({prefsDataFolder: folder });
+    }
   }
 
   render(){
@@ -99,9 +116,9 @@ class PrefsGeneral extends React.Component {
             <Select
               value={this.state.prefsInterfaceStyle}
               onChange={(e)=>{
-                service.api.reloadThemeStyle('reloadThemeStyle');
+                service.api.reloadThemeStyle();
                 service.api.saveConfPrefKey("interfaceStyle", e.target.value);
-                this.setState({prefsInterfaceStyle: e.target.value });
+                this.setState({prefsInterfaceStyle: e.target.value as string });
 
               }}
               label="Interface Style"

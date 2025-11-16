@@ -10,6 +10,27 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import FolderPicker from "../../../../../components/FolderPicker";
 
+interface PubData {
+  type: string;
+  path: string | null;
+  publishScope: string;
+  overrideBaseURLSwitch: boolean;
+  overrideBaseURL: string;
+}
+
+interface FormConfigProps {
+  classes: any;
+  publishConf?: {
+    config: PubData;
+  };
+  setData: (data: PubData) => void;
+  setSaveEnabled: (enabled: boolean) => void;
+}
+
+interface FormConfigState {
+  pubData: PubData;
+}
+
 const useStyles = (theme) => ({
   keyButton: {
     margin: theme.spacing(1),
@@ -45,14 +66,14 @@ const useStyles = (theme) => ({
   },
 });
 
-class FormConfig extends React.Component {
-  constructor(props) {
+class FormConfig extends React.Component<FormConfigProps, FormConfigState> {
+  constructor(props: FormConfigProps) {
     super(props);
 
     this.state = {
       pubData: {
         type: "folder",
-        path: "",
+        path: null,
         publishScope: "build",
         overrideBaseURLSwitch: false,
         overrideBaseURL: "",
@@ -66,12 +87,12 @@ class FormConfig extends React.Component {
     }
   }
 
-  updatePubData(newData, callback = null) {
+  updatePubData(newData: Partial<PubData>, callback: (() => void) | null = null) {
     let pubData = { ...this.state.pubData, ...newData };
     this.setState({ pubData: pubData }, () => {
       this.props.setData(pubData);
 
-      if (pubData.path !== "") {
+      if (pubData.path !== null && pubData.path !== "") {
         this.props.setSaveEnabled(true);
       } else {
         this.props.setSaveEnabled(false);
