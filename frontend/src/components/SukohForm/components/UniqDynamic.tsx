@@ -2,28 +2,25 @@ import React                     from 'react';
 import FormItemWrapper           from './shared/FormItemWrapper';
 import TextField from '@mui/material/TextField';
 import Tip                       from '../../Tip';
-import type { FormStateBuilder } from '../../HoForm';
+import type { FieldBase, BaseDynamicProps, BaseDynamicState } from '../../HoForm';
 import { BaseDynamic }           from '../../HoForm';
 import IconRefresh               from '@mui/icons-material/Refresh';
 import Button                    from '@mui/material/Button';
 
-type UniqDynamicField = {
-  key: string,
-  compositeKey: string,
-  type: string,
-  title: string,
-  tip: string,
-  default?: string,
-  multiLine?: boolean
+interface UniqDynamicField extends FieldBase {
+  title: string;
+  tip?: string;
+  default?: string;
+  multiLine?: boolean;
 }
 
-type UniqDynamicState = {
+type UniqDynamicProps = BaseDynamicProps<UniqDynamicField>;
 
-}
+type UniqDynamicState = BaseDynamicState;
 
-class UniqDynamic extends BaseDynamic<UniqDynamicField,UniqDynamicState> {
+class UniqDynamic extends BaseDynamic<UniqDynamicProps, UniqDynamicState> {
 
-  normalizeState({state, field} : { state: any, field: UniqDynamicField, stateBuilder: FormStateBuilder }){
+  normalizeState({state, field} : { state: any, field: UniqDynamicField }){
     let key = field.key;
     if(state[key]===undefined){
       state[key] = field.default || '';
@@ -41,7 +38,7 @@ class UniqDynamic extends BaseDynamic<UniqDynamicField,UniqDynamicState> {
     return s4() + '-' + s4() + '-' + s4();
   }
 
-  onButtonClick(e: any){
+  onButtonClick(){
     let {context} = this.props;
     context.value = this.createToken();
     this.props.context.setValue(context.value);

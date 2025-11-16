@@ -5,7 +5,7 @@ import CheckIcon                   from '@mui/icons-material/Check';
 import dynamicFormComponents       from './components/all'
 import service                     from './../../services/service'
 
-const componentRegistry = new ComponentRegistry(dynamicFormComponents as any);
+const componentRegistry = new ComponentRegistry(dynamicFormComponents);
 
 interface SaveContext {
   accept: (updatedValues: any) => void;

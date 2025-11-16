@@ -58,3 +58,5 @@ const components: Array<React.ComponentType<BaseDynamicProps<FieldBase>>> = [
     ToggleDynamic,
     EisenhouwerDynamic
 ];
+
+export default components;

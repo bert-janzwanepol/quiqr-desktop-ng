@@ -2,26 +2,23 @@ import React from 'react';
 import FormItemWrapper from './shared/FormItemWrapper';
 import TextField from '@mui/material/TextField';
 import Tip from '../../Tip';
-import type { FormStateBuilder } from '../../HoForm';
+import type { FieldBase, BaseDynamicProps, BaseDynamicState } from '../../HoForm';
 import { BaseDynamic } from '../../HoForm';
 
-type ReadonlyDynamicField = {
-  key: string,
-  compositeKey: string,
-  type: string,
-  title: string,
-  tip?: string,
-  default?: string,
-  multiLine?: boolean
+interface ReadonlyDynamicField extends FieldBase {
+  title: string;
+  tip?: string;
+  default?: string;
+  multiLine?: boolean;
 }
 
-type ReadonlyDynamicState = {
+type ReadonlyDynamicProps = BaseDynamicProps<ReadonlyDynamicField>;
 
-}
+type ReadonlyDynamicState = BaseDynamicState;
 
-class ReadonlyDynamic extends BaseDynamic<ReadonlyDynamicField,ReadonlyDynamicState> {
+class ReadonlyDynamic extends BaseDynamic<ReadonlyDynamicProps, ReadonlyDynamicState> {
 
-  normalizeState({state, field} : { state: any, field: ReadonlyDynamicField, stateBuilder: FormStateBuilder }){
+  normalizeState({state, field} : { state: any, field: ReadonlyDynamicField }){
     let key = field.key;
     if(state[key]===undefined){
       state[key] = field.default || '';

@@ -1,6 +1,11 @@
 import React from 'react';
 
-const DefaultWrapper = ({ style, children }) => {
+type DefaultWrapperProps = {
+  style?: React.CSSProperties;
+  children: React.ReactNode;
+};
+
+const DefaultWrapper = ({ style, children }: DefaultWrapperProps) => {
   return <div
   style={Object.assign({position : 'relative', paddingBottom: '8px', width:'100%'}, style)}>
   {children}

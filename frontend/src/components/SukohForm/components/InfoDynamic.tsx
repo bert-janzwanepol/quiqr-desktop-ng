@@ -1,10 +1,11 @@
 import * as React from 'react';
 import DefaultWrapper from './shared/DefaultWrapper';
 import { BaseDynamic } from '../../HoForm';
+import type { FieldBase, BaseDynamicProps, BaseDynamicState } from '../../HoForm';
 import MarkdownIt from 'markdown-it';
 const md = new MarkdownIt({html:true});
 
-const infoStyles= {
+const infoStyles: Record<string, React.CSSProperties> = {
   "default": { border: '1px solid #00bcdc', borderLeftWidth:'5px', color: '#34749a' },
   "bare": { color: '#34749a', padding:0 },
   warn: { border:'1px solid rgb(220, 142, 0)', borderLeftWidth:'5px', color:'#6f481f' },
@@ -15,27 +16,24 @@ const infoStyles= {
   'gray-bare': { color: '#aaa', padding:0 }
 }
 
-const infoSizeStyles={
+const infoSizeStyles: Record<string, React.CSSProperties> = {
   "default": {},
   small: {fontSize:'85%'},
   large: {fontSize:'110%'}
 }
 
-type InfoDynamicField = {
-  type: string,
-  key: string,
-  compositeKey: string,
-  content: string,
-  size: string,
-  lineHeight: string,
-  theme: 'default' | 'bare' | 'warn' | 'warn-bare' | 'black' | 'black-bare' | 'gray' | 'gray-bare'
+interface InfoDynamicField extends FieldBase {
+  content: string;
+  size?: string;
+  lineHeight?: string;
+  theme?: 'default' | 'bare' | 'warn' | 'warn-bare' | 'black' | 'black-bare' | 'gray' | 'gray-bare';
 }
 
-type InfoDynamicState = {
+type InfoDynamicProps = BaseDynamicProps<InfoDynamicField>;
 
-}
+type InfoDynamicState = BaseDynamicState;
 
-class InfoDynamic extends BaseDynamic<InfoDynamicField, InfoDynamicState> {
+class InfoDynamic extends BaseDynamic<InfoDynamicProps, InfoDynamicState> {
 
   normalizeState({state, field}: {state: any, field: InfoDynamicField}){
 
@@ -55,15 +53,15 @@ class InfoDynamic extends BaseDynamic<InfoDynamicField, InfoDynamicState> {
       return (null);
     }
 
-    let style = {padding:'10px 20px', borderRadius: '2px', lineHeight: field.lineHeight};
+    let style: React.CSSProperties = {padding:'10px 20px', borderRadius: '2px', lineHeight: field.lineHeight};
 
-    let infoStyle = infoStyles['default'];
+    let infoStyle: React.CSSProperties = infoStyles['default'];
     if(field.theme && infoStyles[field.theme])
       infoStyle = infoStyles[field.theme];
 
-    let infoSizeStyle = infoSizeStyles['default'];
+    let infoSizeStyle: React.CSSProperties = infoSizeStyles['default'];
     if(field.size && infoSizeStyles[field.size])
-      infoSizeStyle = Object.assign(style, infoSizeStyles[field.size]);
+      infoSizeStyle = infoSizeStyles[field.size];
 
     style = Object.assign({}, style, infoStyle, infoSizeStyle);
 
