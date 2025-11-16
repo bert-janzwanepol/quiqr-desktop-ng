@@ -29,3 +29,13 @@ export interface ComponentProps<P extends BaseComponentProps, S extends BaseComp
 // Re-export the real classes for convenience
 export type { FormStateBuilder } from './form-state-builder';
 export type { FieldsExtender } from './fields-extender';
+
+export type PreviewConfig = { enable: boolean, preview_url: string }
+export interface HugoConfigParsed {
+  theme?: string;
+  title?: string;
+}
+
+export interface QuiqrModelParsed {
+  hugover?: string;
+}
