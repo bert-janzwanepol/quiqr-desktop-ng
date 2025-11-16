@@ -2,7 +2,15 @@ import * as React from 'react';
 import { Route } from 'react-router-dom';
 import Sidebar from './../Sidebar';
 
-export class PrefsSidebar extends React.Component {
+type PrefsSidebarProps = {
+  menus?: any[];
+  hideItems?: boolean;
+  menuIsLocked?: boolean;
+  onToggleItemVisibility?: () => void;
+  onLockMenuClicked?: () => void;
+};
+
+export class PrefsSidebar extends React.Component<PrefsSidebarProps> {
 
   render(){
     return <Route render={({history})=>{ return this.renderWithRoute(history) }} />

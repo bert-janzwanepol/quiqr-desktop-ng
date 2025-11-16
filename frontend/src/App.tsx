@@ -3,7 +3,7 @@ import { Switch, Route } from "react-router-dom";
 import AppsIcon from "@mui/icons-material/Apps";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import SettingsApplicationsIcon from "@mui/icons-material/SettingsApplications";
-import { createTheme, ThemeProvider, StyledEngineProvider, adaptV4Theme } from "@mui/material/styles";
+import { createTheme, ThemeProvider, StyledEngineProvider, adaptV4Theme, Theme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { blue } from "@mui/material/colors";
 import Workspace from "./containers/WorkspaceMounted/Workspace";
@@ -19,8 +19,26 @@ import styleDarkDefault from "./app-ui-styles/quiqr10/style-dark.js";
 
 let defaultApplicationRole = "contentEditor";
 
-class App extends React.Component {
-  constructor(props) {
+type AppState = {
+  splashDialogOpen: boolean;
+  showSplashAtStartup: boolean;
+  applicationRole: string;
+  libraryView: string;
+  style: any;
+  theme: Theme;
+  menuIsLocked: boolean;
+  forceShowMenu: boolean;
+  skipMenuTransition: boolean;
+  quiqrDomain: string;
+  newSiteDialogOpen?: boolean;
+  importSiteDialogOpen?: boolean;
+};
+
+class App extends React.Component<{}, AppState> {
+  _ismounted?: boolean;
+  history?: any;
+
+  constructor(props: {}) {
     super(props);
 
     //let win = window.require('electron').remote.getCurrentWindow();
@@ -52,13 +70,13 @@ class App extends React.Component {
 
     //win.on('maximize', () => { this.setState({maximized: true}); });
     //win.on('unmaximize', ()=>{ this.setState({maximized: false}); });
-    window.state = this.state;
+    (window as any).state = this.state;
   }
 
   setThemeStyleFromPrefs() {
-    service.api.readConfKey("prefs").then((value) => {
+    service.api.readConfKey("prefs").then((value: any) => {
       if (value.interfaceStyle) {
-        let themeStyle = "light";
+        let themeStyle: "light" | "dark" = "light";
         if (value.interfaceStyle === "quiqr10-dark") {
           themeStyle = "dark";
         }
@@ -88,7 +106,10 @@ class App extends React.Component {
     this.setThemeStyleFromPrefs();
 
     service.api.readConfPrefKey("libraryView").then((view) => {
-      this.setState({ libraryView: view });
+      // TODO: extract to typeguard, or do schema checking in service.api.readConfPrefKey
+      if (typeof view === "string") {
+        this.setState({ libraryView: view });
+      }
     });
 
     service.api.readConfPrefKey("showSplashAtStartup").then((show) => {
@@ -146,7 +167,11 @@ class App extends React.Component {
   setApplicationRole() {
     service.api.readConfPrefKey("applicationRole").then((role) => {
       if (!role) role = defaultApplicationRole;
-      this.setState({ applicationRole: role });
+      
+      // TODO: extract to typeguard, or do schema checking in service.api.readConfPrefKey
+      if (typeof role === 'string') {
+        this.setState({ applicationRole: role });
+      }
     });
   }
 
@@ -164,13 +189,13 @@ class App extends React.Component {
       win.unmaximize();
     }
   }
+  */
 
   toggleMenuIsLocked(){
     let menuIsLocked = !this.state.menuIsLocked;
     this.setState({menuIsLocked, forceShowMenu: true, skipMenuTransition:true});
     window.dispatchEvent(new Event('resize'));
   }
-  */
 
   toggleForceShowMenu() {
     var forceShowMenu = !this.state.forceShowMenu;
@@ -341,7 +366,7 @@ class App extends React.Component {
     });
   }
 
-  handleLibraryDialogClick(openDialog) {
+  handleLibraryDialogClick(openDialog: string) {
     if (openDialog === "newSiteDialog") {
       this.setState({ newSiteDialogOpen: true });
     } else if (openDialog === "importSiteDialog") {
@@ -349,12 +374,12 @@ class App extends React.Component {
     }
   }
 
-  handleLibraryViewChange(view) {
+  handleLibraryViewChange(view: string) {
     service.api.saveConfPrefKey("libraryView", view);
     this.setState({ libraryView: view });
   }
 
-  renderSelectSites() {
+  renderSelectSites(openDialog?: string) {
     return (
       <SiteLibraryRouted
         handleLibraryDialogCloseClick={() => this.handleLibraryDialogCloseClick()}
@@ -515,7 +540,7 @@ class App extends React.Component {
         menuContainerStyle.transition = transition;
       }
 
-      this.state.setState({ skipMenuTransition: false });
+      this.setState({ skipMenuTransition: false });
     }
 
     return (
